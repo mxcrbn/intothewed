@@ -29,7 +29,7 @@
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
-    height: 70,
+    height: 90,
     enter: { x: 1590, y: 760 },  // comes out of the woods on the right…
     stop:  { x: 1292, y: 773 },  // …stops beside the house and looks around…
     leave: { x: 1318, y: 702 },  // …then wanders off into the forest
