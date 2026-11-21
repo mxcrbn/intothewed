@@ -25,17 +25,22 @@ thickness, same softness, same grain.
 
 So each figure is drawn at the exact height it has in the scene, with the same pen as the invite:
 
-| asset | figure height (top of head / ears → feet) | frame (cell) | sheet (4 × 4) | ground point in the frame |
-|---|---|---|---|---|
-| owl, perched / take-off / landing | **30 px** (head → feet) | 128 × 128 | 512 × 512 | (64, 100), feet |
-| owl, flying / gliding | same owl, body ≈ 22 px long, wingspan ≈ 80 px | 128 × 128 | same sheet | (64, 64), body centre |
-| deer | **82 px** (ear tips → hooves) | 128 × 128 | 512 × 512 | (64, 120), hooves |
-| deer, walking away (frames 12–15) | **72 px** (it is further away) | 128 × 128 | same sheet | (64, 120) |
-| girl | **56 px** | 96 × 96 | 384 × 384 | (48, 90), feet |
-| boy | **75 px** | 128 × 128 | 512 × 512 | (64, 120), feet |
-| Nayan | **106 px** | 160 × 160 | 640 × 640 | (80, 152), feet |
-| Nóri & Max (pair) | **104 px** (Max's head → feet) | 160 × 160 | 640 × 640 | (80, 152), between their feet |
-| door leaves (left, right) | 29 × 113 px each, the size of the doorway | — | two PNGs | — |
+Every frame, for every character, is the same **128 × 128 px cell**, and a sheet is 4 × 4 cells
+(512 × 512 px). The feet always sit at **(64, 120)** in the cell. Only the figure's height changes:
+
+| asset | figure height (top of head / ears → feet) | ground point in the cell |
+|---|---|---|
+| owl, perched / take-off / landing | **30 px** (head → feet) | (64, 100), feet |
+| owl, flying / gliding | same owl, body ≈ 22 px long, wingspan ≈ 80 px | (64, 64), body centre |
+| deer | **82 px** (ear tips → hooves), body ≈ 80 px long | (64, 120), hooves |
+| deer, walking away (frames 12–15) | **72 px** (it is further away) | (64, 120) |
+| girl | **56 px** | (64, 120) |
+| boy | **75 px** | (64, 120) |
+| Nayan | **106 px** | (64, 120) |
+| Nóri & Max (pair) | **104 px** (Max's head → feet), pair ≈ 60 px wide side by side, ≤ 110 px with arms out | (64, 120), between their feet |
+| door leaves (left, right) | 29 × 113 px each, the size of the doorway | two PNGs |
+
+When generating with an image model, draw at **exactly 4×** (512 px cells, everything × 4). The only resize is then one exact ÷ 4 reduction.
 
 - **Where these sizes come from:** each is the figure's height at the spot where it spends most of
   its time. The deer stands at (445, 792), the children and Nayan are at the big tree (y ≈ 788), and
@@ -56,7 +61,7 @@ So each figure is drawn at the exact height it has in the scene, with the same p
 
 ### Format
 
-- **Sprite sheet:** a 4 × 4 grid of cells (sizes above), RGBA PNG. A character that needs more than
+- **Sprite sheet:** a 4 × 4 grid of 128 × 128 cells (512 × 512), RGBA PNG. A character that needs more than
   16 frames gets a second sheet with the same cell size.
 - **Background:** transparent outside the figure, **paper white (#fefefe) inside** it. The inside is
   the skin, the clothes and the fur, everything within the outline. A tree trunk or a house line must
@@ -175,9 +180,9 @@ about 15 pen strokes; draw it like the invite's original perched owl, which is t
 
 | | height (1 : 1) | cell | look |
 |---|---|---|---|
-| Girl (about 5 years old) | 56 px | 96 × 96 | dress, hair down |
+| Girl (about 5 years old) | 56 px | 128 × 128 | dress, hair down |
 | Boy (about 7 years old) | 75 px | 128 × 128 | t-shirt, shorts |
-| Nayan (teenager, about 15) | 106 px | 160 × 160 | open shirt over a t-shirt, jeans, sneakers |
+| Nayan (teenager, about 15) | 106 px | 128 × 128 | open shirt over a t-shirt, jeans, sneakers |
 
 The big right trunk runs from x 1352 to 1450 at its base (y 795). A child behind it is hidden by
 it. Once they pass behind the house (y < 730) they disappear behind the wall.
@@ -252,7 +257,7 @@ Draw it as a real lean against a trunk:
   100 px tall.
 - Optional extras: **3b**, the same lean with the head turned to follow the kids, and **3c**, the
   same lean with one ankle crossed, to switch between every few seconds.
-- **The ground point** stays at the standing foot (80, 152) so the site can place him at
+- **The ground point** stays at the standing foot (64, 120) so the site can place him at
   (1350, 790) against the trunk without tilting him.
 
 ### Fix in the next version
@@ -296,7 +301,7 @@ kiss line up.
 | 9.6 – 10.7 s | They **walk back inside**, seen from behind, holding hands. | turn-back → step-inside |
 | 10.7 – 11.7 s | They **pull the doors shut** from inside. | pull-shut |
 
-### Frames (2 sheets of 160 × 160 cells, pair 104 px tall, ground point (80, 152))
+### Frames (2 sheets of 128 × 128 cells, pair 104 px tall, ground point (64, 120))
 
 The current kit's 16 poses (0 neutral, 1 reach-handles, 2 push, 3 hold-open, 4 – 5 step forward,
 6 glance, 7 turn-inward, 8 embrace, 9 lean-in, 10 kiss, 11 kiss-hold, 12 separate, 13 turn-back,
