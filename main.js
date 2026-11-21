@@ -36,7 +36,8 @@
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
-    height: 90,           // at y 752 (between the trunks); bigger further forward
+    height: 78,           // at y 752 (between the trunks); bigger further forward. A deer's ears
+                          // reach about 2/3 of a man's height (Max is ~104 on the steps)
     walkSpeed: 50,        // px / s
     start: [-90, 745],
     legs: [
@@ -87,7 +88,7 @@
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
         { to: [1240, 726] }, { to: [1130, 708] },
       ] },
-      { id: "teenager", height: 145, speed: 80, start: [1392, 788], steps: [
+      { id: "teenager", height: 140, speed: 80, start: [1392, 788], steps: [
         { until: 9.0 }, { to: [1338, 787] }, { face: "left" }, { clip: "wave" },   // ~3 s into the chase
         // back against the left side of the trunk, chilling
         { to: [1350, 790], speed: 40 }, { face: "left" },
@@ -96,6 +97,19 @@
         { to: [1262, 728], speed: 150 }, { to: [1150, 710], speed: 150 },
       ] },
     ],
+  };
+
+  // Nóri & Max (their own kit, assets/couple-kit/): after the deer has gone, the front doors
+  // open, they step out onto the steps, look at each other, kiss, go back in and close the
+  // doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
+  // Size: ~104 px on the steps (Max a little taller than the teenager), ~99 px in the doorway,
+  // whose opening is 113 px tall.
+  const COUPLE = {
+    firstAt: 52,          // just after the deer has gone back into the forest
+    every: 60,            // then once a minute, right after each deer visit
+    height: 104,          // at y 760 (the bottom step); same depth rule as everyone else
+    opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
+    doorX: 813, doorY: 733, stepX: 815, stepY: 760,
   };
 
   // Sprite sheets (4x4 frames) prepared by tools/prepare_sprites.py from the animation kit.
@@ -121,6 +135,7 @@
     run:  { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 9, loop: true },
     hop:  { frames: [12, 13, 14, 15, 0], fps: 7, offsetY: [0, -9, -23, -4, 0] },
   };
+  SPRITES.couple = { src: "assets/sprites/couple.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
   SPRITES.teenager = { src: "assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
     ...CHILD_CLIPS,
     wave: { frames: [0, 1, 1, 1, 1, 0], fps: 3 },           // one wave
@@ -407,12 +422,68 @@
     now.filter(k => k.seg.clip === "lean").forEach(draw);
   }
 
+  // ===== Nóri & Max ==================================================================
+  const doorLeaves = {};
+  // where we are in the sequence (from the kit's sampleDoorSequence, 14 s, played once)
+  function coupleAt(t) {
+    const C = COUPLE, mix = lerp, e = u => smooth(0, 1, u);
+    let pose = 0, open = 0, visible = false, inside = true, x = C.doorX, y = C.doorY;
+    if (t >= 1 && t < 1.4) { pose = 1; visible = true; }
+    else if (t >= 1.4 && t < 2.2) { const u = e((t - 1.4) / 0.8); pose = u < 0.55 ? 2 : 3; open = u; visible = true; }
+    else if (t >= 2.2 && t < 3.2) {
+      const u = e(t - 2.2); pose = Math.floor((t - 2.2) * 5) % 2 ? 5 : 4; open = 1; visible = true;
+      inside = u < 0.45; x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
+    } else if (t >= 3.2 && t < 7.5) {
+      open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
+      pose = t < 3.5 ? 6 : t < 3.8 ? 7 : t < 4.3 ? 8 : t < 4.8 ? 9 : t < 5.6 ? 10 : t < 6.4 ? 11 : t < 7 ? 12 : 13;
+    } else if (t >= 7.5 && t < 8.6) {
+      const u = e((t - 7.5) / 1.1); pose = u < 0.18 ? 13 : 14; open = 1; visible = true;
+      inside = u > 0.58; x = mix(C.stepX, C.doorX, u); y = mix(C.stepY, C.doorY, u);
+    } else if (t >= 8.6 && t < 9.6) { pose = 15; open = 1 - e(t - 8.6); visible = true; }
+    return { pose, open, visible, inside, x, y };
+  }
+  // one door leaf swinging inwards, as thin vertical strips (the kit's doorStrips)
+  function drawLeaf(side, openness) {
+    const o = COUPLE.opening, img = doorLeaves[side];
+    const theta = openness * 1.34, w = o.w / 2, projected = w * Math.cos(theta), depth = 9 * Math.sin(theta);
+    const n = 29;
+    for (let i = 0; i < n; i++) {
+      const u = (i + 0.5) / n, d = side === "left" ? u : 1 - u;
+      const x = side === "left" ? o.x + projected * i / n : o.x + o.w - projected + projected * i / n;
+      life.drawImage(img, i * 29 / n, 0, 29 / n, 113, x, o.y + depth * d, projected / n + 0.1, o.h - 2 * depth * d);
+    }
+  }
+  function drawCouple(t) {
+    if (t < COUPLE.firstAt) return;
+    const c = (t - COUPLE.firstAt) % COUPLE.every;
+    if (c < 1) return;                 // doors still shut: the background shows them
+    if (c >= 9.6) return;
+    const s = coupleAt(c), o = COUPLE.opening;
+    const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
+    const h = COUPLE.height * depth(s.y) / depth(COUPLE.stepY);
+    const pair = () => {
+      const sp = SPRITES.couple, cell = sp.img.naturalWidth / 4, k = h / sp.nominalHeight;
+      life.drawImage(sp.img, (s.pose % 4) * cell, Math.floor(s.pose / 4) * cell, cell, cell,
+        s.x - sp.anchor[0] * k, s.y - sp.anchor[1] * k, 512 * k, 512 * k);
+    };
+    // the doorway: paper white behind, the couple inside it, then the two leaves
+    life.fillStyle = "#fefefe";
+    life.fillRect(o.x, o.y, o.w, o.h);
+    if (s.visible && s.inside) {
+      life.save(); life.beginPath(); life.rect(o.x, o.y, o.w, o.h + 1); life.clip(); pair(); life.restore();
+    }
+    if (s.open > 1e-6) { drawLeaf("left", s.open); drawLeaf("right", s.open); }
+    else { life.drawImage(doorLeaves.left, o.x, o.y, 29, o.h); life.drawImage(doorLeaves.right, o.x + 29, o.y, 29, o.h); }
+    if (s.visible && !s.inside) pair();
+  }
+
   // ===== Main loop ====================================================================
   let last = 0, clock = 0, running = true;
 
   // Debug helper for tuning: ?t=40 starts the scene 40 s in.
   const skip = Number(new URLSearchParams(location.search).get("t"));
   if (skip > 0) { clock = skip; owl.nextFlightAt = Math.max(OWL.firstFlightAt, skip + 1); }
+  if (skip > 0) scene.classList.add("nofade");
   // ?fly=0.5 puts the owl halfway through its flight (with ?t=)
   const flyAt = Number(new URLSearchParams(location.search).get("fly"));
   if (skip > 0 && flyAt > 0) { owl.state = "fly"; owl.since = skip - flyAt * OWL.flightTime; }
@@ -431,7 +502,7 @@
     life.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
     life.imageSmoothingQuality = "high";
     // deer and children first: their trunk/house cut-outs must not touch the owl
-    if (!reduceMotion) { drawDeer(clock); drawKids(clock); }
+    if (!reduceMotion) { drawDeer(clock); drawKids(clock); drawCouple(clock); }
     drawOwl(clock);
     if (skip > 0) {   // debug readout when ?t= is used
       life.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
@@ -447,7 +518,9 @@
     Promise.all([load(WIND.base + rig.background), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
       Object.assign(forest, { rig, background: bg, atlas });
     }));
-  Promise.all([forestReady, ...sprites]).then(() => {
+  const leaves = ["left", "right"].map(side =>
+    load(`assets/couple-kit/scene/door-${side}.png`).then(img => { doorLeaves[side] = img; }));
+  Promise.all([forestReady, ...sprites, ...leaves]).then(() => {
     layout();
     window.addEventListener("resize", () => { layout(); if (reduceMotion) frame(performance.now()); });
     document.addEventListener("visibilitychange", () => {

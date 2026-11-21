@@ -18,6 +18,10 @@ A single full-screen page showing the invitation drawing (the house in the woods
   against the trunk, hands in pockets, one knee bent, while the kids run back to him and wave. When the kids run off behind the house he
   pushes off the tree and runs after them. Sizes follow the house (a teenager by the steps is a bit shorter than the door)
   and shrink with depth.
+- **Nóri & Max** (their own kit): right after each deer visit (~52 s, then once a minute) the front
+  doors open, they step out onto the steps, look at each other, kiss, go back in and close the doors.
+  Sizes are shared by everyone: Max is ~104 px on the steps (the doorway opening is 113 px), a little
+  taller than the teenager; the deer's ears reach about two-thirds of his height.
 - Respects `prefers-reduced-motion` (still drawing with the owl perched), and falls back to the plain
   image without JavaScript.
 
@@ -29,7 +33,7 @@ python3 -m http.server 8417
 
 Then open http://localhost:8417
 
-Tuning helpers: `?t=40` starts the scene 40 s in (shows a red clock), `?t=30&fly=0.5` puts the owl
+Tuning helpers: `?t=40` starts the scene 40 s in (shows a red clock, no fade-in; `?t=53` for the couple), `?t=30&fly=0.5` puts the owl
 halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `?wind=` / `?windSpeed=` try other wind settings.
 
 ## Files
@@ -41,6 +45,8 @@ halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `
 - `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py`: lines
   restyled to the invite's pen at the size each figure has in the scene (same ~1.5 px dark-grey ink,
   a slight wobble, uneven pressure and a faint overdraw), white inside.
+- `assets/couple-kit/` — Nóri & Max kit as delivered: paired-pose atlas, rig, door leaves, its README
+  and reference renderer (`couple-door.reference.js`, reproduced in `main.js`).
 - `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and
   `wind-rig.json` (pivot, amplitude, phase, depth, lag per fragment). Its wind function is reproduced in
   `main.js`; the kit's own renderer and README are kept alongside for reference.

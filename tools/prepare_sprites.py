@@ -26,6 +26,8 @@ SHEETS = {
     "teenager": (105 / 281, 1536),
     "girl":     (56 / 283,  1024),
     "boy":      (74 / 288,  1024),
+    # the couple (separate kit): keep the drawn faces exactly, so no wobble / overdraw
+    "couple":   (104 / 287, 1536, "assets/couple-kit/spritesheets/couple.png", False),
 }
 STROKE = 1.25         # target line width, drawing px (the invite: ~1.5–2, but the figures are tiny)
 WOBBLE = 0.45         # line wobble amplitude, drawing px
@@ -91,9 +93,12 @@ def to_arr(img):
     return np.asarray(img).astype(np.float32) / 255.0
 
 
-for i, (name, (scale, size)) in enumerate(SHEETS.items()):
+for i, (name, spec) in enumerate(SHEETS.items()):
+    scale, size = spec[0], spec[1]
+    path = spec[2] if len(spec) > 2 else f"assets/kit-source/spritesheets/{name}.png"
+    sketchy = spec[3] if len(spec) > 3 else True
     rng = np.random.default_rng(11 + i)
-    src = Image.open(f"assets/kit-source/spritesheets/{name}.png").convert("RGBA")
+    src = Image.open(path).convert("RGBA")
     a = np.array(src).astype(np.float32) / 255.0
     rgb, alpha = a[..., :3], a[..., 3]
     h, w = alpha.shape
@@ -111,7 +116,7 @@ for i, (name, (scale, size)) in enumerate(SHEETS.items()):
     line = to_arr(to_img(line).filter(ImageFilter.GaussianBlur(0.25 / scale)))
 
     # wobble + pressure, and a faint offset second pass
-    amp, grain = WOBBLE / scale, WOBBLE_GRAIN / scale
+    amp, grain = (WOBBLE if sketchy else 0) / scale, WOBBLE_GRAIN / scale
     dx = (noise(h, w, grain, rng) - 0.5) * 2 * amp
     dy = (noise(h, w, grain, rng) - 0.5) * 2 * amp
     lo, hi = PRESSURE
@@ -119,7 +124,7 @@ for i, (name, (scale, size)) in enumerate(SHEETS.items()):
     first = warp(line, dx, dy) * press
     dx2 = (noise(h, w, grain, rng) - 0.5) * 2 * amp * 2.2
     dy2 = (noise(h, w, grain, rng) - 0.5) * 2 * amp * 2.2
-    second = warp(line, dx2, dy2) * OVERDRAW * noise(h, w, PRESSURE_GRAIN * 2 / scale, rng)
+    second = warp(line, dx2, dy2) * (OVERDRAW if sketchy else 0) * noise(h, w, PRESSURE_GRAIN * 2 / scale, rng)
     cover = np.clip(np.maximum(first, second), 0, 1)
 
     tone = np.minimum(1.0 - cover * INK, PAPER)

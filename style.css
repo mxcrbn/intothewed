@@ -41,3 +41,7 @@ html, body {
 .ready #trees,
 .ready #life { opacity: 1; }
 .ready #fallback { visibility: hidden; }
+
+/* debug (?t=): no fade-in, so screenshots show the scene at full strength */
+.nofade #trees,
+.nofade #life { transition: none; }
