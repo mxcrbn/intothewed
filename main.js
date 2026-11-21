@@ -42,8 +42,8 @@
     start: [-90, 745],
     legs: [
       { walk: [165, 752] },        // out of the woods, behind the trunks
-      { walk: [480, 792] },        // into the middle of the left garden
-      { idle: 6.5 },               // looks around
+      { walk: [445, 790] },        // into the left garden, just past the first window
+      { idle: 6.5 },               // looks around, and once at us
       { walk: [240, 748] },        // turns back towards the trees
       { away: [172, 690], dur: 6 } // and wanders off into the forest
     ],
@@ -121,7 +121,7 @@
       land:    { frames: [13, 14, 15], fps: 7 },
     } },
     deer: { src: "assets/sprites/deer.webp", nominalHeight: 237, anchor: [256, 440], clips: {
-      idle:     { frames: [0, 0, 1, 0, 2, 3], fps: 2, loop: true },
+      idle:     { frames: [0, 0, 1, 0, 0, 2, 2, 2, 0, 3, 0, 0, 0], fps: 2 },   // one look at us (frame 2)
       walk:     { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 8, loop: true },
       walkAway: { frames: [12, 13, 14, 15], fps: 6, loop: true },
     } },
@@ -345,7 +345,7 @@
     const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
     const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
     if (seg.away) {
-      drawSprite("deer", "walkAway", c - seg.t0, x, y, sizeAt(y) * lerp(1, 0.75, u), false, 1 - smooth(0.45, 1, u));
+      drawSprite("deer", "walkAway", c - seg.t0, x, y, sizeAt(y) * lerp(1, 0.75, u), seg.flip, 1 - smooth(0.45, 1, u));
     } else {
       drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, sizeAt(y), seg.flip);
     }

@@ -10,7 +10,7 @@ A single full-screen page showing the invitation drawing (the house in the woods
 - **The owl** (illustrator's kit) sits on its branch, blinks, and ~12 s after opening takes off, flies
   across the scene and lands on the big tree on the right. It flies back after ~28 s, and so on.
 - **The deer** comes out of the woods on the left (~22 s, then once a minute), passing behind the big
-  trunks, walks out to the middle of the left garden and looks around, then turns back and wanders
+  trunks, walks into the left garden just past the first window, looks around (and once at us), then turns back and wanders
   off into the forest.
 - **The three children** (~5 s, then every 75 s) hide behind the big tree on the right. The girl leans
   her head out on one side, the boy on the other (one long peek); the girl bolts and the boy chases
