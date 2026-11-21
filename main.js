@@ -6,10 +6,13 @@
 
   // ===== Tuning =====================================================================
 
-  const SWAY = {
-    ground: 760,     // y where trunks are anchored: no movement below
-    amp: 13,         // max horizontal sway at the very top of the trees
-    rampIn: 2.5,     // seconds to ease the wind in after the page opens
+  // Wind in the canopy: the illustrator's "forest wind" kit (assets/forest-wind/). 97 small
+  // leaf/twig fragments cut from the drawing, each rotating around its attachment point,
+  // with staggered timing and slowly changing gusts. House, trunks, fence stay still.
+  const WIND = {
+    base: "assets/forest-wind/",
+    intensity: 1,      // kit suggests 0.7 – 1.0
+    rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
 
   const OWL = {
@@ -38,25 +41,38 @@
             [1360, 795], [1366, 700]],
   };
 
-  // The three children play in front of the fence. Even visits come in from the left,
-  // odd visits from the right (mirrored). Steps: run to x | play a clip | idle | face.
+  // The three children run along the fence, come in through the open gate and play on the
+  // garden path: the boy chases the girl while the teenager watches, then joins them, and
+  // they all leave through the gate. Even visits come in from the left, odd visits from the
+  // right (mirrored around the gate).
+  // Steps: to [x, y] (run) | to "exit" | clip (+dur) | idle s | until s (wait for a cue) | face.
+  // Sizes follow the house: the front door is ~120 px tall, a teenager next to it ~100 px;
+  // they are bigger in front of the fence (closer to us) and shrink up the path (depth).
+  const CHASE = [[915, 845], [705, 815], [865, 790], [925, 870], [715, 885]];
   const KIDS = {
     firstAt: 5,
     every: 75,
-    exitLeft: -90, exitRight: 1626,
+    gateX: 795,                 // centre of the gate, the mirror line
+    exitLeft: -120, exitRight: 1710,
+    depth: { y: 995, perPx: 0.0012 },   // size = height × (1 − (995 − y) × 0.0012)
     cast: [
-      { id: "teenager", y: 993, height: 96, speed: 68, delay: 0, steps: [
-        { run: 470 }, { idle: 1 }, { clip: "wave" }, { idle: 2.5 }, { clip: "play", dur: 5 },
-        { idle: 1.5 }, { clip: "hop" }, { idle: 5 }, { clip: "wave" }, { idle: 2 }, { run: "exit" },
+      { id: "teenager", height: 145, speed: 120, start: [-120, 993], steps: [
+        { idle: 0.5 }, { to: [640, 993] }, { to: [690, 930] }, { until: 13 },
+        { clip: "wave" }, { idle: 1.5 }, { clip: "play", dur: 6 }, { until: 22.5 },
+        { to: [865, 848] }, { clip: "wave" }, { until: 30 }, { clip: "hop" }, { until: 33.4 },
+        { to: [760, 994] }, { to: "exit" },
       ] },
-      { id: "girl", y: 1003, height: 50, speed: 82, delay: 0.9, steps: [
-        { run: 610 }, { clip: "hop" }, { clip: "play", dur: 3 }, { run: 705 }, { clip: "hop" },
-        { face: "left" }, { clip: "wave" }, { run: 560 }, { idle: 1 }, { clip: "hop" },
-        { clip: "play", dur: 3 }, { idle: 2.5 }, { run: "exit" },
+      { id: "girl", height: 75, speed: 100, start: [-120, 1000], steps: [
+        { to: [690, 1000] }, { to: [785, 885] }, { clip: "hop" }, { until: 12 },
+        ...CHASE.map(p => ({ to: p })), { to: [820, 835] }, { clip: "hop" }, { face: "left" },
+        { until: 24 }, { clip: "play", dur: 3 }, { until: 30 }, { clip: "wave" }, { until: 34 },
+        { to: [740, 996] }, { to: "exit" },
       ] },
-      { id: "boy", y: 998, height: 65, speed: 88, delay: 1.8, steps: [
-        { run: 765 }, { idle: 1 }, { clip: "play", dur: 3 }, { run: 885 }, { clip: "hop" },
-        { run: 720 }, { clip: "wave" }, { idle: 3 }, { clip: "hop" }, { idle: 2.5 }, { run: "exit" },
+      { id: "boy", height: 100, speed: 100, start: [-120, 998], steps: [
+        { idle: 1.2 }, { to: [690, 998] }, { to: [770, 895] }, { until: 13.2 },
+        ...CHASE.map(p => ({ to: p })), { to: [785, 838] }, { clip: "hop" },
+        { until: 24 }, { clip: "play", dur: 3 }, { until: 30 }, { clip: "hop" }, { clip: "wave" },
+        { until: 34.6 }, { to: [775, 998] }, { to: "exit" },
       ] },
     ],
   };
@@ -90,70 +106,27 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // ===== Wind: identical formula in JS (owl on its branch) and GLSL (trees) ==========
-  function sway(x, y, t, k) {
-    const h = Math.min(Math.max((SWAY.ground - y) / SWAY.ground, 0), 1);
-    const a = Math.pow(h, 1.7) * k;
-    const dx = SWAY.amp * a * (0.65 * Math.sin(t * 0.75 + x * 0.0035) + 0.35 * Math.sin(t * 1.25 + x * 0.0091 + 1.7))
-             + 2.2 * a * a * Math.sin(t * 2.4 + x * 0.02 + y * 0.013);
-    const dy = 2.0 * a * a * Math.sin(t * 0.8 + x * 0.006 + 0.5);
-    return [dx, dy];
+  // ===== Wind (from the kit's forest-wind.js) =======================================
+  function hash1(n, seed = 1) {
+    let x = (n ^ Math.imul(seed, 0x9e3779b9)) >>> 0;
+    x = Math.imul(x ^ (x >>> 16), 0x85ebca6b);
+    x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35);
+    return ((x ^ (x >>> 16)) >>> 0) / 4294967295 * 2 - 1;
   }
-
-  const VERT = `
-    attribute vec2 aPos;
-    uniform vec4 uView;          // offsetX, offsetY, scale, unused  (CSS px)
-    uniform vec2 uViewport;      // CSS px
-    varying vec2 vPx;            // drawing px
-    void main() {
-      vec2 screen = (aPos * 0.5 + 0.5) * uViewport;
-      screen.y = uViewport.y - screen.y;
-      vPx = (screen - uView.xy) / uView.z;
-      gl_Position = vec4(aPos, 0.0, 1.0);
-    }`;
-
-  const FRAG = `
-    precision highp float;
-    uniform sampler2D uImg;
-    uniform sampler2D uMask;
-    uniform float uTime;
-    uniform float uK;            // wind strength 0..1
-    uniform float uGround;
-    uniform float uAmp;
-    varying vec2 vPx;
-    const vec2 SIZE = vec2(${W}.0, ${H}.0);
-    const vec3 PAPER = vec3(254.0 / 255.0);
-
-    vec2 sway(vec2 p) {
-      float h = clamp((uGround - p.y) / uGround, 0.0, 1.0);
-      float a = pow(h, 1.7) * uK;
-      float t = uTime;
-      float dx = uAmp * a * (0.65 * sin(t * 0.75 + p.x * 0.0035) + 0.35 * sin(t * 1.25 + p.x * 0.0091 + 1.7))
-               + 2.2 * a * a * sin(t * 2.4 + p.x * 0.02 + p.y * 0.013);
-      float dy = 2.0 * a * a * sin(t * 0.8 + p.x * 0.006 + 0.5);
-      return vec2(dx, dy);
-    }
-
-    vec3 sampleImg(vec2 px) {
-      if (px.x < 0.0 || px.y < 0.0 || px.x > SIZE.x || px.y > SIZE.y) return PAPER;
-      return texture2D(uImg, px / SIZE).rgb;
-    }
-    float sampleMask(vec2 px) {
-      return texture2D(uMask, clamp(px / SIZE, 0.0, 1.0)).r;
-    }
-
-    void main() {
-      vec2 p = vPx;
-      // static layer: house, fence, ground (never moves)
-      float m = sampleMask(p);
-      vec3 stat = mix(PAPER, sampleImg(p), m);
-      // moving layer: the trees, displaced by the wind
-      vec2 q = p - sway(p);
-      float m2 = sampleMask(q);
-      vec3 trees = mix(sampleImg(q), PAPER, m2);
-      // ink on paper: the darkest line wins
-      gl_FragColor = vec4(min(stat, trees), 1.0);
-    }`;
+  function smoothNoise(t, seed = 1) {
+    const k = Math.floor(t), f = t - k, u = f * f * f * (f * (f * 6 - 15) + 10);
+    return hash1(k, seed) * (1 - u) + hash1(k + 1, seed) * u;
+  }
+  // Rotation (radians) of one fragment: a shared gust travelling through the canopy
+  // plus the fragment's own delayed flutter.
+  function breezeAngle(piece, time, intensity) {
+    if (!intensity) return 0;
+    const t = time - piece.lag;
+    const common = 0.62 * smoothNoise(t / 8.1, 17) + 0.25 * smoothNoise(t / 23.7, 41) + 0.13 * smoothNoise(t / 4.3, 59);
+    const local = tt => 0.24 * smoothNoise(tt / (2.8 + piece.depth) + piece.phase, 103) + 0.09 * smoothNoise(tt / 1.17 + piece.phase * 0.71, 211);
+    const flutter = 0.45 * local(time) + 0.30 * local(time - 0.16) + 0.25 * local(time - 0.37);
+    return piece.amplitude * piece.depth * intensity * (common + flutter);
+  }
 
   // ===== DOM ==========================================================================
   const scene = document.getElementById("scene");
@@ -195,43 +168,28 @@
     }
   }
 
-  // ===== WebGL (trees) ================================================================
-  const gl = canvas.getContext("webgl", { antialias: false, alpha: false, preserveDrawingBuffer: false });
-  if (!gl) return; // static fallback image stays visible
+  // ===== Trees canvas (2D) ==========================================================
+  const trees = canvas.getContext("2d");
+  const forest = {};   // rig, background, atlas
 
-  function shader(type, src) {
-    const s = gl.createShader(type);
-    gl.shaderSource(s, src);
-    gl.compileShader(s);
-    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
-    return s;
-  }
-  const prog = gl.createProgram();
-  gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
-  gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
-  gl.linkProgram(prog);
-  gl.useProgram(prog);
-
-  const buf = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-  const aPos = gl.getAttribLocation(prog, "aPos");
-  gl.enableVertexAttribArray(aPos);
-  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
-
-  const U = {};
-  ["uImg", "uMask", "uTime", "uK", "uGround", "uAmp", "uView", "uViewport"].forEach(n => U[n] = gl.getUniformLocation(prog, n));
-
-  function texture(unit, img) {
-    const tex = gl.createTexture();
-    gl.activeTexture(gl.TEXTURE0 + unit);
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    return tex;
+  function drawForest(t, strength) {
+    trees.setTransform(1, 0, 0, 1, 0, 0);
+    trees.fillStyle = "#fefefe";
+    trees.fillRect(0, 0, canvas.width, canvas.height);
+    trees.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
+    trees.imageSmoothingQuality = "high";
+    trees.drawImage(forest.background, 0, 0, W, H);
+    // fragments contain white paper: multiply so only their ink shows
+    trees.globalCompositeOperation = "multiply";
+    for (const p of forest.rig.pieces) {
+      const [px, py] = p.pivot, [x, y, w, h] = p.source, [ax, ay] = p.atlas;
+      trees.save();
+      trees.translate(px, py);
+      trees.rotate(breezeAngle(p, t, strength));
+      trees.drawImage(forest.atlas, ax, ay, w, h, x - px, y - py, w, h);
+      trees.restore();
+    }
+    trees.globalCompositeOperation = "source-over";
   }
 
   const load = src => new Promise((res, rej) => {
@@ -272,17 +230,16 @@
   // ===== Owl ==========================================================================
   const owl = { perch: 0, state: "perched", since: 0, nextFlightAt: OWL.firstFlightAt };
 
-  function feetOn(i, t, k) {
-    const p = OWL.perches[i];
-    const [dx, dy] = sway(p.x, p.y, t, k);
-    return { x: p.x + dx, y: p.y + dy };
+  // the owl's two branches are part of the still background
+  function feetOn(i) {
+    return OWL.perches[i];
   }
 
-  function drawOwl(t, k) {
+  function drawOwl(t) {
     const h = OWL.height;
     const bodyLift = (326 - 270) * h / SPRITES.owl.nominalHeight; // foot anchor → body anchor
-    const here = feetOn(owl.perch, t, k);
-    const there = feetOn(1 - owl.perch, t, k);
+    const here = feetOn(owl.perch);
+    const there = feetOn(1 - owl.perch);
     const dir = Math.sign(OWL.perches[1 - owl.perch].x - OWL.perches[owl.perch].x);
     const faceLeft = dir < 0;
     const local = t - owl.since;
@@ -352,43 +309,44 @@
 
   // ===== Children =====================================================================
   function buildTimeline(kid, mirror) {
-    const m = x => (mirror ? W - x : x);
+    const m = x => (mirror ? 2 * KIDS.gateX - x : x);
+    const exit = mirror ? KIDS.exitLeft : KIDS.exitRight;
     const segs = [];
-    let t = 0, x = mirror ? KIDS.exitRight : KIDS.exitLeft, flip = mirror;
+    let t = 0, x = m(kid.start[0]), y = kid.start[1], flip = mirror;
+    const stay = (clip, d) => { if (d > 0) segs.push({ t0: t, t1: t + d, clip, x0: x, y0: y, x1: x, y1: y, flip }); t += Math.max(d, 0); };
     for (const st of kid.steps) {
       if (st.face) { flip = mirror ? st.face === "right" : st.face === "left"; continue; }
-      if (st.run !== undefined) {
-        const to = st.run === "exit" ? (mirror ? KIDS.exitLeft : KIDS.exitRight) : m(st.run);
-        const d = Math.abs(to - x) / kid.speed;
-        flip = to < x;
-        segs.push({ t0: t, t1: t + d, clip: "run", x0: x, x1: to, flip });
-        x = to; t += d;
-        continue;
-      }
-      const clip = st.clip || "idle";
-      const d = st.dur || st.idle || clipLength(CHILD_CLIPS[clip]);
-      segs.push({ t0: t, t1: t + d, clip, x0: x, x1: x, flip });
-      t += d;
+      if (st.to) {
+        const [tx, ty] = st.to === "exit" ? [exit, y] : [m(st.to[0]), st.to[1]];
+        const d = Math.hypot(tx - x, ty - y) / kid.speed;
+        if (tx !== x) flip = tx < x;
+        segs.push({ t0: t, t1: t + d, clip: "run", x0: x, y0: y, x1: tx, y1: ty, flip });
+        x = tx; y = ty; t += d;
+      } else if (st.until !== undefined) stay("idle", st.until - t);
+      else if (st.idle) stay("idle", st.idle);
+      else stay(st.clip, st.dur || clipLength(CHILD_CLIPS[st.clip]));
     }
     return { segs, end: t };
   }
   KIDS.cast.forEach(k => { k.timelines = [buildTimeline(k, false), buildTimeline(k, true)]; });
-  const kidsInDepthOrder = [...KIDS.cast].sort((a, b) => a.y - b.y);
 
   function drawKids(t) {
     if (t < KIDS.firstAt) return;
     const visit = Math.floor((t - KIDS.firstAt) / KIDS.every);
     const c = (t - KIDS.firstAt) % KIDS.every;
-    for (const kid of kidsInDepthOrder) {
+    const now = [];
+    for (const kid of KIDS.cast) {
       const tl = kid.timelines[visit % 2];
-      const l = c - kid.delay;
-      if (l < 0 || l >= tl.end) continue;
-      const seg = tl.segs.find(s => l < s.t1) || tl.segs[tl.segs.length - 1];
-      const u = (l - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6);
-      const x = lerp(seg.x0, seg.x1, u);
-      const clipTime = seg.clip === "run" ? l : l - seg.t0; // keep the stride continuous
-      drawSprite(kid.id, seg.clip, clipTime, x, kid.y, kid.height, seg.flip);
+      if (c >= tl.end) continue;
+      const seg = tl.segs.find(s => c < s.t1) || tl.segs[tl.segs.length - 1];
+      const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
+      const y = lerp(seg.y0, seg.y1, u);
+      const size = kid.height * (1 - (KIDS.depth.y - y) * KIDS.depth.perPx);
+      const clipTime = seg.clip === "run" ? c : c - seg.t0; // keep the stride continuous
+      now.push({ kid, x: lerp(seg.x0, seg.x1, u), y, size, seg, clipTime });
     }
+    now.sort((a, b) => a.y - b.y);   // further up the path = drawn first (behind)
+    for (const k of now) drawSprite(k.kid.id, k.seg.clip, k.clipTime, k.x, k.y, k.size, k.seg.flip);
   }
 
   // ===== Main loop ====================================================================
@@ -406,15 +364,8 @@
     const dt = Math.min((now - last) / 1000, 0.1); // pause-safe clock
     last = now;
     clock += dt;
-    const k = reduceMotion ? 0 : smooth(0.3, SWAY.rampIn, clock);
-
-    // trees
-    gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.uniform1f(U.uTime, clock);
-    gl.uniform1f(U.uK, k);
-    gl.uniform4f(U.uView, view.x, view.y, view.s, 0);
-    gl.uniform2f(U.uViewport, view.vw, view.vh);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    const strength = reduceMotion ? 0 : WIND.intensity * smooth(0.3, WIND.rampIn, clock);
+    drawForest(clock, strength);
 
     // characters, in the drawing's coordinates
     life.setTransform(1, 0, 0, 1, 0, 0);
@@ -422,7 +373,7 @@
     life.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
     life.imageSmoothingQuality = "high";
     if (!reduceMotion) drawDeer(clock);   // first: the trunk cut-out must not touch the others
-    drawOwl(clock, k);
+    drawOwl(clock);
     if (!reduceMotion) drawKids(clock);
     if (skip > 0) {   // debug readout when ?t= is used
       life.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
@@ -434,14 +385,11 @@
   }
 
   const sprites = Object.entries(SPRITES).map(([id, sp]) => load(sp.src).then(img => { SPRITES[id].img = img; }));
-  Promise.all([load("assets/scene.webp"), load("assets/mask.png"), ...sprites]).then(([img, mask]) => {
-    texture(0, img);
-    texture(1, mask);
-    gl.uniform1i(U.uImg, 0);
-    gl.uniform1i(U.uMask, 1);
-    gl.uniform1f(U.uGround, SWAY.ground);
-    gl.uniform1f(U.uAmp, SWAY.amp);
-
+  const forestReady = fetch(WIND.base + "wind-rig.json").then(r => r.json()).then(rig =>
+    Promise.all([load(WIND.base + rig.background), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
+      Object.assign(forest, { rig, background: bg, atlas });
+    }));
+  Promise.all([forestReady, ...sprites]).then(() => {
     layout();
     window.addEventListener("resize", () => { layout(); if (reduceMotion) frame(performance.now()); });
     document.addEventListener("visibilitychange", () => {

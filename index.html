@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>N + M</title>
   <meta name="theme-color" content="#fefefe">
-  <link rel="preload" href="assets/scene.webp" as="image">
+  <link rel="preload" href="assets/forest-wind/background.png" as="image">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main id="scene" aria-label="Dessin de la maison dans les bois : une chouette vole de branche en branche, une biche passe dans les arbres et trois enfants jouent devant la clôture">
-    <!-- Static fallback (no JS / no WebGL). Hidden once the animated scene is ready. -->
+  <main id="scene" aria-label="Dessin de la maison dans les bois : une chouette vole de branche en branche, une biche passe dans les arbres et trois enfants jouent dans le jardin">
+    <!-- Static fallback (no JS). Hidden once the animated scene is ready. -->
     <img id="fallback" src="assets/invite-original.webp" alt="" width="1536" height="1024">
-    <!-- the drawing, with the trees moving in the wind (WebGL) -->
+    <!-- the drawing, with leaves and twigs moving in the wind -->
     <canvas id="trees" aria-hidden="true"></canvas>
     <!-- the owl, the deer and the children (2D canvas, drawn in the drawing's own coordinates) -->
     <canvas id="life" aria-hidden="true"></canvas>

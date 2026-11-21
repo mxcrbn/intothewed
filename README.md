@@ -2,16 +2,19 @@
 
 A single full-screen page showing the invitation drawing (the house in the woods), with discreet life in it:
 
-- **Trees** sway slowly and continuously (WebGL shader on the original drawing; trunks anchored at the
-  ground, crowns move most). The house, fence, gate and garden never move.
+- **Wind in the trees**: the illustrator's forest-wind kit — 97 small leaf and twig fragments cut from
+  the drawing, each rotating around its attachment point, with staggered timing and slowly changing
+  gusts. The house, trunks, fence and garden never move.
 - **The owl** (illustrator's kit) sits on its branch, blinks, and ~12 s after opening takes off, flies
   across the scene and lands on the big tree on the right. It flies back after ~28 s, and so on.
 - **The deer** comes out of the woods on the right (~22 s, then once a minute), passing behind the big
   trunk, stops beside the house to look around, then wanders off into the forest.
-- **The three children** run in front of the fence (~5 s, then every 75 s), play, hop and wave, then run
-  off. They come in from the left, then from the right on the next visit.
-- Respects `prefers-reduced-motion` (static drawing with the owl perched), and falls back to the plain
-  image without WebGL/JS.
+- **The three children** (~5 s, then every 75 s) run along the fence and come in through the gate. On the
+  garden path the boy chases the girl while the teenager watches and waves, then the three play together
+  by the steps and leave through the gate. Every other visit is mirrored (they come from the right).
+  Sizes follow the house (a teenager by the steps is a bit shorter than the door) and shrink with depth.
+- Respects `prefers-reduced-motion` (still drawing with the owl perched), and falls back to the plain
+  image without JavaScript.
 
 ## Run locally
 
@@ -32,5 +35,6 @@ halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing.
 - `assets/kit-source/` — the illustrator's animation kit as delivered (sprite sheets + `animations.json`).
 - `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py` (lines
   thickened and darkened to match the invite's pen at the size they appear in the scene).
-- `tools/prepare_assets.py` — rebuilds `assets/scene.webp` (drawing without the owl) and
-  `assets/mask.png` (white = parts that never move). Needs Pillow + numpy.
+- `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and
+  `wind-rig.json` (pivot, amplitude, phase, depth, lag per fragment). Its wind function is reproduced in
+  `main.js`; the kit's own renderer and README are kept alongside for reference.
