@@ -36,9 +36,9 @@ halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `
   the children's little choreography) is at the top of `main.js`.
 - `assets/invite-original.webp` — the drawing from the invite (source of truth).
 - `assets/kit-source/` — the illustrator's animation kit as delivered (sprite sheets + `animations.json`).
-- `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py` (lines
-  toned to the invite's light grey pencil: softer, slightly uneven strokes, a touch lighter than the
-  drawing's own lines).
+- `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py`: lines
+  restyled to the invite's pen at the size each figure has in the scene (same ~1.5 px dark-grey ink,
+  a slight wobble, uneven pressure and a faint overdraw), white inside.
 - `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and
   `wind-rig.json` (pivot, amplitude, phase, depth, lag per fragment). Its wind function is reproduced in
   `main.js`; the kit's own renderer and README are kept alongside for reference.

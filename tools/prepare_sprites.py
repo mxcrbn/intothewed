@@ -3,32 +3,56 @@
 Run from the repo root:  python3 tools/prepare_sprites.py
 
 Input : assets/kit-source/spritesheets/<name>.png  (4x4 grid of 512px frames, from the illustrator's kit)
-Output: assets/sprites/<name>.webp                 (same grid, smaller, pencil-toned)
+Output: assets/sprites/<name>.webp                 (same grid, smaller, restyled)
 
-The kit's lines are cleaner and darker than the invitation's soft grey pencil. Each sheet is
-brought to the invite's look:
-  - lines slightly thickened where they would vanish at their small on-screen size (grow),
-  - their darkness scaled down to the invite's mid-grey (ink),
-  - a slow random "pressure" variation along the strokes, so they read as pencil, not vector,
-  - a touch of softening,
-  - the inside of each figure filled with paper white, so branches and trunks behind it
-    don't show through (the kit only has the lines, on transparency).
+The kit's lines are clean, even vector-like strokes. The invitation is drawn with a fine pen:
+neutral dark-grey ink about 2 px wide (in drawing pixels), slightly wobbly, with uneven
+pressure, small breaks and the odd doubled stroke. Each sheet is restyled to match *at the size
+the figure has in the scene* (SCALE = drawing px per kit px):
+  - strokes thickened to ~STROKE drawing px,
+  - a gentle wobble (smooth displacement of the line),
+  - uneven pressure, down to near-breaks,
+  - a faint second, slightly offset pass (pencil overdraw),
+  - ink set to the invite's neutral grey,
+  - the inside of each figure filled with paper white (the kit only has lines, on transparency).
 """
 from PIL import Image, ImageFilter, ImageDraw
 import numpy as np
 
-#  name       grow (odd px at 512)  ink (darkness scale)  output sheet size
+#  name       SCALE (drawing px per kit px, typical in-scene size)   output sheet size
 SHEETS = {
-    "owl":      (3, 0.85, 1024),
-    "deer":     (1, 1.00, 1024),   # no thickening: a finer line
-    "teenager": (3, 0.85, 1536),
-    "girl":     (3, 0.88, 1024),
-    "boy":      (3, 0.85, 1024),
+    "owl":      (30 / 136,  1024),
+    "deer":     (90 / 237,  1024),
+    "teenager": (105 / 281, 1536),
+    "girl":     (56 / 283,  1024),
+    "boy":      (74 / 288,  1024),
 }
-PRESSURE = (0.7, 1.0)   # range of the pencil-pressure variation
-GRAIN = 14               # size of a pressure "blob", in kit px
-PAPER = 254 / 255        # the page's #fefefe
-CLOSE = 9                # gap in an outline (kit px) still treated as closed when filling
+STROKE = 1.25         # target line width, drawing px (the invite: ~1.5–2, but the figures are tiny)
+WOBBLE = 0.45         # line wobble amplitude, drawing px
+WOBBLE_GRAIN = 9      # wobble wavelength, drawing px
+PRESSURE = (0.5, 1.0)
+PRESSURE_GRAIN = 6    # drawing px
+OVERDRAW = 0.35       # strength of the second pass
+INK = 0.9             # darkness of a full-pressure stroke core (invite cores ≈ 0.85–0.9)
+PAPER = 254 / 255     # the page's #fefefe
+CLOSE = 9             # outline gap (kit px) still treated as closed when filling
+
+
+def noise(h, w, grain, rng):
+    """Smooth noise in [0, 1], blobs about `grain` px across."""
+    g = max(2, int(grain))
+    small = rng.random((h // g + 3, w // g + 3)).astype(np.float32)
+    img = Image.fromarray((small * 255).astype(np.uint8)).resize(((w // g + 3) * g, (h // g + 3) * g), Image.BICUBIC)
+    return np.asarray(img).astype(np.float32)[g:g + h, g:g + w] / 255.0
+
+
+def warp(img, dx, dy):
+    """Move each pixel of a float image by (dx, dy) (nearest sampling)."""
+    h, w = img.shape
+    yy, xx = np.mgrid[0:h, 0:w]
+    sx = np.clip(np.round(xx + dx).astype(int), 0, w - 1)
+    sy = np.clip(np.round(yy + dy).astype(int), 0, h - 1)
+    return img[sy, sx]
 
 
 def silhouette(alpha):
@@ -51,34 +75,56 @@ def silhouette(alpha):
     return out
 
 
-def pressure_field(h, w, seed):
-    rng = np.random.default_rng(seed)
-    small = rng.random((h // GRAIN + 2, w // GRAIN + 2)).astype(np.float32)
-    img = Image.fromarray((small * 255).astype(np.uint8)).resize((w + 2 * GRAIN, h + 2 * GRAIN), Image.BICUBIC)
-    f = np.asarray(img).astype(np.float32)[GRAIN:GRAIN + h, GRAIN:GRAIN + w] / 255.0
-    lo, hi = PRESSURE
-    return lo + (hi - lo) * f
+def stroke_width(mask):
+    """Rough mean stroke width (px) of a binary line mask."""
+    m = Image.fromarray((mask * 255).astype(np.uint8))
+    eroded = np.asarray(m.filter(ImageFilter.MinFilter(3))) > 0
+    area, edge = mask.sum(), max(mask.sum() - eroded.sum(), 1)
+    return 2 * area / edge      # one erosion strips both sides of a stroke
 
 
-for i, (name, (grow, ink, size)) in enumerate(SHEETS.items()):
+def to_img(f):
+    return Image.fromarray((np.clip(f, 0, 1) * 255).astype(np.uint8))
+
+
+def to_arr(img):
+    return np.asarray(img).astype(np.float32) / 255.0
+
+
+for i, (name, (scale, size)) in enumerate(SHEETS.items()):
+    rng = np.random.default_rng(11 + i)
     src = Image.open(f"assets/kit-source/spritesheets/{name}.png").convert("RGBA")
     a = np.array(src).astype(np.float32) / 255.0
     rgb, alpha = a[..., :3], a[..., 3]
-    tone = rgb.mean(-1)
-    tone = np.where(alpha > 0.02, tone, 1.0)          # transparent pixels count as paper
+    h, w = alpha.shape
+    line = alpha * np.clip(1.0 - rgb.mean(-1) / 0.97, 0, 1)   # ink only (the kit figures are white inside)
+    line = np.clip(line / max(np.percentile(line[line > 0.05], 90), 1e-3), 0, 1)
     fill = silhouette(alpha)
-    tone_img = Image.fromarray((tone * 255).astype(np.uint8))
-    alpha_img = Image.fromarray((alpha * 255).astype(np.uint8))
-    if grow > 1:
-        tone_img = tone_img.filter(ImageFilter.MinFilter(grow))
-        alpha_img = alpha_img.filter(ImageFilter.MaxFilter(grow))
-    tone = np.asarray(tone_img).astype(np.float32) / 255.0
-    alpha = np.asarray(alpha_img).astype(np.float32) / 255.0
-    dark = (1.0 - tone) * ink * pressure_field(*tone.shape, seed=7 + i)
-    tone = np.minimum(1.0 - dark, PAPER)
-    alpha = np.where(fill, 1.0, alpha)                # paper-white inside the figure
-    out = np.dstack([tone, tone, tone, alpha])
-    img = Image.fromarray((out * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.4))
-    img = img.resize((size, size), Image.LANCZOS)
-    img.save(f"assets/sprites/{name}.webp", quality=88, method=6)
-    print(name, size)
+
+    # thicken to the target width
+    have = stroke_width(line > 0.4)
+    want = STROKE / scale
+    grow = want - have
+    if grow >= 0.8:
+        k = 2 * max(1, round(grow / 2)) + 1          # odd filter size
+        line = to_arr(to_img(line).filter(ImageFilter.MaxFilter(k)))
+    line = to_arr(to_img(line).filter(ImageFilter.GaussianBlur(0.25 / scale)))
+
+    # wobble + pressure, and a faint offset second pass
+    amp, grain = WOBBLE / scale, WOBBLE_GRAIN / scale
+    dx = (noise(h, w, grain, rng) - 0.5) * 2 * amp
+    dy = (noise(h, w, grain, rng) - 0.5) * 2 * amp
+    lo, hi = PRESSURE
+    press = lo + (hi - lo) * np.clip(noise(h, w, PRESSURE_GRAIN / scale, rng) * 1.3, 0, 1)
+    first = warp(line, dx, dy) * press
+    dx2 = (noise(h, w, grain, rng) - 0.5) * 2 * amp * 2.2
+    dy2 = (noise(h, w, grain, rng) - 0.5) * 2 * amp * 2.2
+    second = warp(line, dx2, dy2) * OVERDRAW * noise(h, w, PRESSURE_GRAIN * 2 / scale, rng)
+    cover = np.clip(np.maximum(first, second), 0, 1)
+
+    tone = np.minimum(1.0 - cover * INK, PAPER)
+    out_alpha = np.where(fill, 1.0, np.clip(cover * 1.4, 0, 1))
+    out = np.dstack([tone, tone, tone, out_alpha])
+    img = Image.fromarray((out * 255).astype(np.uint8)).resize((size, size), Image.LANCZOS)
+    img.save(f"assets/sprites/{name}.webp", quality=90, method=6)
+    print(f"{name}: kit stroke ≈{have:.1f}px, want {want:.1f}px (grow {grow:.1f})")
