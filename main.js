@@ -50,9 +50,11 @@
 
   // The children hide behind the big tree on the right. The girl leans out on one side, the
   // boy on the other; the girl bolts and the boy chases her across the front lawn. They turn
-  // back to the tree, the teenager steps out and waves, and all three slip away behind the house.
-  // Steps: to [x, y] (run) | clip (+dur) | idle s | until s (wait for a cue) | face |
-  //        peek angle (+dur: lean out from behind the trunk, radians, negative = to the left).
+  // back to the tree: the teenager strolls out, waves once and leans back against the trunk,
+  // hands in pockets, one knee bent. When the kids run off behind the house he pushes off the
+  // tree and runs after them.
+  // Steps: to [x, y] (+speed) (run) | clip (+dur) | idle s | until s (wait for a cue) | face |
+  //        peek angle (+dur, +clip: lean the figure around its feet, radians, negative = left).
   // Sizes follow the house (a teenager by the front door is a bit shorter than the door) and
   // shrink with depth.
   const CHASE = [[1290, 795], [1150, 800], [1060, 770], [1170, 752], [1300, 762]];
@@ -70,20 +72,23 @@
         { face: "left" }, { idle: 1.0 }, { peek: -0.6, dur: 2.4 }, { idle: 1.3 },
         { peek: -0.6, dur: 1.0 }, { until: 6.2 },
         ...CHASE.map(p => ({ to: p })), { to: [1262, 776] }, { until: 13.6 }, { face: "right" },
-        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 17.2 },
+        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 19.8 },
         { to: [1250, 724] }, { to: [1110, 706] },
       ] },
       { id: "boy", height: 100, speed: 105, start: [1404, 787], steps: [
         { idle: 2.0 }, { peek: 0.42, dur: 2.4 }, { idle: 1.1 }, { peek: 0.42, dur: 0.7 },
         { until: 6.9 },
         ...CHASE.map(p => ({ to: p })), { to: [1215, 782] }, { until: 13.6 }, { face: "right" },
-        { until: 14.6 }, { clip: "wave" }, { until: 17.0 },
+        { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
         { to: [1240, 726] }, { to: [1130, 708] },
       ] },
       { id: "teenager", height: 145, speed: 80, start: [1392, 788], steps: [
-        { until: 13.6 }, { to: [1336, 784] }, { face: "left" }, { clip: "wave" }, { idle: 0.6 },
-        { clip: "wave" }, { until: 17.6 },
-        { to: [1262, 728] }, { to: [1150, 710] },
+        { until: 13.6 }, { to: [1338, 787] }, { face: "left" }, { clip: "wave" },
+        // back against the left side of the trunk, chilling
+        { to: [1350, 790], speed: 40 }, { face: "left" },
+        { peek: 0.09, clip: "lean", dur: 3.6 },
+        // the kids are off: run after them
+        { to: [1262, 728], speed: 150 }, { to: [1150, 710], speed: 150 },
       ] },
     ],
   };
@@ -111,7 +116,11 @@
     run:  { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 9, loop: true },
     hop:  { frames: [12, 13, 14, 15, 0], fps: 7, offsetY: [0, -9, -23, -4, 0] },
   };
-  SPRITES.teenager = { src: "assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: CHILD_CLIPS };
+  SPRITES.teenager = { src: "assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
+    ...CHILD_CLIPS,
+    wave: { frames: [0, 1, 1, 1, 1, 0], fps: 3 },           // one wave
+    lean: { frames: [2], fps: 1, loop: true },               // hands in pockets, one knee bent
+  } };
   SPRITES.girl     = { src: "assets/sprites/girl.webp",     nominalHeight: 283, anchor: [256, 440], clips: CHILD_CLIPS };
   SPRITES.boy      = { src: "assets/sprites/boy.webp",      nominalHeight: 288, anchor: [256, 440], clips: CHILD_CLIPS };
 
@@ -339,14 +348,14 @@
       if (st.face) { flip = st.face === "left"; continue; }
       if (st.to) {
         const [tx, ty] = st.to;
-        const d = Math.hypot(tx - x, ty - y) / kid.speed;
+        const d = Math.hypot(tx - x, ty - y) / (st.speed || kid.speed);
         if (tx !== x) flip = tx < x;
         segs.push({ t0: t, t1: t + d, clip: "run", x0: x, y0: y, x1: tx, y1: ty, flip });
         x = tx; y = ty; t += d;
-      } else if (st.peek) stay("idle", st.dur, st.peek);
+      } else if (st.peek) stay(st.clip || "idle", st.dur, st.peek);
       else if (st.until !== undefined) stay("idle", st.until - t);
       else if (st.idle) stay("idle", st.idle);
-      else stay(st.clip, st.dur || clipLength(CHILD_CLIPS[st.clip]));
+      else stay(st.clip, st.dur || clipLength(SPRITES[kid.id].clips[st.clip]));
     }
     return { segs, end: t };
   }
@@ -374,9 +383,11 @@
     // behind the house first, then hide the house's shape from them; then the rest
     now.filter(k => k.y < KIDS.house.baseY).forEach(draw);
     cutOut([KIDS.house.outline]);
-    now.filter(k => k.y >= KIDS.house.baseY).forEach(draw);
-    // everyone in this scene stands behind the big right trunk
+    now.filter(k => k.y >= KIDS.house.baseY && k.seg.clip !== "lean").forEach(draw);
+    // everyone in this scene stands behind the big right trunk…
     cutOut([KIDS.trunk]);
+    // …except the teenager leaning against it, who is in front of its edge
+    now.filter(k => k.seg.clip === "lean").forEach(draw);
   }
 
   // ===== Main loop ====================================================================
