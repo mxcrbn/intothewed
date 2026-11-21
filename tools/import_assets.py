@@ -10,7 +10,8 @@ high-quality reduction. Along the way, a few corrections (all listed in FIXES be
     than their other frames and are darkened to match them.
   - register: in the deer's walk cycle the body slides ±7 px back and forth (the frames are
     aligned on the feet), which makes the walk judder. Those frames are re-centred on the body.
-  - scale: Nóri & Max a little taller (Max 112 px instead of 104), so they stand taller than Nayan.
+  - scale: Nayan a little smaller (96 px instead of 106), so he is not taller than Nóri & Max
+    (Max 104 px, Nóri ~97 px; the doorway opening is 113 px).
 
 It also copies the door leaves and the trees' leaf atlas + rig, and keeps the 4x masters and the
 pack's notes in art/characters/ (source files, not served).
@@ -28,7 +29,7 @@ FIXES = {
     "deer":   {"ink_p90": 165, "register": range(4, 12)},
     "girl":   {"match_ink": [16, 17]},
     "boy":    {"match_ink": [16, 17]},
-    "couple": {"scale": 112 / 104},
+    "nayan":  {"scale": 96 / 106},
 }
 
 if len(sys.argv) != 2:

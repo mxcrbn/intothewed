@@ -80,8 +80,9 @@ export function startScene(root) {
       { id: "girl", speed: 105, start: [1372, 786], steps: [
         { face: "left" }, { idle: 1.0 }, { clip: "peekLong" }, { until: 6.2 },   // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1215, 780] }, { until: 13.6 }, { face: "right" },
-        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 19.8 },
-        { to: [1200, 727] }, { to: [1095, 709] },
+        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 20.4 },
+        // follows her brother: up along the side of the house first, then behind it
+        { to: [1250, 742] }, { to: [1258, 722] }, { to: [1150, 704] },
       ] },
       { id: "boy", speed: 105, start: [1407, 787], steps: [
         { idle: 1.8 }, { clip: "peekLong" }, { until: 7.2 },                     // one long peek
@@ -92,7 +93,7 @@ export function startScene(root) {
       ] },
       { id: "nayan", speed: 90, start: [1392, 788], steps: [
         // ~3 s into the chase he strolls out and leans back against the trunk, chilling
-        { until: 9.0 }, { to: [1342, 790], clip: "walk", speed: 35 }, { face: "right" },
+        { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 35 }, { face: "right" },
         { clip: "lean", dur: 11.2 },               // until the kids have gone behind the house
         // then stands up and jogs off after them in one straight line, behind the corner of the house
         { idle: 0.8 }, { to: [1250, 724], speed: 70 }, { to: [1180, 674], speed: 70 },
@@ -109,6 +110,7 @@ export function startScene(root) {
     every: 60,            // then once a minute, right after each deer visit
     opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
     doorX: 813, doorY: 733, stepX: 815, stepY: 760,
+    length: 11.9,         // seconds, from the doors starting to open to shut again
   };
 
   // Characters: the asset pack in assets/characters/ (see tools/import_assets.py). Every frame
@@ -401,27 +403,42 @@ export function startScene(root) {
 
   // ===== Nóri & Max ==================================================================
   const doorLeaves = {};
-  // where we are in the sequence (from the kit's sampleDoorSequence, 14 s, played once)
+  // Where we are in the sequence (t = seconds since COUPLE.firstAt; the doors start to move at 1 s).
+  // Poses, by what each frame of the couple sheets actually shows (the pack's names drift from
+  // frame 11 on): 0 neutral, 3 holding the doors open, 4/5 walking out, 6 glance, 7 turning to each
+  // other, 8 embrace, 9 lean in, 10 kiss, 11 smiling at each other, 12 turning back (three-quarter
+  // back view), 13/15 walking in (back view), 14 pulling the doors shut (back view, arms out),
+  // 16 raising hands, 17/18 wave. Each pose is held at least ~0.3 s, so nothing flickers.
+  const COUPLE_POSES = [            // [until t, pose] while standing on the step
+    [3.9, 0],                                         // half a second's pause, smiling at us
+    [4.1, 16], [4.4, 17], [4.7, 18], [5.0, 17], [5.3, 18], [5.5, 16], [5.8, 0],   // wave hello
+    [6.4, 6],                                         // look at each other
+    [6.8, 7], [7.3, 8], [7.7, 9], [9.0, 10],          // turn, embrace, lean in, kiss (held)
+    [9.6, 11], [10.0, 12],                            // smile at each other, turn back to the door
+  ];
   function coupleAt(t) {
-    const C = COUPLE, mix = lerp, e = u => smooth(0, 1, u);
-    let pose = 0, open = 0, visible = false, inside = true, x = C.doorX, y = C.doorY;
-    if (t >= 1 && t < 1.4) { pose = 1; visible = true; }
-    else if (t >= 1.4 && t < 2.2) { const u = e((t - 1.4) / 0.8); pose = u < 0.55 ? 2 : 3; open = u; visible = true; }
-    else if (t >= 2.2 && t < 3.2) {
-      const u = e(t - 2.2), alt = Math.floor((t - 2.2) * 5) % 2; open = 1; visible = true;
-      inside = u < 0.45;
-      pose = inside ? (alt ? 5 : 4) : (alt ? 21 : 20);   // step out, then down the steps x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
-    } else if (t >= 3.2 && t < 9.6) {
-      open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
-      // pause · wave hello (raise, two waves, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
-      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 17], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
-                    [7.7, 10], [8.5, 11], [9.1, 12], [9.6, 13]];
-      pose = keys.find(([end]) => t < end)[1];
-    } else if (t >= 9.6 && t < 10.7) {
-      const u = e((t - 9.6) / 1.1); pose = u < 0.18 ? 13 : 14; open = 1; visible = true;
-      inside = u > 0.58; x = mix(C.stepX, C.doorX, u); y = mix(C.stepY, C.doorY, u);
-    } else if (t >= 10.7 && t < 11.7) { pose = 15; open = 1 - e(t - 10.7); visible = true; }
-    return { pose, open, visible, inside, x, y };
+    const C = COUPLE, e = u => smooth(0, 1, u);
+    let pose = 0, open = 1, inside = false, x = C.stepX, y = C.stepY;
+    const walk = (a, b) => (Math.floor(t / 0.25) % 2 ? b : a);   // alternate two steps, 4 per second
+    if (t < 1.8) {                    // they push both doors open from inside
+      const u = e((t - 1) / 0.8);
+      pose = 3; open = u; inside = true; x = C.doorX; y = C.doorY;
+    } else if (t < 2.2) {             // standing in the open doorway
+      pose = 3; inside = true; x = C.doorX; y = C.doorY;
+    } else if (t < 3.4) {             // walk out onto the step
+      const u = e((t - 2.2) / 1.2);
+      pose = walk(4, 5); inside = u < 0.4;
+      x = lerp(C.doorX, C.stepX, u); y = lerp(C.doorY, C.stepY, u);
+    } else if (t < 10.0) {            // on the step
+      pose = COUPLE_POSES.find(([end]) => t < end)[1];
+    } else if (t < 11.0) {            // walk back in
+      const u = e((t - 10.0) / 1.0);
+      pose = walk(13, 15); inside = u > 0.6;
+      x = lerp(C.stepX, C.doorX, u); y = lerp(C.stepY, C.doorY, u);
+    } else {                          // pull the doors shut
+      pose = 14; inside = true; x = C.doorX; y = C.doorY; open = 1 - e((t - 11.0) / 0.9);
+    }
+    return { pose, open, visible: true, inside, x, y };
   }
   // one door leaf swinging inwards, as thin vertical strips (the kit's doorStrips)
   function drawLeaf(side, openness) {
@@ -438,20 +455,9 @@ export function startScene(root) {
     if (t < COUPLE.firstAt) return;
     const c = (t - COUPLE.firstAt) % COUPLE.every;
     if (c < 1) return;                 // doors still shut: the background shows them
-    if (c >= 11.7) return;
+    if (c >= COUPLE.length) return;  // doors shut again: the background shows them
     const s = coupleAt(c), o = COUPLE.opening;
-    // Each pose dissolves into the next over FADE s: the hand-drawn poses differ a little in
-    // proportions, and a short dissolve turns those jumps into movement.
-    const FADE = 0.2;
-    const pair = () => {
-      const sp = SPRITES.couple, before = coupleAt(c - FADE).pose;
-      if (before !== s.pose && c - FADE >= 1) {
-        let lo = c - FADE, hi = c;                       // when exactly did the pose change?
-        for (let i = 0; i < 8; i++) { const m = (lo + hi) / 2; if (coupleAt(m).pose === s.pose) hi = m; else lo = m; }
-        drawFrame(sp, coupleAt(lo).pose, s.x, s.y, sp.anchor);
-        drawFrame(sp, s.pose, s.x, s.y, sp.anchor, false, smooth(0, 1, (c - hi) / FADE));
-      } else drawFrame(sp, s.pose, s.x, s.y, sp.anchor);
-    };
+    const pair = () => drawFrame(SPRITES.couple, s.pose, s.x, s.y, SPRITES.couple.anchor);
     // the doorway: paper white behind, the couple inside it, then the two leaves
     life.fillStyle = "#fefefe";
     life.fillRect(o.x, o.y, o.w, o.h);
