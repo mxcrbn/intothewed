@@ -171,11 +171,11 @@ body {
   width: min(84vw, 620px);
   height: auto;
 }
+/* the rings' canvas keeps transparent room around the drawing for the rocking motion: the
+   drawing itself is ~81 % of the canvas width (so ~210 px here), and the margins are smaller */
 .card__rings {
-  display: block;
-  width: min(38vw, 210px);
-  height: auto;
-  margin: clamp(18px, 4.5vh, 44px) 0 clamp(22px, 5vh, 48px);
+  --rings-width: min(47vw, 260px);
+  margin: clamp(0px, 1.5vh, 18px) 0 clamp(4px, 2vh, 24px);
 }
 .card__line {
   font-size: clamp(17px, 2vw, 25px);
@@ -186,7 +186,7 @@ body {
 .card__date { margin-top: clamp(8px, 1.6vh, 16px); }
 
 .card__names--small img { width: min(70vw, 440px); }
-.card__rings--small { width: min(28vw, 140px); }
+.card__rings--small { --rings-width: min(36vw, 175px); }
 
 /* RSVP: a thin pen frame, drawn twice like the invitation's lines */
 .sketch-button {

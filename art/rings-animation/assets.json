@@ -1,0 +1,31 @@
+{
+  "canvas": [
+    384,
+    240
+  ],
+  "masterCanvas": [
+    1536,
+    960
+  ],
+  "displayCanvasWidth": 360,
+  "durationMs": 8000,
+  "rotationDegrees": [
+    -3,
+    3.6
+  ],
+  "moveCssPixels": {
+    "x": [
+      -1,
+      1.5
+    ],
+    "y": [
+      -2.5,
+      0
+    ]
+  },
+  "activeMotionMs": 3200,
+  "restMs": 4800,
+  "glints": "two small uneven monochrome crosses, sequential",
+  "loop": "continuous transforms in browser; 30 fps transparent WebP fallback",
+  "source": "isolated fine-line artwork adapted from the approved N\u00f3ri & Max invitation; ring overlap remains fixed"
+}

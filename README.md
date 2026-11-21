@@ -17,7 +17,7 @@ It opens full screen on the drawing, and if you stay a moment, things start to h
 
 After the first kiss, a small hand-drawn arrow appears at the bottom: scrolling (or tapping it)
 dissolves the drawing into the paper and brings up the **invitation card**, which uses the printed
-invite's own lettering and rings: Nóri & Max, Cegléd, Hungary, August 2027 (the exact venue and date
+invite's own lettering and rings (which, every few seconds, gently rock together with two tiny pencil glints): Nóri & Max, Cegléd, Hungary, August 2027 (the exact venue and date
 stay on the printed card), and an RSVP button. The card speaks Magyar, English (the default) or
 Français, switched at the top left and remembered in the browser. The RSVP form itself is still to
 come (`/rsvp/` says so for now).
@@ -94,6 +94,7 @@ public/assets/characters/             owl, deer, kids, Nayan, Nóri & Max: 1:1 s
 public/assets/doors/                  the two front-door leaves
 art/characters/                       4× masters and notes of the current asset pack
 tools/import_assets.py                brings a new asset pack into the site
-tools/extract_invite.py               cuts the names and rings out of the invite card (art/invite/)
+tools/extract_invite.py               cuts the names out of the invite card (art/invite/)
+public/assets/rings/                  the rings, animated by components/invitation/Rings.tsx (art/rings-animation/)
 tools/make_favicon.py                 builds the favicon (transparent rings, light halo) from art/favicon/
 ```

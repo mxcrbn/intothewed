@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Scene from "./scene/Scene";
 import Card from "./invitation/Card";
 import LangSwitch from "./invitation/LangSwitch";
@@ -14,6 +14,7 @@ export default function Home() {
   const [lang, setLang] = useLang();
   const card = useRef<HTMLElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
+  const [cardShown, setCardShown] = useState(false);   // the card has (almost) fully come in
 
   useEffect(() => {
     const root = document.documentElement;
@@ -26,6 +27,7 @@ export default function Home() {
       root.dataset.stage = p > 0.995 ? "card" : p < 0.005 ? "drawing" : "between";
       // the card's links only work (and take keyboard focus) once it is mostly there
       if (overlay.current) overlay.current.inert = p < 0.6;
+      setCardShown(p > 0.9);   // re-renders only when it flips
     };
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
     update();
@@ -42,7 +44,7 @@ export default function Home() {
       <Scene label={TEXT[lang].scene} cueLabel={TEXT[lang].scroll} />
       <div className="card-layer" ref={overlay}>
         <LangSwitch lang={lang} onChange={setLang} />
-        <Card lang={lang} />
+        <Card lang={lang} shown={cardShown} />
       </div>
       {/* the two scroll stops; the content itself is in the fixed layers above */}
       <div className="stops" aria-hidden="true">

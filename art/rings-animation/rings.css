@@ -1,0 +1,67 @@
+.wedding-rings {
+  --rings-duration: 8s;
+  position: relative;
+  display: block;
+  width: var(--rings-width, 360px);
+  max-width: 100%;
+  aspect-ratio: 8 / 5;
+  margin-inline: auto;
+  pointer-events: none;
+}
+.wedding-rings__art {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 58%;
+  animation: wedding-rings-sway var(--rings-duration) ease-in-out infinite;
+}
+.wedding-rings__image { display: block; width: 100%; height: 100%; }
+.wedding-rings__twinkle {
+  position: absolute;
+  width: 14px;
+  height: 17px;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.3) rotate(-9deg);
+  animation: wedding-rings-twinkle-a var(--rings-duration) ease-in-out infinite;
+}
+.wedding-rings__twinkle::before,
+.wedding-rings__twinkle::after {
+  content: "";
+  position: absolute;
+  background: #393633;
+  border-radius: 50%;
+}
+.wedding-rings__twinkle::before { width: 1px; height: 17px; left: 6px; top: 0; transform: rotate(7deg); }
+.wedding-rings__twinkle::after { height: 1px; width: 12px; top: 8px; left: 0; transform: rotate(-4deg); }
+.wedding-rings__twinkle--a { left: 44%; top: 21%; }
+.wedding-rings__twinkle--b { left: 85%; top: 68%; width: 11px; height: 14px; animation-name: wedding-rings-twinkle-b; }
+.wedding-rings__twinkle--b::before { height: 14px; left: 5px; }
+.wedding-rings__twinkle--b::after { width: 10px; top: 7px; }
+.wedding-rings__art,
+.wedding-rings__twinkle { animation-play-state: paused; }
+.wedding-rings.is-visible .wedding-rings__art,
+.wedding-rings.is-visible .wedding-rings__twinkle { animation-play-state: running; }
+.wedding-rings.is-paused .wedding-rings__art,
+.wedding-rings.is-paused .wedding-rings__twinkle,
+.wedding-motion-paused .wedding-rings__art,
+.wedding-motion-paused .wedding-rings__twinkle { animation-play-state: paused; }
+@keyframes wedding-rings-sway {
+  0%, 40%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-1px, -1px) rotate(-3deg); }
+  19% { transform: translate(1.5px, -2.5px) rotate(3.6deg); }
+  27% { transform: translate(-.5px, -1px) rotate(-1.8deg); }
+  34% { transform: translate(.2px, -.3px) rotate(.9deg); }
+}
+@keyframes wedding-rings-twinkle-a {
+  0%, 18%, 38%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(-9deg); }
+  24% { opacity: .85; transform: translate(-50%, -50%) scale(1) rotate(5deg); }
+  29% { opacity: .6; transform: translate(-50%, -50%) scale(.84) rotate(10deg); }
+}
+@keyframes wedding-rings-twinkle-b {
+  0%, 28%, 46%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(.3) rotate(-9deg); }
+  34% { opacity: .75; transform: translate(-50%, -50%) scale(1) rotate(5deg); }
+  38% { opacity: .45; transform: translate(-50%, -50%) scale(.8) rotate(10deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wedding-rings__art { animation: none; transform: none; }
+  .wedding-rings__twinkle { animation: none; opacity: 0; }
+}

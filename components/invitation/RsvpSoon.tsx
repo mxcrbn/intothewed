@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import LangSwitch from "./LangSwitch";
+import Rings from "./Rings";
 import { TEXT } from "./i18n";
 import { useLang } from "./useLang";
 
@@ -18,7 +19,7 @@ export default function RsvpSoon() {
           <h1 className="card__names card__names--small">
             <img src="/assets/invite/names.png" width={971} height={148} alt="Nóri & Max" />
           </h1>
-          <img className="card__rings card__rings--small" src="/assets/invite/rings.png" width={306} height={162} alt="" />
+          <Rings className="card__rings card__rings--small" active />
           <p className="card__line">{t.soon}</p>
         </div>
         <Link className="sketch-button" href="/#invitation">{t.back}</Link>

@@ -2,8 +2,9 @@
 
 Run from the repo root:  python3 tools/extract_invite.py
 Input : art/invite/invite-card.webp (1536 × 1024, black ink on white)
-Output: public/assets/invite/names.png, rings.png — the invite's own lettering and drawing, so the
-        second screen of the site matches the card exactly.
+Output: public/assets/invite/names.png — the invite's own lettering, so the second screen of the
+        site matches the card exactly. (The rings come from their own animated asset pack,
+        public/assets/rings/, made from the same drawing.)
 """
 import numpy as np
 from PIL import Image
@@ -25,4 +26,3 @@ def cut(box, name, pad=6):
 
 
 cut((292, 175, 1251, 311), "names")
-cut((618, 368, 912, 518), "rings")
