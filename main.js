@@ -50,7 +50,7 @@
 
   // The children hide behind the big tree on the right. The girl leans out on one side, the
   // boy on the other; the girl bolts and the boy chases her across the front lawn. They turn
-  // back to the tree: the teenager strolls out, waves once and leans back against the trunk,
+  // back to the tree. A few seconds into the chase the teenager strolls out, waves once and leans back against the trunk,
   // hands in pockets, one knee bent. When the kids run off behind the house he pushes off the
   // tree and runs after them.
   // Steps: to [x, y] (+speed) (run) | clip (+dur) | idle s | until s (wait for a cue) | face |
@@ -83,10 +83,10 @@
         { to: [1240, 726] }, { to: [1130, 708] },
       ] },
       { id: "teenager", height: 145, speed: 80, start: [1392, 788], steps: [
-        { until: 13.6 }, { to: [1338, 787] }, { face: "left" }, { clip: "wave" },
+        { until: 9.0 }, { to: [1338, 787] }, { face: "left" }, { clip: "wave" },   // ~3 s into the chase
         // back against the left side of the trunk, chilling
         { to: [1350, 790], speed: 40 }, { face: "left" },
-        { peek: 0.09, clip: "lean", dur: 3.6 },
+        { peek: 0.09, clip: "lean", dur: 7.9 },   // until the kids run off (~19.9 s)
         // the kids are off: run after them
         { to: [1262, 728], speed: 150 }, { to: [1150, 710], speed: 150 },
       ] },

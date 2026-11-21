@@ -13,8 +13,8 @@ A single full-screen page showing the invitation drawing (the house in the woods
   trunks, stops between them to look around, then wanders back into the forest.
 - **The three children** (~5 s, then every 75 s) hide behind the big tree on the right. The girl leans
   her head out on one side, the boy on the other; the girl bolts and the boy chases her across the
-  front lawn. They turn back to the tree: the teenager strolls out, waves once, then leans back
-  against the trunk, hands in pockets, one knee bent. When the kids run off behind the house he
+  front lawn. A few seconds into the chase the teenager strolls out, waves once, then leans back
+  against the trunk, hands in pockets, one knee bent, while the kids run back to him and wave. When the kids run off behind the house he
   pushes off the tree and runs after them. Sizes follow the house (a teenager by the steps is a bit shorter than the door)
   and shrink with depth.
 - Respects `prefers-reduced-motion` (still drawing with the owl perched), and falls back to the plain
