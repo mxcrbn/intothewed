@@ -7,7 +7,7 @@
   // ---- Tuning ---------------------------------------------------------------
   const SWAY = {
     ground: 760,     // y (drawing px) where trunks are anchored: no movement below
-    amp: 5.5,        // max horizontal sway at the very top of the trees (drawing px)
+    amp: 13,         // max horizontal sway at the very top of the trees (drawing px)
     rampIn: 2.5,     // seconds to ease the wind in after the page opens
   };
   const OWL = {
@@ -27,9 +27,9 @@
   function sway(x, y, t, k) {
     const h = Math.min(Math.max((SWAY.ground - y) / SWAY.ground, 0), 1);
     const a = Math.pow(h, 1.7) * k;
-    const dx = SWAY.amp * a * (0.65 * Math.sin(t * 0.55 + x * 0.0035) + 0.35 * Math.sin(t * 0.93 + x * 0.0091 + 1.7))
-             + 1.1 * a * a * Math.sin(t * 1.7 + x * 0.02 + y * 0.013);
-    const dy = 1.1 * a * a * Math.sin(t * 0.8 + x * 0.006 + 0.5);
+    const dx = SWAY.amp * a * (0.65 * Math.sin(t * 0.75 + x * 0.0035) + 0.35 * Math.sin(t * 1.25 + x * 0.0091 + 1.7))
+             + 2.2 * a * a * Math.sin(t * 2.4 + x * 0.02 + y * 0.013);
+    const dy = 2.0 * a * a * Math.sin(t * 0.8 + x * 0.006 + 0.5);
     return [dx, dy];
   }
 
@@ -61,9 +61,9 @@
       float h = clamp((uGround - p.y) / uGround, 0.0, 1.0);
       float a = pow(h, 1.7) * uK;
       float t = uTime;
-      float dx = uAmp * a * (0.65 * sin(t * 0.55 + p.x * 0.0035) + 0.35 * sin(t * 0.93 + p.x * 0.0091 + 1.7))
-               + 1.1 * a * a * sin(t * 1.7 + p.x * 0.02 + p.y * 0.013);
-      float dy = 1.1 * a * a * sin(t * 0.8 + p.x * 0.006 + 0.5);
+      float dx = uAmp * a * (0.65 * sin(t * 0.75 + p.x * 0.0035) + 0.35 * sin(t * 1.25 + p.x * 0.0091 + 1.7))
+               + 2.2 * a * a * sin(t * 2.4 + p.x * 0.02 + p.y * 0.013);
+      float dy = 2.0 * a * a * sin(t * 0.8 + p.x * 0.006 + 0.5);
       return vec2(dx, dy);
     }
 
