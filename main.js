@@ -11,7 +11,10 @@
   // with staggered timing and slowly changing gusts. House, trunks, fence stay still.
   const WIND = {
     base: "assets/forest-wind/",
-    intensity: 1,      // kit suggests 0.7 – 1.0
+    // The kit's default (1) only moves each piece 1–2 screen pixels: invisible. These values
+    // make the canopy sway noticeably while staying calm. ?wind=2 / ?windSpeed=1 to try others.
+    intensity: Number(new URLSearchParams(location.search).get("wind")) || 4,
+    speed: Number(new URLSearchParams(location.search).get("windSpeed")) || 1.8, // ×kit tempo
     rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
 
@@ -26,53 +29,61 @@
     ],
   };
 
+  // The deer comes out of the woods on the left, passing behind the two big trunks, stops
+  // between them to look around, then wanders back into the forest.
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
     height: 90,
-    enter: { x: 1590, y: 760 },  // comes out of the woods on the right…
-    stop:  { x: 1292, y: 773 },  // …stops beside the house and looks around…
-    leave: { x: 1318, y: 702 },  // …then wanders off into the forest
+    enter: { x: -90, y: 745 },   // comes out of the woods on the left…
+    stop:  { x: 165, y: 752 },   // …stops between the big trunks and looks around…
+    leave: { x: 172, y: 690 },   // …then wanders off into the forest, between the trunks
     walkSpeed: 46,        // px / s
     idleFor: 6.5,         // seconds looking around
     leaveFor: 6,          // seconds walking away
-    // outline of the big right trunk: the deer passes behind it
-    trunk: [[1336, 600], [1362, 600], [1384, 640], [1408, 612], [1414, 760], [1444, 795],
-            [1360, 795], [1366, 700]],
+    // outlines of the two big left trunks: the deer passes behind them
+    trunks: [
+      [[150, 480], [192, 480], [162, 600], [140, 700], [118, 790], [70, 790], [100, 700], [127, 600]],
+      [[240, 480], [258, 480], [238, 600], [232, 700], [240, 760], [262, 774], [182, 780], [205, 700], [222, 600]],
+    ],
   };
 
-  // The three children run along the fence, come in through the open gate and play on the
-  // garden path: the boy chases the girl while the teenager watches, then joins them, and
-  // they all leave through the gate. Even visits come in from the left, odd visits from the
-  // right (mirrored around the gate).
-  // Steps: to [x, y] (run) | to "exit" | clip (+dur) | idle s | until s (wait for a cue) | face.
-  // Sizes follow the house: the front door is ~120 px tall, a teenager next to it ~100 px;
-  // they are bigger in front of the fence (closer to us) and shrink up the path (depth).
-  const CHASE = [[915, 845], [705, 815], [865, 790], [925, 870], [715, 885]];
+  // The children hide behind the big tree on the right. The girl leans out on one side, the
+  // boy on the other; the girl bolts and the boy chases her across the front lawn. They turn
+  // back to the tree, the teenager steps out and waves, and all three slip away behind the house.
+  // Steps: to [x, y] (run) | clip (+dur) | idle s | until s (wait for a cue) | face |
+  //        peek angle (+dur: lean out from behind the trunk, radians, negative = to the left).
+  // Sizes follow the house (a teenager by the front door is a bit shorter than the door) and
+  // shrink with depth.
+  const CHASE = [[1290, 795], [1150, 800], [1060, 770], [1170, 752], [1300, 762]];
   const KIDS = {
     firstAt: 5,
     every: 75,
-    gateX: 795,                 // centre of the gate, the mirror line
-    exitLeft: -120, exitRight: 1710,
     depth: { y: 995, perPx: 0.0012 },   // size = height × (1 − (995 − y) × 0.0012)
+    // the big right trunk (kids behind it are hidden) and the house (kids behind it vanish)
+    trunk: [[1352, 600], [1382, 600], [1394, 680], [1412, 700], [1430, 760], [1450, 795],
+            [1356, 795], [1364, 700]],
+    house: { baseY: 730, outline: [[316, 731], [316, 585], [290, 585], [476, 494], [700, 494],
+             [820, 442], [940, 494], [1202, 494], [1258, 585], [1228, 585], [1228, 731]] },
     cast: [
-      { id: "teenager", height: 145, speed: 120, start: [-120, 993], steps: [
-        { idle: 0.5 }, { to: [640, 993] }, { to: [690, 930] }, { until: 13 },
-        { clip: "wave" }, { idle: 1.5 }, { clip: "play", dur: 6 }, { until: 22.5 },
-        { to: [865, 848] }, { clip: "wave" }, { until: 30 }, { clip: "hop" }, { until: 33.4 },
-        { to: [760, 994] }, { to: "exit" },
+      { id: "girl", height: 75, speed: 105, start: [1378, 786], steps: [
+        { face: "left" }, { idle: 1.0 }, { peek: -0.6, dur: 2.4 }, { idle: 1.3 },
+        { peek: -0.6, dur: 1.0 }, { until: 6.2 },
+        ...CHASE.map(p => ({ to: p })), { to: [1262, 776] }, { until: 13.6 }, { face: "right" },
+        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 17.2 },
+        { to: [1250, 724] }, { to: [1110, 706] },
       ] },
-      { id: "girl", height: 75, speed: 100, start: [-120, 1000], steps: [
-        { to: [690, 1000] }, { to: [785, 885] }, { clip: "hop" }, { until: 12 },
-        ...CHASE.map(p => ({ to: p })), { to: [820, 835] }, { clip: "hop" }, { face: "left" },
-        { until: 24 }, { clip: "play", dur: 3 }, { until: 30 }, { clip: "wave" }, { until: 34 },
-        { to: [740, 996] }, { to: "exit" },
+      { id: "boy", height: 100, speed: 105, start: [1404, 787], steps: [
+        { idle: 2.0 }, { peek: 0.42, dur: 2.4 }, { idle: 1.1 }, { peek: 0.42, dur: 0.7 },
+        { until: 6.9 },
+        ...CHASE.map(p => ({ to: p })), { to: [1215, 782] }, { until: 13.6 }, { face: "right" },
+        { until: 14.6 }, { clip: "wave" }, { until: 17.0 },
+        { to: [1240, 726] }, { to: [1130, 708] },
       ] },
-      { id: "boy", height: 100, speed: 100, start: [-120, 998], steps: [
-        { idle: 1.2 }, { to: [690, 998] }, { to: [770, 895] }, { until: 13.2 },
-        ...CHASE.map(p => ({ to: p })), { to: [785, 838] }, { clip: "hop" },
-        { until: 24 }, { clip: "play", dur: 3 }, { until: 30 }, { clip: "hop" }, { clip: "wave" },
-        { until: 34.6 }, { to: [775, 998] }, { to: "exit" },
+      { id: "teenager", height: 145, speed: 80, start: [1392, 788], steps: [
+        { until: 13.6 }, { to: [1336, 784] }, { face: "left" }, { clip: "wave" }, { idle: 0.6 },
+        { clip: "wave" }, { until: 17.6 },
+        { to: [1262, 728] }, { to: [1150, 710] },
       ] },
     ],
   };
@@ -121,6 +132,7 @@
   // plus the fragment's own delayed flutter.
   function breezeAngle(piece, time, intensity) {
     if (!intensity) return 0;
+    time *= WIND.speed;
     const t = time - piece.lag;
     const common = 0.62 * smoothNoise(t / 8.1, 17) + 0.25 * smoothNoise(t / 23.7, 41) + 0.13 * smoothNoise(t / 4.3, 59);
     const local = tt => 0.24 * smoothNoise(tt / (2.8 + piece.depth) + piece.phase, 103) + 0.09 * smoothNoise(tt / 1.17 + piece.phase * 0.71, 211);
@@ -142,8 +154,8 @@
     const vw = window.innerWidth, vh = window.innerHeight;
     const cover = Math.max(vw / W, vh / H);
     const contain = Math.min(vw / W, vh / H);
-    const keepOwlRange = vw / 1110;            // x 260 → 1370 must stay on screen
-    const s = Math.max(contain, Math.min(cover, keepOwlRange));
+    const keepRange = vw / 1350;               // x 100 → 1450 (deer, owl, right tree) stays on screen
+    const s = Math.max(contain, Math.min(cover, keepRange));
     let x, y;
     if (W * s <= vw) x = (vw - W * s) / 2;
     else x = Math.min(0, Math.max(vw - W * s, vw / 2 - 775 * s));    // centred on the door
@@ -211,7 +223,7 @@
   const clipLength = c => c.frames.length / c.fps;
 
   // Draw one frame of a clip. (x, y) is the clip's anchor in the drawing, height its display height.
-  function drawSprite(id, clipName, seconds, x, y, height, flip = false, alpha = 1) {
+  function drawSprite(id, clipName, seconds, x, y, height, flip = false, alpha = 1, tilt = 0) {
     const sp = SPRITES[id], clip = sp.clips[clipName], img = sp.img;
     const n = Math.max(0, Math.floor(seconds * clip.fps));
     const step = clip.loop ? n % clip.frames.length : Math.min(n, clip.frames.length - 1);
@@ -222,6 +234,7 @@
     life.save();
     life.globalAlpha = alpha;
     life.translate(x, y + (clip.offsetY ? clip.offsetY[step] : 0) * s);
+    if (tilt) life.rotate(tilt);
     life.scale(flip ? -s : s, s);
     life.drawImage(img, (index % 4) * cell, Math.floor(index / 4) * cell, cell, cell, -anchor[0], -anchor[1], 512, 512);
     life.restore();
@@ -289,64 +302,81 @@
     if (c < deerWalkIn) {
       const u = c / deerWalkIn;
       const x = lerp(DEER.enter.x, DEER.stop.x, u), y = lerp(DEER.enter.y, DEER.stop.y, u);
-      drawSprite("deer", "walk", c, x, y, sizeAt(y), true);
+      drawSprite("deer", "walk", c, x, y, sizeAt(y));
     } else if (c < deerWalkIn + DEER.idleFor) {
-      drawSprite("deer", "idle", c - deerWalkIn, DEER.stop.x, DEER.stop.y, DEER.height, true);
+      drawSprite("deer", "idle", c - deerWalkIn, DEER.stop.x, DEER.stop.y, DEER.height);
     } else {
       const l = c - deerWalkIn - DEER.idleFor, u = l / DEER.leaveFor;
       const x = lerp(DEER.stop.x, DEER.leave.x, u), y = lerp(DEER.stop.y, DEER.leave.y, u);
       drawSprite("deer", "walkAway", l, x, y, sizeAt(y) * lerp(1, 0.75, u), false, 1 - smooth(0.45, 1, u));
     }
-    // the deer walks behind the big trunk: cut the trunk's shape out of it
+    // the deer walks behind the big trunks: cut their shapes out of it
+    cutOut(DEER.trunks);
+  }
+
+  // Erase shapes from the characters canvas, so what was drawn there is hidden behind them.
+  function cutOut(shapes) {
     life.save();
     life.globalCompositeOperation = "destination-out";
     life.beginPath();
-    DEER.trunk.forEach(([x, y], i) => i ? life.lineTo(x, y) : life.moveTo(x, y));
-    life.closePath();
+    for (const shape of shapes) {
+      shape.forEach(([x, y], i) => i ? life.lineTo(x, y) : life.moveTo(x, y));
+      life.closePath();
+    }
     life.fill();
     life.restore();
   }
 
   // ===== Children =====================================================================
-  function buildTimeline(kid, mirror) {
-    const m = x => (mirror ? 2 * KIDS.gateX - x : x);
-    const exit = mirror ? KIDS.exitLeft : KIDS.exitRight;
+  function buildTimeline(kid) {
     const segs = [];
-    let t = 0, x = m(kid.start[0]), y = kid.start[1], flip = mirror;
-    const stay = (clip, d) => { if (d > 0) segs.push({ t0: t, t1: t + d, clip, x0: x, y0: y, x1: x, y1: y, flip }); t += Math.max(d, 0); };
+    let t = 0, [x, y] = kid.start, flip = false;
+    const stay = (clip, d, tilt = 0) => {
+      if (d > 0) segs.push({ t0: t, t1: t + d, clip, x0: x, y0: y, x1: x, y1: y, flip, tilt });
+      t += Math.max(d, 0);
+    };
     for (const st of kid.steps) {
-      if (st.face) { flip = mirror ? st.face === "right" : st.face === "left"; continue; }
+      if (st.face) { flip = st.face === "left"; continue; }
       if (st.to) {
-        const [tx, ty] = st.to === "exit" ? [exit, y] : [m(st.to[0]), st.to[1]];
+        const [tx, ty] = st.to;
         const d = Math.hypot(tx - x, ty - y) / kid.speed;
         if (tx !== x) flip = tx < x;
         segs.push({ t0: t, t1: t + d, clip: "run", x0: x, y0: y, x1: tx, y1: ty, flip });
         x = tx; y = ty; t += d;
-      } else if (st.until !== undefined) stay("idle", st.until - t);
+      } else if (st.peek) stay("idle", st.dur, st.peek);
+      else if (st.until !== undefined) stay("idle", st.until - t);
       else if (st.idle) stay("idle", st.idle);
       else stay(st.clip, st.dur || clipLength(CHILD_CLIPS[st.clip]));
     }
     return { segs, end: t };
   }
-  KIDS.cast.forEach(k => { k.timelines = [buildTimeline(k, false), buildTimeline(k, true)]; });
+  KIDS.cast.forEach(k => { k.timeline = buildTimeline(k); });
 
   function drawKids(t) {
     if (t < KIDS.firstAt) return;
-    const visit = Math.floor((t - KIDS.firstAt) / KIDS.every);
     const c = (t - KIDS.firstAt) % KIDS.every;
     const now = [];
     for (const kid of KIDS.cast) {
-      const tl = kid.timelines[visit % 2];
+      const tl = kid.timeline;
       if (c >= tl.end) continue;
       const seg = tl.segs.find(s => c < s.t1) || tl.segs[tl.segs.length - 1];
       const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
       const y = lerp(seg.y0, seg.y1, u);
       const size = kid.height * (1 - (KIDS.depth.y - y) * KIDS.depth.perPx);
       const clipTime = seg.clip === "run" ? c : c - seg.t0; // keep the stride continuous
-      now.push({ kid, x: lerp(seg.x0, seg.x1, u), y, size, seg, clipTime });
+      // lean out from behind the trunk and back
+      const tilt = seg.tilt ? seg.tilt * smooth(0, 0.22, u) * (1 - smooth(0.78, 1, u)) : 0;
+      now.push({ kid, x: lerp(seg.x0, seg.x1, u), y, size, seg, clipTime, tilt });
     }
-    now.sort((a, b) => a.y - b.y);   // further up the path = drawn first (behind)
-    for (const k of now) drawSprite(k.kid.id, k.seg.clip, k.clipTime, k.x, k.y, k.size, k.seg.flip);
+    if (!now.length) return;
+    now.sort((a, b) => a.y - b.y);   // further back = drawn first (behind)
+    const draw = k => drawSprite(k.kid.id, k.seg.clip, k.clipTime, k.x, k.y, k.size, k.seg.flip, 1, k.tilt);
+    // behind the house first, then hide the house's shape from them; then the rest
+    now.filter(k => k.y < KIDS.house.baseY).forEach(draw);
+    cutOut([KIDS.house.outline]);
+    now.filter(k => k.y >= KIDS.house.baseY).forEach(draw);
+    // everyone in this scene stands behind the big right trunk
+    cutOut([KIDS.trunk]);
   }
 
   // ===== Main loop ====================================================================
@@ -372,9 +402,9 @@
     life.clearRect(0, 0, lifeCanvas.width, lifeCanvas.height);
     life.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
     life.imageSmoothingQuality = "high";
-    if (!reduceMotion) drawDeer(clock);   // first: the trunk cut-out must not touch the others
+    // deer and children first: their trunk/house cut-outs must not touch the owl
+    if (!reduceMotion) { drawDeer(clock); drawKids(clock); }
     drawOwl(clock);
-    if (!reduceMotion) drawKids(clock);
     if (skip > 0) {   // debug readout when ?t= is used
       life.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
       life.font = "20px monospace"; life.fillStyle = "#c00";
