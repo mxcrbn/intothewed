@@ -67,6 +67,7 @@ Handy URL parameters for working on it:
 ```
 app/layout.tsx, app/globals.css       the page shell
 app/page.tsx                          the home page: the animated invitation
+app/favicon.ico, icon.png, apple-icon.png  the wedding-rings favicon
 components/scene/Scene.tsx            the scene (canvases + fallback drawing)
 components/scene/animation.js         the animation engine and all its tuning
 ANIMATION-SCRIPTS.md                  beat-by-beat scripts for regenerating the animations

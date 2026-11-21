@@ -57,40 +57,45 @@ export function startScene(root) {
   // The children hide behind the big tree on the right. The girl leans out on one side, the
   // boy on the other; the girl bolts and the boy chases her across the front lawn. They turn
   // back to the tree. A few seconds into the chase Nayan strolls out and leans back against the
-  // trunk, hands in pockets, one knee bent. When the kids have run off behind the house he pushes
-  // off the tree, waves, and jogs after them.
+  // trunk, hands in pockets, one knee bent. When the kids have run off behind the house he stands
+  // up and jogs after them.
   // Steps: to [x, y] (+speed, +clip: run by default) | clip (+dur) | idle s | until s (wait for a
   //        cue) | face.
   // Everyone is drawn at the size of their frames (1:1 with the drawing).
-  const CHASE = [[1290, 795], [1150, 800], [1060, 770], [1170, 752], [1300, 762]];
+  // a wide loop: out along the front of the lawn, round, and back higher up the lawn, so they
+  // never run into each other (the boy is ~1 s behind her on the same loop)
+  // (turning right of the gate pillar, x 995–1065, which stands in front of the lawn)
+  const CHASE = [[1290, 800], [1185, 806], [1125, 796], [1102, 774], [1128, 751], [1205, 743], [1300, 756]];
   const KIDS = {
     firstAt: 5,
     every: 75,
     // the big right trunk (kids behind it are hidden) and the house (kids behind it vanish)
-    trunk: [[1352, 600], [1382, 600], [1394, 680], [1412, 700], [1430, 760], [1450, 795],
-            [1356, 795], [1364, 700]],
+    // (traced on the trunk's drawn outline, so a child beside it is cut exactly at the line)
+    trunk: [[1359, 600], [1398, 600], [1397, 650], [1403, 670], [1410, 700], [1418, 720],
+            [1426, 740], [1437, 760], [1444, 780], [1450, 795], [1362, 795], [1362, 762],
+            [1366, 752], [1368, 740], [1369, 700], [1368, 650], [1366, 630]],
     house: { baseY: 730, outline: [[316, 731], [316, 585], [290, 585], [476, 494], [700, 494],
              [820, 442], [940, 494], [1202, 494], [1258, 585], [1228, 585], [1228, 731]] },
     cast: [
       { id: "girl", speed: 105, start: [1372, 786], steps: [
         { face: "left" }, { idle: 1.0 }, { clip: "peekLong" }, { until: 6.2 },   // one long peek
-        ...CHASE.map(p => ({ to: p })), { to: [1262, 776] }, { until: 13.6 }, { face: "right" },
+        ...CHASE.map(p => ({ to: p })), { to: [1215, 780] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 19.8 },
-        { to: [1250, 724] }, { to: [1110, 706] },
+        { to: [1200, 727] }, { to: [1095, 709] },
       ] },
       { id: "boy", speed: 105, start: [1407, 787], steps: [
-        { idle: 1.8 }, { clip: "peekLong" }, { until: 6.9 },                     // one long peek
-        ...CHASE.map(p => ({ to: p })), { to: [1215, 782] }, { until: 13.6 }, { face: "right" },
+        { idle: 1.8 }, { clip: "peekLong" }, { until: 7.2 },                     // one long peek
+        // (she arrives first and stops further left, so he never runs across her)
+        ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
-        { to: [1240, 726] }, { to: [1130, 708] },
+        { to: [1258, 724] }, { to: [1150, 706] },
       ] },
       { id: "nayan", speed: 90, start: [1392, 788], steps: [
         // ~3 s into the chase he strolls out and leans back against the trunk, chilling
         { until: 9.0 }, { to: [1342, 790], clip: "walk", speed: 35 }, { face: "right" },
         { clip: "lean", dur: 11.2 },               // until the kids have gone behind the house
-        // then pushes off the tree, waves, and jogs after them behind the house
-        { clip: "pushOff" }, { clip: "wave" }, { idle: 0.2 },
-        { to: [1262, 728] }, { to: [1150, 710] },
+        // then stands up and jogs off after them in one straight line, behind the corner of the house
+        { idle: 0.8 }, { to: [1250, 724], speed: 70 }, { to: [1180, 674], speed: 70 },
       ] },
     ],
   };
@@ -117,6 +122,7 @@ export function startScene(root) {
     // the pack's hop lift is in the old 512 px units: these are the same moves at 1:1
     girl: { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -5, -1] }, peekLong },
     boy:  { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -6, -1] }, peekLong },
+    nayan: { run: { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 6.5, loop: true } },   // an easy jog (70 px/s)
   };
   const SPRITES = {};      // name → { sheets: [img], anchor, clips }, filled at load
   let CELL = 128, COLS = 3, PER_SHEET = 6;
@@ -407,8 +413,8 @@ export function startScene(root) {
       pose = inside ? (alt ? 5 : 4) : (alt ? 21 : 20);   // step out, then down the steps x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
     } else if (t >= 3.2 && t < 9.6) {
       open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
-      // pause · wave hello (raise, two waves, a warm last one, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
-      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 19], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
+      // pause · wave hello (raise, two waves, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
+      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 17], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
                     [7.7, 10], [8.5, 11], [9.1, 12], [9.6, 13]];
       pose = keys.find(([end]) => t < end)[1];
     } else if (t >= 9.6 && t < 10.7) {
@@ -434,7 +440,18 @@ export function startScene(root) {
     if (c < 1) return;                 // doors still shut: the background shows them
     if (c >= 11.7) return;
     const s = coupleAt(c), o = COUPLE.opening;
-    const pair = () => drawFrame(SPRITES.couple, s.pose, s.x, s.y, SPRITES.couple.anchor);
+    // Each pose dissolves into the next over FADE s: the hand-drawn poses differ a little in
+    // proportions, and a short dissolve turns those jumps into movement.
+    const FADE = 0.2;
+    const pair = () => {
+      const sp = SPRITES.couple, before = coupleAt(c - FADE).pose;
+      if (before !== s.pose && c - FADE >= 1) {
+        let lo = c - FADE, hi = c;                       // when exactly did the pose change?
+        for (let i = 0; i < 8; i++) { const m = (lo + hi) / 2; if (coupleAt(m).pose === s.pose) hi = m; else lo = m; }
+        drawFrame(sp, coupleAt(lo).pose, s.x, s.y, sp.anchor);
+        drawFrame(sp, s.pose, s.x, s.y, sp.anchor, false, smooth(0, 1, (c - hi) / FADE));
+      } else drawFrame(sp, s.pose, s.x, s.y, sp.anchor);
+    };
     // the doorway: paper white behind, the couple inside it, then the two leaves
     life.fillStyle = "#fefefe";
     life.fillRect(o.x, o.y, o.w, o.h);
