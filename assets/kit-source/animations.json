@@ -1,0 +1,595 @@
+{
+  "version": 1,
+  "style": "delicate broken black pen lines; transparent exterior; white character interiors",
+  "frameSize": {
+    "width": 512,
+    "height": 512
+  },
+  "grid": {
+    "columns": 4,
+    "rows": 4
+  },
+  "referenceScene": "scene/house-original.png",
+  "cleanScene": "scene/house-animation.png",
+  "characters": {
+    "owl": {
+      "sheet": "spritesheets/owl.png",
+      "frameCount": 16,
+      "columns": 4,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "anchor": [
+        256,
+        326
+      ],
+      "nominalHeight": 136,
+      "relativeHeight": 0.14,
+      "direction": "right",
+      "frameFiles": [
+        "frames/owl/00.png",
+        "frames/owl/01.png",
+        "frames/owl/02.png",
+        "frames/owl/03.png",
+        "frames/owl/04.png",
+        "frames/owl/05.png",
+        "frames/owl/06.png",
+        "frames/owl/07.png",
+        "frames/owl/08.png",
+        "frames/owl/09.png",
+        "frames/owl/10.png",
+        "frames/owl/11.png",
+        "frames/owl/12.png",
+        "frames/owl/13.png",
+        "frames/owl/14.png",
+        "frames/owl/15.png"
+      ],
+      "animations": {
+        "perched": {
+          "frames": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "takeoff": {
+          "frames": [
+            2,
+            3
+          ],
+          "fps": 9,
+          "loop": false
+        },
+        "fly": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 10,
+          "loop": true,
+          "anchor": [
+            256,
+            270
+          ]
+        },
+        "glide": {
+          "frames": [
+            12
+          ],
+          "fps": 2,
+          "loop": true,
+          "anchor": [
+            256,
+            270
+          ]
+        },
+        "land": {
+          "frames": [
+            13,
+            14,
+            15
+          ],
+          "fps": 7,
+          "loop": false
+        }
+      },
+      "registration": [
+        {
+          "index": 0,
+          "eye": {
+            "x": 165.08,
+            "y": 130.56,
+            "n": 25
+          }
+        },
+        {
+          "index": 1,
+          "eye": {
+            "x": 184.5,
+            "y": 131.16666666666666,
+            "n": 6
+          }
+        },
+        {
+          "index": 2,
+          "eye": {
+            "x": 178.91666666666666,
+            "y": 141.29166666666666,
+            "n": 24
+          }
+        },
+        {
+          "index": 3,
+          "eye": {
+            "x": 181,
+            "y": 133.82608695652175,
+            "n": 23
+          }
+        },
+        {
+          "index": 4,
+          "eye": {
+            "x": 179.69230769230768,
+            "y": 135.03846153846155,
+            "n": 26
+          }
+        },
+        {
+          "index": 5,
+          "eye": {
+            "x": 180.5,
+            "y": 135.72727272727272,
+            "n": 22
+          }
+        },
+        {
+          "index": 6,
+          "eye": {
+            "x": 179.1818181818182,
+            "y": 137.5909090909091,
+            "n": 22
+          }
+        },
+        {
+          "index": 7,
+          "eye": {
+            "x": 179,
+            "y": 137.76,
+            "n": 25
+          }
+        },
+        {
+          "index": 8,
+          "eye": {
+            "x": 179.5,
+            "y": 139,
+            "n": 24
+          }
+        },
+        {
+          "index": 9,
+          "eye": {
+            "x": 179.5,
+            "y": 138.5,
+            "n": 24
+          }
+        },
+        {
+          "index": 10,
+          "eye": {
+            "x": 179.34782608695653,
+            "y": 138.34782608695653,
+            "n": 23
+          }
+        },
+        {
+          "index": 11,
+          "eye": {
+            "x": 180.5,
+            "y": 136.5,
+            "n": 20
+          }
+        },
+        {
+          "index": 12,
+          "eye": {
+            "x": 179.36363636363637,
+            "y": 138.5,
+            "n": 22
+          }
+        },
+        {
+          "index": 13,
+          "eye": {
+            "x": 179.42857142857142,
+            "y": 137.8095238095238,
+            "n": 21
+          }
+        },
+        {
+          "index": 14,
+          "eye": {
+            "x": 170.5,
+            "y": 138.72727272727272,
+            "n": 22
+          }
+        },
+        {
+          "index": 15,
+          "eye": {
+            "x": 166.36363636363637,
+            "y": 135.5,
+            "n": 22
+          }
+        }
+      ]
+    },
+    "deer": {
+      "sheet": "spritesheets/deer.png",
+      "frameCount": 16,
+      "columns": 4,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "anchor": [
+        256,
+        440
+      ],
+      "nominalHeight": 237,
+      "relativeHeight": 0.7,
+      "direction": "right",
+      "frameFiles": [
+        "frames/deer/00.png",
+        "frames/deer/01.png",
+        "frames/deer/02.png",
+        "frames/deer/03.png",
+        "frames/deer/04.png",
+        "frames/deer/05.png",
+        "frames/deer/06.png",
+        "frames/deer/07.png",
+        "frames/deer/08.png",
+        "frames/deer/09.png",
+        "frames/deer/10.png",
+        "frames/deer/11.png",
+        "frames/deer/12.png",
+        "frames/deer/13.png",
+        "frames/deer/14.png",
+        "frames/deer/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            0,
+            1,
+            0,
+            2,
+            3
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "walk": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkAway": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "fps": 6,
+          "loop": true
+        }
+      }
+    },
+    "teenager": {
+      "sheet": "spritesheets/teenager.png",
+      "frameCount": 16,
+      "columns": 4,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "anchor": [
+        256,
+        440
+      ],
+      "nominalHeight": 281,
+      "relativeHeight": 1,
+      "direction": "right",
+      "frameFiles": [
+        "frames/teenager/00.png",
+        "frames/teenager/01.png",
+        "frames/teenager/02.png",
+        "frames/teenager/03.png",
+        "frames/teenager/04.png",
+        "frames/teenager/05.png",
+        "frames/teenager/06.png",
+        "frames/teenager/07.png",
+        "frames/teenager/08.png",
+        "frames/teenager/09.png",
+        "frames/teenager/10.png",
+        "frames/teenager/11.png",
+        "frames/teenager/12.png",
+        "frames/teenager/13.png",
+        "frames/teenager/14.png",
+        "frames/teenager/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 3,
+          "loop": false
+        },
+        "play": {
+          "frames": [
+            0,
+            2,
+            3,
+            2,
+            0
+          ],
+          "fps": 3,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "hop": {
+          "frames": [
+            12,
+            13,
+            14,
+            15,
+            0
+          ],
+          "fps": 7,
+          "loop": false,
+          "offsetY": [
+            0,
+            -9,
+            -23,
+            -4,
+            0
+          ]
+        }
+      }
+    },
+    "girl": {
+      "sheet": "spritesheets/girl.png",
+      "frameCount": 16,
+      "columns": 4,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "anchor": [
+        256,
+        440
+      ],
+      "nominalHeight": 283,
+      "relativeHeight": 0.52,
+      "direction": "right",
+      "frameFiles": [
+        "frames/girl/00.png",
+        "frames/girl/01.png",
+        "frames/girl/02.png",
+        "frames/girl/03.png",
+        "frames/girl/04.png",
+        "frames/girl/05.png",
+        "frames/girl/06.png",
+        "frames/girl/07.png",
+        "frames/girl/08.png",
+        "frames/girl/09.png",
+        "frames/girl/10.png",
+        "frames/girl/11.png",
+        "frames/girl/12.png",
+        "frames/girl/13.png",
+        "frames/girl/14.png",
+        "frames/girl/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 3,
+          "loop": false
+        },
+        "play": {
+          "frames": [
+            0,
+            2,
+            3,
+            2,
+            0
+          ],
+          "fps": 3,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "hop": {
+          "frames": [
+            12,
+            13,
+            14,
+            15,
+            0
+          ],
+          "fps": 7,
+          "loop": false,
+          "offsetY": [
+            0,
+            -9,
+            -23,
+            -4,
+            0
+          ]
+        }
+      }
+    },
+    "boy": {
+      "sheet": "spritesheets/boy.png",
+      "frameCount": 16,
+      "columns": 4,
+      "frameWidth": 512,
+      "frameHeight": 512,
+      "anchor": [
+        256,
+        440
+      ],
+      "nominalHeight": 288,
+      "relativeHeight": 0.68,
+      "direction": "right",
+      "frameFiles": [
+        "frames/boy/00.png",
+        "frames/boy/01.png",
+        "frames/boy/02.png",
+        "frames/boy/03.png",
+        "frames/boy/04.png",
+        "frames/boy/05.png",
+        "frames/boy/06.png",
+        "frames/boy/07.png",
+        "frames/boy/08.png",
+        "frames/boy/09.png",
+        "frames/boy/10.png",
+        "frames/boy/11.png",
+        "frames/boy/12.png",
+        "frames/boy/13.png",
+        "frames/boy/14.png",
+        "frames/boy/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 3,
+          "loop": false
+        },
+        "play": {
+          "frames": [
+            0,
+            2,
+            3,
+            2,
+            0
+          ],
+          "fps": 3,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "hop": {
+          "frames": [
+            12,
+            13,
+            14,
+            15,
+            0
+          ],
+          "fps": 7,
+          "loop": false,
+          "offsetY": [
+            0,
+            -9,
+            -23,
+            -4,
+            0
+          ]
+        }
+      }
+    }
+  }
+}
