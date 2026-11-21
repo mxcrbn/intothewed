@@ -27,8 +27,15 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:3000. `npm run build` makes the production build; it deploys as is on
-Vercel.
+Then open http://localhost:3000.
+
+## Publish
+
+Every push to `main` publishes the site at **https://noriandmax.com** (GitHub Pages):
+`.github/workflows/pages.yml` runs `npm run build`, which exports the site as plain files to `out/`
+(`output: "export"` in `next.config.ts`), and deploys them. The domain is set by `public/CNAME`.
+Static export means no server code: when the RSVP needs to store answers, it will need a form
+service or a move to a host that runs Next.js servers (e.g. Vercel).
 
 Handy URL parameters for working on it:
 
