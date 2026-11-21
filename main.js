@@ -29,18 +29,23 @@
     ],
   };
 
-  // The deer comes out of the woods on the left, passing behind the two big trunks, stops
-  // between them to look around, then wanders back into the forest.
+  // The deer comes out of the woods on the left, passing behind the two big trunks, walks out
+  // to the middle of the left garden and looks around, then turns back and wanders off into
+  // the forest, between the trunks.
+  // Legs: walk to [x, y] | idle s | away to [x, y] (walking off, shrinking and fading).
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
-    height: 90,
-    enter: { x: -90, y: 745 },   // comes out of the woods on the left…
-    stop:  { x: 165, y: 752 },   // …stops between the big trunks and looks around…
-    leave: { x: 172, y: 690 },   // …then wanders off into the forest, between the trunks
-    walkSpeed: 46,        // px / s
-    idleFor: 6.5,         // seconds looking around
-    leaveFor: 6,          // seconds walking away
+    height: 90,           // at y 752 (between the trunks); bigger further forward
+    walkSpeed: 50,        // px / s
+    start: [-90, 745],
+    legs: [
+      { walk: [165, 752] },        // out of the woods, behind the trunks
+      { walk: [480, 792] },        // into the middle of the left garden
+      { idle: 6.5 },               // looks around
+      { walk: [240, 748] },        // turns back towards the trees
+      { away: [172, 690], dur: 6 } // and wanders off into the forest
+    ],
     // outlines of the two big left trunks: the deer passes behind them
     trunks: [
       [[150, 480], [192, 480], [162, 600], [140, 700], [118, 790], [70, 790], [100, 700], [127, 600]],
@@ -300,24 +305,36 @@
   }
 
   // ===== Deer =========================================================================
-  const deerWalkIn = Math.hypot(DEER.enter.x - DEER.stop.x, DEER.enter.y - DEER.stop.y) / DEER.walkSpeed;
-  const deerTotal = deerWalkIn + DEER.idleFor + DEER.leaveFor;
+  // turn the legs into timed segments
+  const deerSegs = (() => {
+    const segs = [];
+    let t = 0, [x, y] = DEER.start, flip = false;
+    for (const leg of DEER.legs) {
+      if (leg.idle) { segs.push({ t0: t, t1: t + leg.idle, clip: "idle", x0: x, y0: y, x1: x, y1: y, flip }); t += leg.idle; continue; }
+      const [tx, ty] = leg.walk || leg.away;
+      const d = leg.dur || Math.hypot(tx - x, ty - y) / DEER.walkSpeed;
+      if (leg.walk) flip = tx < x;
+      segs.push({ t0: t, t1: t + d, clip: leg.walk ? "walk" : "walkAway", away: !!leg.away, x0: x, y0: y, x1: tx, y1: ty, flip });
+      x = tx; y = ty; t += d;
+    }
+    return segs;
+  })();
+  const deerTotal = deerSegs[deerSegs.length - 1].t1;
 
   function drawDeer(t) {
     if (t < DEER.firstAt) return;
     const c = (t - DEER.firstAt) % DEER.every;
     if (c > deerTotal) return;
-    const sizeAt = y => DEER.height - (DEER.stop.y - y) * 0.4;   // smaller further back
-    if (c < deerWalkIn) {
-      const u = c / deerWalkIn;
-      const x = lerp(DEER.enter.x, DEER.stop.x, u), y = lerp(DEER.enter.y, DEER.stop.y, u);
-      drawSprite("deer", "walk", c, x, y, sizeAt(y));
-    } else if (c < deerWalkIn + DEER.idleFor) {
-      drawSprite("deer", "idle", c - deerWalkIn, DEER.stop.x, DEER.stop.y, DEER.height);
+    // same depth rule as the children, normalised so the deer is DEER.height at y 752
+    const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
+    const sizeAt = y => DEER.height * depth(y) / depth(752);
+    const seg = deerSegs.find(s => c < s.t1) || deerSegs[deerSegs.length - 1];
+    const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
+    const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
+    if (seg.away) {
+      drawSprite("deer", "walkAway", c - seg.t0, x, y, sizeAt(y) * lerp(1, 0.75, u), false, 1 - smooth(0.45, 1, u));
     } else {
-      const l = c - deerWalkIn - DEER.idleFor, u = l / DEER.leaveFor;
-      const x = lerp(DEER.stop.x, DEER.leave.x, u), y = lerp(DEER.stop.y, DEER.leave.y, u);
-      drawSprite("deer", "walkAway", l, x, y, sizeAt(y) * lerp(1, 0.75, u), false, 1 - smooth(0.45, 1, u));
+      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, sizeAt(y), seg.flip);
     }
     // the deer walks behind the big trunks: cut their shapes out of it
     cutOut(DEER.trunks);
