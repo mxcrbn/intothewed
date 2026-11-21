@@ -22,6 +22,10 @@ stay on the printed card), and an RSVP button. The card speaks Magyar, English (
 Français, switched at the top left and remembered in the browser. The RSVP form itself is still to
 come: for now the button says so, just under itself.
 
+On a phone held upright, the drawing only fills a band, so the page simply stacks: the drawing at
+the top (with all its animations), the language switch under it, then the card, on one screen with
+no arrow. Turned sideways (and on computers) it's the two screens with the arrow and the dissolve.
+
 All the motion is slow and discreet, so the page still feels like the drawing. With reduced motion
 turned on, it stays still, and without JavaScript it shows the plain drawing.
 
@@ -81,7 +85,7 @@ Handy URL parameters for working on it:
 ```
 app/layout.tsx, app/globals.css       the page shell
 app/page.tsx                          the home page: the drawing, then the card
-components/Home.tsx                   the two screens and the scroll dissolve between them
+components/Home.tsx                   the two screens and the scroll dissolve (stacked when upright)
 components/invitation/                the card, the language switch, all texts (i18n.ts)
 app/favicon.ico, icon.png, apple-icon.png  the wedding-rings favicon
 components/scene/Scene.tsx            the scene (canvases + fallback drawing)

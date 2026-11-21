@@ -168,7 +168,8 @@ export function startScene(root) {
   // children (bottom of the drawing) visible ===========================================
   const view = { x: 0, y: 0, s: 1, vw: 1, vh: 1, dpr: 1 };
   function layout() {
-    const vw = window.innerWidth, vh = window.innerHeight;
+    // the scene's own box: the whole window, or (phones held upright) a band at the top
+    const vw = scene.clientWidth || window.innerWidth, vh = scene.clientHeight || window.innerHeight;
     const cover = Math.max(vw / W, vh / H);
     const contain = Math.min(vw / W, vh / H);
     const keepRange = vw / 1350;               // x 100 → 1450 (deer, owl, right tree) stays on screen

@@ -234,6 +234,72 @@ body {
   outline: none;
 }
 
+/* ===== Upright screens (portrait phones): the drawing as a band at the top, the card under it ==
+   The drawing keeps its usual crop (x 100 → 1450: the deer, both owl branches, the big right tree),
+   which on an upright screen is a band about a third of the height: the card fills the rest, so
+   everything is on one screen and the arrow isn't needed. Home.tsx uses the same query. */
+@media (orientation: portrait) {
+  html { scroll-snap-type: none; }
+  .stops,
+  .scroll-cue { display: none; }
+
+  #scene {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    aspect-ratio: 1350 / 1024;
+    margin-top: env(safe-area-inset-top);           /* the drawing always comes first, at the top */
+    overflow: hidden;
+    opacity: 1;
+    transform: none;
+  }
+  #fallback { width: 100%; height: 100%; }
+
+  /* under it, the languages, then the card filling the rest of the screen: names, rings and place
+     centred, RSVP near the bottom */
+  .card-layer {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - 100vw * 1024 / 1350 - env(safe-area-inset-top));
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  .langs {
+    position: static;
+    align-self: center;
+    margin-top: clamp(18px, 3.5vh, 36px);
+  }
+  .card {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    padding: clamp(8px, 1.6vh, 28px) 16px calc(clamp(42px, 5.5vh, 72px) + env(safe-area-inset-bottom));
+  }
+  /* (the vh limits keep it on one screen on upright tablets too, where the drawing is taller) */
+  .card__names img { width: min(76vw, 520px, 44vh); }
+  .card__rings {
+    --rings-width: min(40vw, 240px, 16vh);
+    margin: clamp(0px, .6vh, 10px) 0 clamp(0px, .8vh, 12px);
+  }
+  .card__date { margin-top: clamp(2px, .8vh, 10px); }
+  .rsvp { margin-top: clamp(18px, 3vh, 36px); }
+}
+
+/* ===== Short landscape screens (phones turned sideways): a tighter card, so it fits ========== */
+@media (orientation: landscape) and (max-height: 520px) {
+  .langs { top: calc(8px + env(safe-area-inset-top)); }
+  .card { padding: clamp(30px, 9vh, 56px) 16px calc(34px + env(safe-area-inset-bottom)); }
+  .card__names img { width: min(52vw, 400px); }
+  .card__rings { --rings-width: min(22vw, 140px); margin: 0; }
+  .card__line { font-size: 16px; line-height: 1.35; }
+  .card__date { margin-top: 2px; }
+  .rsvp { margin-top: 10px; }
+  .sketch-button { padding-top: 11px; padding-bottom: 10px; }
+  .rsvp__soon { top: calc(100% + 6px); font-size: 14px; }
+}
+
 /* phones: a little less tracking, so the longest label (French) stays on one line */
 @media (max-width: 420px) {
   .sketch-button { letter-spacing: .18em; padding: 15px 22px 14px 25px; }
