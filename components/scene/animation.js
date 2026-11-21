@@ -84,7 +84,7 @@ export function startScene(root) {
         // follows her brother: up along the side of the house first, then behind it
         { to: [1250, 742] }, { to: [1258, 722] }, { to: [1150, 704] },
       ] },
-      { id: "boy", speed: 105, start: [1407, 787], steps: [
+      { id: "boy", speed: 105, start: [1410, 787], steps: [
         { idle: 1.8 }, { clip: "peekLong" }, { until: 7.2 },                     // one long peek
         // (she arrives first and stops further left, so he never runs across her)
         ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },

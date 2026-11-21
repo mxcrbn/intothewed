@@ -77,4 +77,5 @@ public/assets/characters/             owl, deer, kids, Nayan, Nóri & Max: 1:1 s
 public/assets/doors/                  the two front-door leaves
 art/characters/                       4× masters and notes of the current asset pack
 tools/import_assets.py                brings a new asset pack into the site
+tools/make_favicon.py                 builds the favicon (transparent rings, light halo) from art/favicon/
 ```

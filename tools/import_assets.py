@@ -10,8 +10,10 @@ high-quality reduction. Along the way, a few corrections (all listed in FIXES be
     than their other frames and are darkened to match them.
   - register: in the deer's walk cycle the body slides ±7 px back and forth (the frames are
     aligned on the feet), which makes the walk judder. Those frames are re-centred on the body.
-  - scale: Nayan a little smaller (96 px instead of 106), so he is not taller than Nóri & Max
-    (Max 104 px, Nóri ~97 px; the doorway opening is 113 px).
+  - scale: three couple frames (lean in, kiss, smile) drawn ~4 % smaller are brought back to size.
+  - scale: Nayan 96 px (instead of 106), so he is not taller than Nóri & Max (Max 104 px, Nóri
+    ~97 px; the doorway opening is 113 px), and the children a little smaller so he still stands
+    clearly above them (boy 68 px, girl 54 px).
 
 It also copies the door leaves and the trees' leaf atlas + rig, and keeps the 4x masters and the
 pack's notes in art/characters/ (source files, not served).
@@ -27,9 +29,14 @@ from PIL import Image
 FIXES = {
     "owl":    {"ink_p90": 165},
     "deer":   {"ink_p90": 165, "register": range(4, 12)},
-    "girl":   {"match_ink": [16, 17]},
-    "boy":    {"match_ink": [16, 17]},
+    # the children a little smaller, so Nayan (96) clearly stands above them while staying below
+    # Nóri (~97) and Max (104): girl 54 px (5 years old), boy 68 px (7)
+    "girl":   {"match_ink": [16, 17], "scale": 54 / 56},
+    "boy":    {"match_ink": [16, 17], "scale": 68 / 75},
     "nayan":  {"scale": 96 / 106},
+    # the lean-in, kiss and smile frames are drawn ~4 % smaller than the rest (Max's head drops
+    # 4 px even standing upright, their feet are narrower): back to the common size
+    "couple": {"scale_frames": {9: 1.03, 10: 1.04, 11: 1.04}},
 }
 
 if len(sys.argv) != 2:
@@ -97,13 +104,16 @@ for name, a in assets.items():
         print(f"{name}: re-centred frames {list(fx['register'])} by "
               f"{[round((mean - centres[i]) / F, 1) for i in fx['register']]} px")
 
-    # scale around the feet anchor (in the master, before the one reduction)
+    # scale around the feet anchor (in the master, before the one reduction): the whole set, or
+    # single frames drawn at the wrong size
+    def scaled(m, k):
+        big = m.resize((round(MCELL * k), round(MCELL * k)), Image.LANCZOS)
+        ox, oy = round(anchor[0] * k - anchor[0]), round(anchor[1] * k - anchor[1])
+        return big.crop((ox, oy, ox + MCELL, oy + MCELL))
+    for i, k in fx.get("scale_frames", {}).items():
+        masters[i] = scaled(masters[i], k)
     if "scale" in fx:
-        k = fx["scale"]
-        for i, m in enumerate(masters):
-            big = m.resize((round(MCELL * k), round(MCELL * k)), Image.LANCZOS)
-            ox, oy = round(anchor[0] * k - anchor[0]), round(anchor[1] * k - anchor[1])
-            masters[i] = big.crop((ox, oy, ox + MCELL, oy + MCELL))
+        masters = [scaled(m, fx["scale"]) for m in masters]
 
     frames = [np.asarray(m.resize((CELL, CELL), Image.LANCZOS)) for m in masters]
 
