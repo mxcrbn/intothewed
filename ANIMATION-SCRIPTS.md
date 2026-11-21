@@ -16,22 +16,56 @@ them drop straight in.
 
 ## 0. Rules for every asset
 
-### Format (the same as the current kits)
+### Size: draw everything at its final size (1 : 1 with the invitation)
 
-- **Sprite sheet:** a 4 × 4 grid of 512 × 512 px frames (2048 × 2048 PNG), RGBA. A character that
-  needs more than 16 frames gets a second sheet.
+The site never resizes the characters. **One pixel of an asset is one pixel of the invitation
+drawing** (`assets/invite-original.webp`, 1536 × 1024). On any screen the browser scales the
+characters by exactly the same factor as the house and the trees, so the lines stay identical: same
+thickness, same softness, same grain.
+
+So each figure is drawn at the exact height it has in the scene, with the same pen as the invite:
+
+| asset | figure height (top of head / ears → feet) | frame (cell) | sheet (4 × 4) | ground point in the frame |
+|---|---|---|---|---|
+| owl, perched / take-off / landing | **30 px** (head → feet) | 128 × 128 | 512 × 512 | (64, 100), feet |
+| owl, flying / gliding | same owl, body ≈ 22 px long, wingspan ≈ 80 px | 128 × 128 | same sheet | (64, 64), body centre |
+| deer | **82 px** (ear tips → hooves) | 128 × 128 | 512 × 512 | (64, 120), hooves |
+| deer, walking away (frames 12–15) | **72 px** (it is further away) | 128 × 128 | same sheet | (64, 120) |
+| girl | **56 px** | 96 × 96 | 384 × 384 | (48, 90), feet |
+| boy | **75 px** | 128 × 128 | 512 × 512 | (64, 120), feet |
+| Nayan | **106 px** | 160 × 160 | 640 × 640 | (80, 152), feet |
+| Nóri & Max (pair) | **104 px** (Max's head → feet) | 160 × 160 | 640 × 640 | (80, 152), between their feet |
+| door leaves (left, right) | 29 × 113 px each, the size of the doorway | — | two PNGs | — |
+
+- **Where these sizes come from:** each is the figure's height at the spot where it spends most of
+  its time. The deer stands at (445, 792), the children and Nayan are at the big tree (y ≈ 788), and
+  the couple is on the bottom step (y 760). The site draws them at that size all the time. Moving a
+  few pixels forward or back on the lawn changes the "true" size by less than 5 %, which nobody sees,
+  and resampling would cost more than it gains. The only size change left is the deer walking away,
+  which is drawn smaller (72 px) and fades out.
+- **Leave margin in each cell:** at least 6 px around the figure, and the figure must never touch
+  the cell edge, so nothing gets cut during a wave, a jump or a stride.
+- **Ground point:** in every frame of a character, the feet sit exactly on its ground point, at
+  whole-pixel coordinates. A figure that stands still must not drift or jitter by even one pixel from
+  frame to frame. Only the parts that move should change.
+- **Do not resize after drawing.** Working larger and shrinking at the end is fine, as long as the
+  delivered file is final and at the sizes above. Check it at 100 % zoom right next to the invite: the
+  lines should be indistinguishable from the house's.
+- **No @2x version:** the invite itself is 1536 px wide, so a sharper character would not match it.
+  If a 2× invite is ever made (3072 × 2048), deliver everything at exactly 2× these numbers.
+
+### Format
+
+- **Sprite sheet:** a 4 × 4 grid of cells (sizes above), RGBA PNG. A character that needs more than
+  16 frames gets a second sheet with the same cell size.
 - **Background:** transparent outside the figure, **paper white (#fefefe) inside** it. The inside is
   the skin, the clothes and the fur, everything within the outline. A tree trunk or a house line must
   never show through a figure.
 - **Facing:** every figure faces right (the site mirrors it to face left). Separate frames exist only
   where the drawing is not symmetric, for example a head turned to the camera, or a back view.
-- **Feet anchor:** the ground point sits at **(256, 440)** in every frame, at the same place in every
-  frame. A figure that stands still must not drift or jitter from frame to frame. Only the parts that
-  move should change.
-- **Same scale in every frame:** keep the figure the same height everywhere (the "nominal height"
-  below), except where the action really changes it (crouching, jumping).
 - **Exports:** also export each frame as a separate PNG (`frames/<name>/00.png` …), plus an
-  `animations.json` in the current kit's format (clips: frames, fps, loop).
+  `animations.json` in the current kit's format (clips: frames, fps, loop), with the cell size, the
+  ground point and the figure height.
 
 ### Line style: match the invitation
 
@@ -39,40 +73,26 @@ The house and the trees are drawn with a fine pen:
 
 - **Ink:** neutral dark grey, not black. A full-pressure stroke is about #1c1c1c; light strokes go
   down to about #6a6a6a.
+- **Thickness:** at the 1 : 1 size, the **same pen as the invite, about 1.25 to 1.75 px**, never more
+  than 2 px. Lines are soft and anti-aliased, not hard pixel lines.
 - **Thin and uneven:** the pressure varies along each line, with small breaks, slightly wobbly
   strokes and an occasional doubled stroke. Lines are not clean and even like vector art.
 - **Shading:** none, and no solid black areas. Hair is made of a few loose strokes, not filled in.
   Eyes are small dots or short dashes.
-- **Thickness, measured where it matters (on screen):** each figure appears small in the scene
-  (sizes below), and there its lines should be **1.2 to 1.8 drawing px**. In a 512 px frame, line
-  thickness = 1.5 × (nominal height ÷ on-screen height), so:
+- **Detail level:** these figures are small, the girl just 56 px tall. Anything under about 2 px
+  (fingers, buttons, fabric folds) turns into a grey smudge, so leave it out or keep it to one stroke.
+  Faces in particular are 8–12 px tall (Nóri & Max) and need a few strong, readable marks, not fine
+  detail.
 
-  | figure | nominal height in frame | on screen | pen width in the frame |
-  |---|---|---|---|
-  | owl | 136 px | 30 px | ≈ 7 px |
-  | deer | 237 px | 78 px (at y 752) | ≈ 4.5 px |
-  | girl | 283 px | ≈ 57 px | ≈ 7.5 px |
-  | boy | 288 px | ≈ 75 px | ≈ 6 px |
-  | Nayan | 281 px | ≈ 106 px | ≈ 4 px |
-  | Nóri & Max | 287 px | 104 px | ≈ 4 px |
+With assets made this way, the restyling the site does today (`tools/prepare_sprites.py`) is no longer
+needed: the files are used exactly as delivered.
 
-  An easier option is to draw each figure at its on-screen size × 4 with a 6 px pen; we scale it.
-- **Detail level:** sized for the screen. Anything smaller than about 1 px on screen (fingers,
-  buttons, fabric folds) will blur into grey, so leave it out or keep it to one stroke. Faces in
-  particular (Nóri & Max) need a few strong, readable marks, not fine detail.
+### Sizes relative to each other
 
-The site currently restyles the kits to get close to this (`tools/prepare_sprites.py`). Assets drawn
-this way from the start will look much better and will need almost no processing.
-
-### Sizes and depth (shared by all characters)
-
-Characters further back (smaller y) are smaller:
-
-size = height × (1 − (995 − y) × 0.0012)
-
-Reference: the doorway opening is 113 px tall, Max is 104 px on the bottom step (y 760), Nayan is
-about 106 px at the tree, the boy about 75, the girl about 57, the deer 78 (the tip of its ears
-reaches about two-thirds of Max's height), and the owl 30.
+For reference: the doorway opening is 113 px tall, Max is 104 px on the bottom step, Nayan 106 px at
+the tree (the same as Max, standing a bit further forward), the boy 75, the girl 56, and the deer 82
+(the tip of its ears reaches about four-fifths of Max's height, because it stands further forward in
+the garden). The owl is 30.
 
 ---
 
@@ -88,7 +108,7 @@ reaches about two-thirds of Max's height), and the owl 30.
 | 17.7 s | **Landing** (0.45 s): it flares up with wings spread forward and tail down, grips the branch at (1289, 280) and folds its wings. |
 | then | It sits facing the way it flew for about 28 s, then flies back to the left tree facing left (the same frames mirrored). |
 
-### Frames (one sheet, 16 frames, owl 136 px tall, facing right)
+### Frames (one sheet, 16 frames of 128 × 128, owl 30 px tall, facing right)
 
 | # | pose |
 |---|---|
@@ -103,8 +123,9 @@ reaches about two-thirds of Max's height), and the owl 30.
 | 15 | Landing 3: almost settled, wings nearly folded, tail down. |
 | 16 (2nd sheet, optional) | Perched, head turned to look at the camera, for an occasional look at the viewer. |
 
-Anchors: feet at (256, 326) for perched, take-off and landing. The body centre is at (256, 270) for
-flapping and gliding, so the flying owl turns around its body.
+Ground point: feet at (64, 100) for perched, take-off and landing. The body centre is at (64, 64)
+for flapping and gliding, so the flying owl turns around its body. At 30 px, the whole owl is
+about 15 pen strokes; draw it like the invite's original perched owl, which is the reference.
 
 ### Fix in the next version
 
@@ -127,7 +148,7 @@ flapping and gliding, so the flying owl turns around its body.
 | 17.3 – 21.5 s | **Turns back and walks towards the trees**, facing left. | to (240, 748) |
 | 21.5 – 27.5 s | **Walks off into the forest between the two trunks**, moving away from us with its **head still turned left** (towards the forest, not back at us). It gets smaller (×0.75) and fades out. The second trunk passes in front of it. | to (172, 690) |
 
-### Frames (deer 237 px tall, facing right)
+### Frames (128 × 128 cells, deer 82 px tall, 72 px for 12–15, facing right)
 
 | # | pose |
 |---|---|
@@ -135,7 +156,7 @@ flapping and gliding, so the flying owl turns around its body.
 | 1 | Same pose, ears turned back or one ear flicked. Only the ears change. |
 | 2 | Same body, **head turned towards the camera** (both eyes and both ears visible, muzzle facing us). The body does not move at all. |
 | 3 | Same body, head lowered a little (sniffing) or tilted. |
-| 4 – 11 | **Walk cycle, 8 frames, loops at 8 fps** (one full stride = 8 frames). A slow walk, legs moved in diagonal pairs, the head bobbing a little. The body stays at the same height and the hooves stay on the ground line (y 440 in the frame). The hooves must not slide: plant a hoof and keep it in place while the body moves forward 50 ÷ 8 ≈ 6 drawing px per frame. |
+| 4 – 11 | **Walk cycle, 8 frames, loops at 8 fps** (one full stride = 8 frames). A slow walk, legs moved in diagonal pairs, the head bobbing a little. The body stays at the same height and the hooves stay on the ground line (y 120 in the frame). The hooves must not slide: plant a hoof and keep it in place while the body moves forward 50 ÷ 8 ≈ 6 drawing px per frame. |
 | 12 – 15 | **Walking away, 4 frames, loops at 6 fps.** Three-quarter back view (we see the rump and the back), moving into the picture towards the upper left (it is mirrored, so draw it heading upper right), **head turned to the side in profile, towards its direction of travel**. Do not turn the head back to the camera. |
 | new (optional) | **Turn-around, 3 frames.** From standing profile facing right, through a three-quarter front view, to standing profile facing left. Right now it just flips from one frame to the next. |
 
@@ -152,11 +173,11 @@ flapping and gliding, so the flying owl turns around its body.
 
 ### Cast and sizes (all facing right)
 
-| | nominal height in frame | on screen at the tree (y ≈ 790) | look |
+| | height (1 : 1) | cell | look |
 |---|---|---|---|
-| Girl (about 5 years old) | 283 px | ≈ 57 px | dress, hair down |
-| Boy (about 7 years old) | 288 px | ≈ 75 px | t-shirt, shorts |
-| Nayan (teenager, about 15) | 281 px | ≈ 106 px | open shirt over a t-shirt, jeans, sneakers |
+| Girl (about 5 years old) | 56 px | 96 × 96 | dress, hair down |
+| Boy (about 7 years old) | 75 px | 128 × 128 | t-shirt, shorts |
+| Nayan (teenager, about 15) | 106 px | 160 × 160 | open shirt over a t-shirt, jeans, sneakers |
 
 The big right trunk runs from x 1352 to 1450 at its base (y 795). A child behind it is hidden by
 it. Once they pass behind the house (y < 730) they disappear behind the wall.
@@ -188,7 +209,7 @@ it. Once they pass behind the house (y < 730) they disappear behind the wall.
 | 2 | Waving, hand tilted the other way, for the back-and-forth of a wave. |
 | 3 | Playing / pointing (spare). |
 | 4 – 11 | **Run cycle, 8 frames, loops at 9 fps**, profile facing right. A child's run: arms pumping, knees high, and both feet in the air in two of the frames. Same height throughout. |
-| 12 – 15 | **Hop:** crouch, push off, top of the jump with arms up, land. The site lifts the figure itself (0, −9, −23, −4 px), so draw the feet at the anchor in every frame. |
+| 12 – 15 | **Hop:** crouch, push off, top of the jump with arms up, land. The site lifts the figure itself (0, −2, −5, −1 px for the girl; 0, −2, −6, −1 for the boy), so draw the feet at the ground point in every frame. |
 | new: **peek** (2 frames) | **Leaning out from behind a tree**: the figure stands upright, but the upper body is bent sideways from the hips (about 35° for the girl and 25° for the boy), head tilted. The legs are drawn straight and vertical, because they stay hidden behind the trunk. One frame with a neutral face, one with a big grin. Today the site fakes this by tilting the whole figure, feet included. |
 
 ### Frames, Nayan (one sheet)
@@ -215,11 +236,11 @@ Draw it as a real lean against a trunk:
   right of the frame. Draw a few strokes of the trunk only as a guide layer, not in the export. The
   site faces him left, mirrored, with the tree behind his right shoulder.
 - **Contact:** the shoulder blades and the back of the head almost touching the bark, which is a
-  vertical line at about x 300 in the frame. The upper body is tilted back about 8 – 10° from vertical,
+  vertical line about 14 px to the right of the ground point. The upper body is tilted back about 8 – 10° from vertical,
   leaning **into** the trunk. Draw that tilt, rather than having the site rotate the figure.
-- **Hips:** pushed slightly forward, away from the trunk, about 20 – 25 px in the frame. His weight
+- **Hips:** pushed slightly forward, away from the trunk, about 5 px. His weight
   is between the trunk and his standing foot.
-- **Legs:** the standing leg is straight, slightly angled, foot flat on the ground about 40 px in front
+- **Legs:** the standing leg is straight, slightly angled, foot flat on the ground about 10 px in front
   of the trunk line. The other leg is bent at the knee, with the **sole of that foot flat against the
   trunk** at about knee height, or alternatively crossed in front of the standing leg with the toe on
   the ground. Both feet must be on the ground line or on the trunk, never floating.
@@ -231,14 +252,14 @@ Draw it as a real lean against a trunk:
   100 px tall.
 - Optional extras: **3b**, the same lean with the head turned to follow the kids, and **3c**, the
   same lean with one ankle crossed, to switch between every few seconds.
-- **The anchor** stays at the standing foot (256, 440) so the site can place him at (1350, 790)
-  against the trunk without tilting him.
+- **The ground point** stays at the standing foot (80, 152) so the site can place him at
+  (1350, 790) against the trunk without tilting him.
 
 ### Fix in the next version
 
 - Lines: thinner and greyer, especially on the small girl. White inside.
 - Run cycles: feet must not slide. Plant one foot per stride and move the body about 105 ÷ 9 ≈ 12
-  drawing px per frame.
+  px per frame.
 
 ---
 
@@ -275,7 +296,7 @@ kiss line up.
 | 9.6 – 10.7 s | They **walk back inside**, seen from behind, holding hands. | turn-back → step-inside |
 | 10.7 – 11.7 s | They **pull the doors shut** from inside. | pull-shut |
 
-### Frames (2 sheets, pair 287 px tall, feet at (256, 448))
+### Frames (2 sheets of 160 × 160 cells, pair 104 px tall, ground point (80, 152))
 
 The current kit's 16 poses (0 neutral, 1 reach-handles, 2 push, 3 hold-open, 4 – 5 step forward,
 6 glance, 7 turn-inward, 8 embrace, 9 lean-in, 10 kiss, 11 kiss-hold, 12 separate, 13 turn-back,
@@ -295,7 +316,7 @@ not follow the arm. Properly drawn wave poses will look much better.
 
 ### Fix in the next version
 
-- **Faces:** they are the most important thing and are only about 12 px tall on screen. Draw them
+- **Faces:** they are the most important thing and are only about 10–12 px tall. Draw them
   with a few strong, recognisable marks (Nóri's fringe and smile, Max's curls and beard) rather than
   fine detail, which turns grey at that size.
 - **Same line style** as the rest of the drawing (thin and grey, see section 0). The current kit is
@@ -311,16 +332,15 @@ not follow the arm. Properly drawn wave poses will look much better.
 
 For each character:
 
-- [ ] `spritesheets/<name>.png`: 2048 × 2048, 4 × 4 frames of 512, transparent outside, white
-  inside, facing right. Use a second sheet `<name>-2.png` if more than 16 frames.
+- [ ] `spritesheets/<name>.png`: 4 × 4 cells at the 1 : 1 sizes of section 0, transparent
+  outside, white inside, facing right. Use a second sheet `<name>-2.png` if more than 16 frames.
 - [ ] `frames/<name>/NN.png`: the same frames as separate files.
-- [ ] `animations.json`: the clips (frames, fps, loop), the anchor (feet) and the nominal height.
-- [ ] The line style from section 0 (grey, thin, uneven, no shading), checked by viewing the figure
-  at its on-screen size next to the invite.
+- [ ] `animations.json`: the clips (frames, fps, loop), the cell size, the ground point and the figure height.
+- [ ] The line style from section 0 (grey, 1.25–1.75 px, uneven, no shading), checked at 100 % zoom
+  next to the invite.
 - [ ] Feet on the anchor in every frame, no jitter on frames that stand still, no sliding feet in walk
   and run cycles.
 
 When the new sheets arrive, drop them into `assets/kit-source/spritesheets/` (or
-`assets/couple-kit/spritesheets/`), run `python3 tools/prepare_sprites.py`, and adjust the clip
-frame numbers at the top of `main.js` if the layout changed. If the new assets already match the
-line style, the restyling in that script can be switched off.
+`assets/couple-kit/spritesheets/`), and the site will draw them 1 : 1 with no resampling or
+restyling (the sizes and ground points in `main.js` get updated to the new sheets once).
