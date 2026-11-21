@@ -13,8 +13,8 @@
     base: "assets/forest-wind/",
     // The kit's default (1) only moves each piece 1–2 screen pixels: invisible. These values
     // make the canopy sway noticeably while staying calm. ?wind=2 / ?windSpeed=1 to try others.
-    intensity: Number(new URLSearchParams(location.search).get("wind")) || 4,
-    speed: Number(new URLSearchParams(location.search).get("windSpeed")) || 1.8, // ×kit tempo
+    intensity: Number(new URLSearchParams(location.search).get("wind")) || 7,
+    speed: Number(new URLSearchParams(location.search).get("windSpeed")) || 2.2, // ×kit tempo
     rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
 

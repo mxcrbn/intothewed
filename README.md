@@ -5,7 +5,7 @@ A single full-screen page showing the invitation drawing (the house in the woods
 - **Wind in the trees**: the illustrator's forest-wind kit — 97 small leaf and twig fragments cut from
   the drawing, each rotating around its attachment point, with staggered timing and slowly changing
   gusts. The kit's default strength only moves pieces 1–2 screen pixels, so the site runs it at
-  intensity 4 and 1.8× tempo (`WIND` in `main.js`; try others with `?wind=2&windSpeed=1`). The house,
+  intensity 7 and 2.2× tempo (`WIND` in `main.js`; try others with `?wind=2&windSpeed=1`). The house,
   trunks, fence and garden never move.
 - **The owl** (illustrator's kit) sits on its branch, blinks, and ~12 s after opening takes off, flies
   across the scene and lands on the big tree on the right. It flies back after ~28 s, and so on.
@@ -37,7 +37,8 @@ halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `
 - `assets/invite-original.webp` — the drawing from the invite (source of truth).
 - `assets/kit-source/` — the illustrator's animation kit as delivered (sprite sheets + `animations.json`).
 - `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py` (lines
-  thickened and darkened to match the invite's pen at the size they appear in the scene).
+  toned to the invite's light grey pencil: softer, slightly uneven strokes, a touch lighter than the
+  drawing's own lines).
 - `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and
   `wind-rig.json` (pivot, amplitude, phase, depth, lag per fragment). Its wind function is reproduced in
   `main.js`; the kit's own renderer and README are kept alongside for reference.
