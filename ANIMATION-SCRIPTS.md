@@ -7,9 +7,9 @@ and Nóri & Max. Each section has:
 2. the frames to draw, one by one;
 3. what is wrong with the current assets and has to be fixed.
 
-All positions are in the pixels of the invitation drawing (`assets/invite-original.webp`, 1536 × 1024).
+All positions are in the pixels of the invitation drawing (`public/assets/invite-original.webp`, 1536 × 1024).
 x goes from left to right and y from top to bottom. The point (x, y) of a character is always where
-its feet touch the ground. The site is built from these numbers (`main.js`), so assets that follow
+its feet touch the ground. The site is built from these numbers (`components/scene/animation.js`), so assets that follow
 them drop straight in.
 
 ---
@@ -19,7 +19,7 @@ them drop straight in.
 ### Size: draw everything at its final size (1 : 1 with the invitation)
 
 The site never resizes the characters. **One pixel of an asset is one pixel of the invitation
-drawing** (`assets/invite-original.webp`, 1536 × 1024). On any screen the browser scales the
+drawing** (`public/assets/invite-original.webp`, 1536 × 1024). On any screen the browser scales the
 characters by exactly the same factor as the house and the trees, so the lines stay identical: same
 thickness, same softness, same grain.
 
@@ -346,6 +346,6 @@ For each character:
 - [ ] Feet on the anchor in every frame, no jitter on frames that stand still, no sliding feet in walk
   and run cycles.
 
-When the new sheets arrive, drop them into `assets/kit-source/spritesheets/` (or
-`assets/couple-kit/spritesheets/`), and the site will draw them 1 : 1 with no resampling or
-restyling (the sizes and ground points in `main.js` get updated to the new sheets once).
+When the new sheets arrive, drop them into `public/assets/kit-source/spritesheets/` (or
+`public/assets/couple-kit/spritesheets/`), and the site will draw them 1 : 1 with no resampling or
+restyling (the sizes and ground points in `animation.js` get updated to the new sheets once).

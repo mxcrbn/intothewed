@@ -20,13 +20,15 @@ turned on, it stays still, and without JavaScript it shows the plain drawing.
 
 ## Run it
 
-It's a static page with no build step:
+It's a Next.js app (App Router):
 
 ```bash
-python3 -m http.server 8417
+npm install
+npm run dev
 ```
 
-Then open http://localhost:8417.
+Then open http://localhost:3000. `npm run build` makes the production build; it deploys as is on
+Vercel.
 
 Handy URL parameters for working on it:
 
@@ -39,16 +41,19 @@ Handy URL parameters for working on it:
 
 ## How it's made
 
-- **The drawing:** `assets/invite-original.webp`, the invitation itself, is the source of truth.
+- **The drawing:** `public/assets/invite-original.webp`, the invitation itself, is the source of truth.
   Every position in the code is in its pixels (1536 × 1024).
-- **The trees:** the illustrator's¹ forest-wind kit (`assets/forest-wind/`). It has 97 fragments cut
+- **The trees:** the illustrator's¹ forest-wind kit (`public/assets/forest-wind/`). It has 97 fragments cut
   from the drawing, each rotating around where it is attached.
-- **The characters:** lovingly hand-drawn² sprite sheets (`assets/kit-source/`, `assets/couple-kit/`).
+- **The characters:** lovingly hand-drawn² sprite sheets (`public/assets/kit-source/`, `public/assets/couple-kit/`).
   `tools/prepare_sprites.py` restyles them to match the invitation's pen (fine grey ink, slight
-  wobble, white inside) and writes `assets/sprites/`.
-- **The page:** `index.html`, `style.css` and `main.js`, with no dependencies. Two canvases: one
-  for the trees in the wind, one for the characters. All the choreography (paths, timing, sizes) is
-  in plain settings at the top of `main.js`.
+  wobble, white inside) and writes `public/assets/sprites/`.
+- **The page:** a Next.js app. The home page (`app/page.tsx`) is the scene component
+  (`components/scene/Scene.tsx`), which starts the animation engine
+  (`components/scene/animation.js`, plain JavaScript with no dependencies). Two canvases: one for
+  the trees in the wind, one for the characters. All the choreography (paths, timing, sizes) is in
+  plain settings at the top of `animation.js`. More pages (RSVP, programme, venue…) go in
+  `app/<name>/page.tsx`.
 - **Animation scripts:** `ANIMATION-SCRIPTS.md` scripts every animation beat by beat and lists the
   frames to draw. Use it to regenerate better assets.
 
@@ -57,13 +62,16 @@ Handy URL parameters for working on it:
 ## Files
 
 ```
-index.html, style.css, main.js    the page
-ANIMATION-SCRIPTS.md              beat-by-beat scripts for regenerating the animations
-assets/invite-original.webp       the invitation drawing
-assets/forest-wind/               wind kit: background, fragment atlas, rig
-assets/kit-source/                owl, deer, children sprite sheets as delivered
-assets/couple-kit/                Nóri & Max sprite sheets, rig and door leaves
-assets/sprites/                   web-ready sprites (generated)
-tools/prepare_sprites.py          builds assets/sprites/ from the kits
-tools/make_couple_wave.py         makes the couple's waving poses
+app/layout.tsx, app/globals.css       the page shell
+app/page.tsx                          the home page: the animated invitation
+components/scene/Scene.tsx            the scene (canvases + fallback drawing)
+components/scene/animation.js         the animation engine and all its tuning
+ANIMATION-SCRIPTS.md                  beat-by-beat scripts for regenerating the animations
+public/assets/invite-original.webp    the invitation drawing
+public/assets/forest-wind/            wind kit: background, fragment atlas, rig
+public/assets/kit-source/             owl, deer, children sprite sheets as delivered
+public/assets/couple-kit/             Nóri & Max sprite sheets, rig and door leaves
+public/assets/sprites/                web-ready sprites (generated)
+tools/prepare_sprites.py              builds public/assets/sprites/ from the kits
+tools/make_couple_wave.py             makes the couple's waving poses
 ```

@@ -1,3 +1,10 @@
 .DS_Store
 __pycache__/
 HANDOVER-CHATGPT.md
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+.env*.local

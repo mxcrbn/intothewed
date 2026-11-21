@@ -4,7 +4,7 @@ Run from the repo root:  python3 tools/make_couple_wave.py   (then tools/prepare
 
 Takes the kit's "hold-open" pose (both outer arms held out) and swings each outer forearm up
 around its elbow (the end of the sleeve), like a hello wave. Writes a 4x4 sheet in the kit's
-format, assets/couple-kit/spritesheets/couple-wave.png:
+format, public/assets/couple-kit/spritesheets/couple-wave.png:
   cell 0  arms half raised
   cell 1  wave, hands leaning out
   cell 2  wave, hands leaning in
@@ -12,8 +12,8 @@ This is a stopgap: see ANIMATION-SCRIPTS.md for the poses to have drawn properly
 """
 from PIL import Image, ImageDraw
 
-SRC = "assets/couple-kit/spritesheets/couple.png"
-OUT = "assets/couple-kit/spritesheets/couple-wave.png"
+SRC = "public/assets/couple-kit/spritesheets/couple.png"
+OUT = "public/assets/couple-kit/spritesheets/couple-wave.png"
 CELL = 512
 HOLD_OPEN = 3   # kit pose index
 

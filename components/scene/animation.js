@@ -1,5 +1,6 @@
-(() => {
-  "use strict";
+// The animated invitation: wind in the trees, the owl, the deer, the children and Nóri & Max,
+// drawn on two canvases inside `root` (see Scene.tsx). Returns a function that stops it.
+export function startScene(root) {
 
   // Drawing size in its own pixels. Every position below is in these pixels.
   const W = 1536, H = 1024;
@@ -10,7 +11,7 @@
   // leaf/twig fragments cut from the drawing, each rotating around its attachment point,
   // with staggered timing and slowly changing gusts. House, trunks, fence stay still.
   const WIND = {
-    base: "assets/forest-wind/",
+    base: "/assets/forest-wind/",
     // The kit's default (1) only moves each piece 1–2 screen pixels: invisible. These values
     // make the canopy sway noticeably while staying calm. ?wind=2 / ?windSpeed=1 to try others.
     intensity: Number(new URLSearchParams(location.search).get("wind")) || 7,
@@ -114,14 +115,14 @@
   // Sprite sheets (4x4 frames) prepared by tools/prepare_sprites.py from the animation kit.
   // Anchors and clips come from the kit's animations.json, in its 512px frame units.
   const SPRITES = {
-    owl: { src: "assets/sprites/owl.webp", nominalHeight: 136, anchor: [256, 326], clips: {
+    owl: { src: "/assets/sprites/owl.webp", nominalHeight: 136, anchor: [256, 326], clips: {
       perched: { frames: [0, 0, 0, 1, 0], fps: 2, loop: true },
       takeoff: { frames: [2, 3], fps: 9 },
       fly:     { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 10, loop: true, anchor: [256, 270] },
       glide:   { frames: [12], fps: 2, loop: true, anchor: [256, 270] },
       land:    { frames: [13, 14, 15], fps: 7 },
     } },
-    deer: { src: "assets/sprites/deer.webp", nominalHeight: 237, anchor: [256, 440], clips: {
+    deer: { src: "/assets/sprites/deer.webp", nominalHeight: 237, anchor: [256, 440], clips: {
       idle:     { frames: [0, 0, 1, 0, 0, 2, 2, 2, 0, 3, 0, 0, 0], fps: 2 },   // one look at us (frame 2)
       walk:     { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 8, loop: true },
       walkAway: { frames: [12, 13, 14, 15], fps: 6, loop: true },
@@ -134,16 +135,16 @@
     run:  { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 9, loop: true },
     hop:  { frames: [12, 13, 14, 15, 0], fps: 7, offsetY: [0, -9, -23, -4, 0] },
   };
-  SPRITES.couple = { src: "assets/sprites/couple.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
+  SPRITES.couple = { src: "/assets/sprites/couple.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
   // poses 16–18: waving (made by tools/make_couple_wave.py from the kit's hold-open pose)
-  SPRITES.coupleWave = { src: "assets/sprites/couple-wave.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
-  SPRITES.teenager = { src: "assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
+  SPRITES.coupleWave = { src: "/assets/sprites/couple-wave.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
+  SPRITES.teenager = { src: "/assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
     ...CHILD_CLIPS,
     wave: { frames: [0, 1, 1, 1, 1, 0], fps: 3 },           // one wave
     lean: { frames: [2], fps: 1, loop: true },               // hands in pockets, one knee bent
   } };
-  SPRITES.girl     = { src: "assets/sprites/girl.webp",     nominalHeight: 283, anchor: [256, 440], clips: CHILD_CLIPS };
-  SPRITES.boy      = { src: "assets/sprites/boy.webp",      nominalHeight: 288, anchor: [256, 440], clips: CHILD_CLIPS };
+  SPRITES.girl     = { src: "/assets/sprites/girl.webp",     nominalHeight: 283, anchor: [256, 440], clips: CHILD_CLIPS };
+  SPRITES.boy      = { src: "/assets/sprites/boy.webp",      nominalHeight: 288, anchor: [256, 440], clips: CHILD_CLIPS };
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -171,11 +172,11 @@
   }
 
   // ===== DOM ==========================================================================
-  const scene = document.getElementById("scene");
-  const canvas = document.getElementById("trees");
-  const lifeCanvas = document.getElementById("life");
+  const scene = root;
+  const canvas = root.querySelector("#trees");
+  const lifeCanvas = root.querySelector("#life");
   const life = lifeCanvas.getContext("2d");
-  const fallback = document.getElementById("fallback");
+  const fallback = root.querySelector("#fallback");
 
   // ===== Layout: fill the screen like the invite, keep both owl branches and the
   // children (bottom of the drawing) visible ===========================================
@@ -524,17 +525,29 @@
       Object.assign(forest, { rig, background: bg, atlas });
     }));
   const leaves = ["left", "right"].map(side =>
-    load(`assets/couple-kit/scene/door-${side}.png`).then(img => { doorLeaves[side] = img; }));
+    load(`/assets/couple-kit/scene/door-${side}.png`).then(img => { doorLeaves[side] = img; }));
+  let disposed = false;
+  const onResize = () => { layout(); if (reduceMotion) frame(performance.now()); };
+  const onVisibility = () => {
+    if (document.hidden) { running = false; }
+    else if (!running && !disposed) { running = true; last = performance.now(); requestAnimationFrame(frame); }
+  };
   Promise.all([forestReady, ...sprites, ...leaves]).then(() => {
+    if (disposed) return;
     layout();
-    window.addEventListener("resize", () => { layout(); if (reduceMotion) frame(performance.now()); });
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) { running = false; }
-      else if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); }
-    });
+    window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibility);
 
     last = performance.now();
     frame(last);
     requestAnimationFrame(() => scene.classList.add("ready"));
   }).catch(() => { /* keep the static fallback */ });
-})();
+
+  return () => {
+    disposed = true;
+    running = false;
+    window.removeEventListener("resize", onResize);
+    document.removeEventListener("visibilitychange", onVisibility);
+    scene.classList.remove("ready", "nofade");
+  };
+}

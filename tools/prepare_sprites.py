@@ -2,8 +2,8 @@
 
 Run from the repo root:  python3 tools/prepare_sprites.py
 
-Input : assets/kit-source/spritesheets/<name>.png  (4x4 grid of 512px frames, from the illustrator's kit)
-Output: assets/sprites/<name>.webp                 (same grid, smaller, restyled)
+Input : public/assets/kit-source/spritesheets/<name>.png  (4x4 grid of 512px frames, from the illustrator's kit)
+Output: public/assets/sprites/<name>.webp                 (same grid, smaller, restyled)
 
 The kit's lines are clean, even vector-like strokes. The invitation is drawn with a fine pen:
 neutral dark-grey ink about 2 px wide (in drawing pixels), slightly wobbly, with uneven
@@ -27,8 +27,8 @@ SHEETS = {
     "girl":     (56 / 283,  1024),
     "boy":      (74 / 288,  1024),
     # the couple (separate kit): keep the drawn faces exactly, so no wobble / overdraw
-    "couple":   (104 / 287, 1536, "assets/couple-kit/spritesheets/couple.png", False),
-    "couple-wave": (104 / 287, 1536, "assets/couple-kit/spritesheets/couple-wave.png", False),  # tools/make_couple_wave.py
+    "couple":   (104 / 287, 1536, "public/assets/couple-kit/spritesheets/couple.png", False),
+    "couple-wave": (104 / 287, 1536, "public/assets/couple-kit/spritesheets/couple-wave.png", False),  # tools/make_couple_wave.py
 }
 STROKE = 1.25         # target line width, drawing px (the invite: ~1.5–2, but the figures are tiny)
 WOBBLE = 0.45         # line wobble amplitude, drawing px
@@ -96,7 +96,7 @@ def to_arr(img):
 
 for i, (name, spec) in enumerate(SHEETS.items()):
     scale, size = spec[0], spec[1]
-    path = spec[2] if len(spec) > 2 else f"assets/kit-source/spritesheets/{name}.png"
+    path = spec[2] if len(spec) > 2 else f"public/assets/kit-source/spritesheets/{name}.png"
     sketchy = spec[3] if len(spec) > 3 else True
     rng = np.random.default_rng(11 + i)
     src = Image.open(path).convert("RGBA")
@@ -132,5 +132,5 @@ for i, (name, spec) in enumerate(SHEETS.items()):
     out_alpha = np.where(fill, 1.0, np.clip(cover * 1.4, 0, 1))
     out = np.dstack([tone, tone, tone, out_alpha])
     img = Image.fromarray((out * 255).astype(np.uint8)).resize((size, size), Image.LANCZOS)
-    img.save(f"assets/sprites/{name}.webp", quality=90, method=6)
+    img.save(f"public/assets/sprites/{name}.webp", quality=90, method=6)
     print(f"{name}: kit stroke ≈{have:.1f}px, want {want:.1f}px (grow {grow:.1f})")
