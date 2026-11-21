@@ -15,6 +15,13 @@ It opens full screen on the drawing, and if you stay a moment, things start to h
   wanders back into the forest.
 - **Nóri & Max** open the front door, step out, wave hello, kiss, and go back inside.
 
+After the first kiss, a small hand-drawn arrow appears at the bottom: scrolling (or tapping it)
+dissolves the drawing into the paper and brings up the **invitation card**, which uses the printed
+invite's own lettering and rings: Nóri & Max, Cegléd, Hungary, August 2027 (the exact venue and date
+stay on the printed card), and an RSVP button. The card speaks Magyar, English (the default) or
+Français, switched at the top left and remembered in the browser. The RSVP form itself is still to
+come (`/rsvp/` says so for now).
+
 All the motion is slow and discreet, so the page still feels like the drawing. With reduced motion
 turned on, it stays still, and without JavaScript it shows the plain drawing.
 
@@ -41,7 +48,7 @@ Handy URL parameters for working on it:
 
 | parameter | what it does |
 |---|---|
-| `?t=40` | start 40 s in (shows a clock, no fade-in); `?t=30` deer, `?t=56` couple |
+| `?t=40` | start 40 s in (shows a clock, no fade-in); `?t=30` deer, `?t=56` couple, `?t=62` the arrow |
 | `?fly=0.5` | with `?t=`, put the owl halfway through a flight |
 | `?focus=1300,700,4` | zoom ×4 on a point of the drawing |
 | `?wind=0.6&windSpeed=0.8` | try other wind settings (defaults 1 and 1) |
@@ -73,7 +80,10 @@ Handy URL parameters for working on it:
 
 ```
 app/layout.tsx, app/globals.css       the page shell
-app/page.tsx                          the home page: the animated invitation
+app/page.tsx                          the home page: the drawing, then the card
+app/rsvp/page.tsx                     RSVP (placeholder until the form exists)
+components/Home.tsx                   the two screens and the scroll dissolve between them
+components/invitation/                the card, the language switch, all texts (i18n.ts)
 app/favicon.ico, icon.png, apple-icon.png  the wedding-rings favicon
 components/scene/Scene.tsx            the scene (canvases + fallback drawing)
 components/scene/animation.js         the animation engine and all its tuning
@@ -84,5 +94,6 @@ public/assets/characters/             owl, deer, kids, Nayan, Nóri & Max: 1:1 s
 public/assets/doors/                  the two front-door leaves
 art/characters/                       4× masters and notes of the current asset pack
 tools/import_assets.py                brings a new asset pack into the site
+tools/extract_invite.py               cuts the names and rings out of the invite card (art/invite/)
 tools/make_favicon.py                 builds the favicon (transparent rings, light halo) from art/favicon/
 ```

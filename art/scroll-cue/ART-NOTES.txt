@@ -1,0 +1,17 @@
+ART NOTES
+
+Mode: isolated transparent asset generation, with the supplied forest-house image as a line-style reference. Final art uses the fine-stroke versions.
+
+Exports: tightly aligned transparent layers at native and 4× sizes. The sun's original circular centre remains steady; separated original ray groups pulse. The arrow is shortened at an existing pen-lift gap. CSS adds a quarter-pixel ink edge for legibility at browser size. No scene replacement is needed.
+
+Prompts:
+
+SUN
+Create ONE isolated hand-drawn SUN asset for the wedding website whose drawing is shown in the reference. Use the reference ONLY for line style, do not reproduce the house, trees or scene.
+A small simple sun: one slightly imperfect circular disc, empty paper-white #fefefe interior, about10–12 separate uneven short straight/slightly bent rays around it with natural length variation. No face or facial features, no eyes, no words, no cloud, no horizon. Neutral-grey pen #1c1c1c, lighter pressure variation and a few fine broken line ends matching the airy handmade house sketch. No black fill, no thick vector strokes, no dense details, no shading, no colored yellow, no glow, no shadow or texture. The website will animate the rays, so leave a CLEAR transparent gap between disc and EVERY ray, and keep all rays separated from each other.
+One centred sun on a square TRUE TRANSPARENT canvas. The disc is about40% of the total sun diameter; rays extend out to the outer diameter, with clear blank space between disc and rays. Whole glyph fills about75% of canvas width/height. Readable delicate contour at final sun diameter90pixels, around1.25–1.75px lines at that display size. Generous transparent margins. Consistent simple handmade drawing, one symbol only, no mockup or comparison grid.
+
+ARROW
+Create ONE isolated downward SCROLL ARROW for the wedding website illustration shown in the reference. Use reference only for fine imperfect pen style. No house or other scene.
+A simple elegant hand-drawn vertical shaft with a tiny natural wobble and an open V-shaped arrowhead pointing DOWN. Shaft and arrowhead meet or almost meet with a very small casual pen gap. Slightly unequal hand-drawn diagonal lengths, slim rounded pen ends, no mathematically perfect vector look. Neutral dark-grey #1c1c1c with gentle pressure variation and a couple very small line breaks. No fill, no outline box, no circle, no doubled chevrons, no curls, no fancy flourishes, no dotted trail, no letters, no shadow, no glow, no color.
+One centred narrow arrow on TRUE TRANSPARENT background, portrait composition with generous transparent margins. The symbol will be about24pixels wide and40pixels tall; contour should read around1.5px at that size. Keep it clear and inviting, not heavy or cartoonish. Output only the arrow asset, no labels or scene.

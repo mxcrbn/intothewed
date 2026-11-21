@@ -1,22 +1,46 @@
 :root {
   --paper: #fefefe;
+  --ink: #1c1c1c;
+  --p: 0;              /* scroll progress, 0 = the drawing, 1 = the invitation card (Home.tsx) */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
-  height: 100%;
+html {
   background: var(--paper);
-  overflow: hidden;
+  scroll-snap-type: y mandatory;      /* the page rests on the drawing or on the card */
+  scroll-behavior: smooth;
+  scrollbar-width: none;              /* two full screens: no scrollbar (the arrow shows the way) */
+}
+html::-webkit-scrollbar { display: none; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-serif), "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ===== The two scroll stops ============================================================= */
+.stop {
+  height: 100vh;
+  height: 100svh;
+  scroll-snap-align: start;
+}
+
+/* ===== Screen 1: the drawing ============================================================= */
 #scene {
   position: fixed;
   inset: 0;
+  z-index: 0;
   background: var(--paper);
+  /* fades into the paper and draws slightly closer as the card comes in */
+  opacity: clamp(0, calc(1 - var(--p) * 2), 1);           /* gone halfway */
+  transform: scale(calc(1 + var(--p) * 0.06));
+  transform-origin: 50% 62%;
 }
 
-/* Static fallback drawing; main.js lays it out exactly like the canvas */
+/* Static fallback drawing; animation.js lays it out exactly like the canvas */
 #fallback {
   position: absolute;
   left: 50%;
@@ -45,3 +69,157 @@ html, body {
 /* debug (?t=): no fade-in, so screenshots show the scene at full strength */
 .nofade #trees,
 .nofade #life { transition: none; }
+
+/* the hand-drawn arrow, bottom centre, once the couple has kissed (class "cue") */
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  /* just under the drawing when it doesn't fill the screen (phones), else at the bottom */
+  top: min(calc(var(--art-bottom, 100vh) + 4px),
+           calc(100% - 80px - max(10px, 2vh) - env(safe-area-inset-bottom)));
+  width: 64px;
+  height: 80px;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.6s ease, visibility 0s linear 1.6s;
+  -webkit-tap-highlight-color: transparent;
+}
+.cue .scroll-cue {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1.6s ease;
+}
+.scroll-cue__fade { opacity: clamp(0, calc(1 - var(--p) * 4), 1); }
+.scroll-cue img {
+  display: block;
+  width: clamp(26px, 2.2vw, 34px);
+  height: auto;
+  /* a quarter-pixel ink edge, so the fine pen line reads at this size */
+  filter: drop-shadow(.25px 0 0 var(--ink)) drop-shadow(-.25px 0 0 var(--ink));
+  animation: scroll-invite 2.6s ease-in-out infinite;
+}
+.scroll-cue:focus-visible { outline: 1px dashed #6a6a6a; outline-offset: 2px; border-radius: 8px; }
+@keyframes scroll-invite {
+  0%, 100% { opacity: .7; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(6px); }
+  75% { opacity: .7; transform: translateY(0); }
+}
+
+/* ===== Screen 2: the invitation card ===================================================== */
+.card-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;            /* only its links and buttons take clicks */
+  opacity: clamp(0, calc((var(--p) - 0.5) * 2.2), 1);     /* rises in after halfway */
+  transform: translateY(calc((1 - var(--p)) * 5vh));
+}
+.card-layer a,
+.card-layer button { pointer-events: auto; }
+
+.page { position: relative; min-height: 100vh; min-height: 100svh; }
+
+/* Magyar · English · Français */
+.langs {
+  position: absolute;
+  top: calc(clamp(12px, 3vh, 32px) + env(safe-area-inset-top));
+  left: calc(clamp(16px, 3vw, 40px) + env(safe-area-inset-left));
+  z-index: 1;
+  font-size: 15px;
+  letter-spacing: .12em;
+}
+.langs__dot { margin: 0 .55em; opacity: .6; }
+.langs__item {
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  padding: 8px 1px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+.langs__item:hover { text-decoration-color: rgba(28, 28, 28, .35); }
+.langs__item[aria-current="true"] { text-decoration-color: var(--ink); }
+.langs__item:focus-visible { outline: 1px dashed #6a6a6a; outline-offset: 2px; }
+
+.card {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(64px, 12vh, 120px) 16px calc(clamp(28px, 7vh, 72px) + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.card__names img {
+  display: block;
+  width: min(84vw, 620px);
+  height: auto;
+}
+.card__rings {
+  display: block;
+  width: min(38vw, 210px);
+  height: auto;
+  margin: clamp(18px, 4.5vh, 44px) 0 clamp(22px, 5vh, 48px);
+}
+.card__line {
+  font-size: clamp(17px, 2vw, 25px);
+  letter-spacing: .3em;
+  margin-right: -.3em;           /* the tracking after the last letter would push it off-centre */
+  line-height: 1.5;
+}
+.card__date { margin-top: clamp(8px, 1.6vh, 16px); }
+
+.card__names--small img { width: min(70vw, 440px); }
+.card__rings--small { width: min(28vw, 140px); }
+
+/* RSVP: a thin pen frame, drawn twice like the invitation's lines */
+.sketch-button {
+  position: relative;
+  display: inline-block;
+  margin-top: 24px;
+  padding: 16px 32px 15px 36px;
+  font-size: 15px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid rgba(28, 28, 28, .85);
+  border-radius: 2px;
+  transition: background-color .35s ease, color .35s ease;
+}
+.sketch-button::after {
+  content: "";
+  position: absolute;
+  inset: -3px -2px -2px -4px;
+  border: 1px solid rgba(28, 28, 28, .3);
+  border-radius: 3px;
+  transform: rotate(-.6deg);
+  pointer-events: none;
+}
+.sketch-button:hover,
+.sketch-button:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-cue img { animation: none; opacity: 1; }
+}

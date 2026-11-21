@@ -111,6 +111,7 @@ export function startScene(root) {
     opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
     doorX: 813, doorY: 733, stepX: 815, stepY: 760,
     length: 11.9,         // seconds, from the doors starting to open to shut again
+    cueAt: 9.0,           // the first kiss is over: show the scroll arrow (class "cue" on the scene)
   };
 
   // Characters: the asset pack in assets/characters/ (see tools/import_assets.py). Every frame
@@ -179,6 +180,8 @@ export function startScene(root) {
     else y = Math.min(0, Math.max(vh - H * s, vh - 1015 * s));       // crop the sky, keep the kids
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     Object.assign(view, { x, y, s, vw, vh, dpr });
+    // where the drawing ends on screen: the scroll arrow sits just below it on tall screens
+    scene.style.setProperty("--art-bottom", Math.round(y + H * s) + "px");
     // Debug helper for tuning: ?focus=1300,700,4 zooms on a point of the drawing.
     const focus = query.get("focus");
     if (focus) {
@@ -480,11 +483,22 @@ export function startScene(root) {
   const flyAt = Number(query.get("fly"));
   if (skip > 0 && flyAt > 0) { owl.state = "fly"; owl.since = skip - flyAt * OWL.flightTime; }
 
+  let cueShown = false;
   function frame(now) {
     if (!running) return;
     const dt = Math.min((now - last) / 1000, 0.1); // pause-safe clock
     last = now;
     clock += dt;
+    // after the first kiss (or straight away without motion), invite people to scroll down
+    if (!cueShown && (reduceMotion || clock >= COUPLE.firstAt + COUPLE.cueAt)) {
+      cueShown = true;
+      scene.classList.add("cue");
+    }
+    // while the invitation card covers the drawing, keep time but skip the drawing work
+    if (document.documentElement.dataset.stage === "card") {
+      if (!reduceMotion) requestAnimationFrame(frame);
+      return;
+    }
     const strength = reduceMotion ? 0 : WIND.intensity * smooth(0.3, WIND.rampIn, clock);
     drawForest(clock, strength);
 
@@ -545,6 +559,6 @@ export function startScene(root) {
     running = false;
     window.removeEventListener("resize", onResize);
     document.removeEventListener("visibilitychange", onVisibility);
-    scene.classList.remove("ready", "nofade");
+    scene.classList.remove("ready", "nofade", "cue");
   };
 }

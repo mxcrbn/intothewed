@@ -1,0 +1,68 @@
+{
+  "sun": {
+    "size": [
+      128,
+      128
+    ],
+    "masterSize": [
+      512,
+      512
+    ],
+    "centre": [
+      64,
+      64
+    ],
+    "layers": [
+      "sun-core.png",
+      "sun-rays-a.png",
+      "sun-rays-b.png"
+    ],
+    "rayGroups": 11
+  },
+  "arrow": {
+    "size": [
+      48,
+      64
+    ],
+    "masterSize": [
+      192,
+      256
+    ]
+  },
+  "referenceCanvas": [
+    1536,
+    1024
+  ],
+  "placement": {
+    "sunCentre": [
+      768,
+      92
+    ],
+    "arrowCentre": [
+      768,
+      977
+    ]
+  },
+  "motion": {
+    "sunSeconds": 5.2,
+    "arrowSeconds": 2.6,
+    "arrowTravelCSSPixels": 6
+  },
+  "animatedPreviews": {
+    "sun-shine.webp": {
+      "size": [
+        128,
+        128
+      ],
+      "cycleMs": 5200
+    },
+    "scroll-arrow-bob.webp": {
+      "size": [
+        48,
+        80
+      ],
+      "cycleMs": 2600,
+      "fileDurationMs": 5200
+    }
+  }
+}

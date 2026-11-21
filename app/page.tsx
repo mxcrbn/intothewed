@@ -1,7 +1,7 @@
-import Scene from "@/components/scene/Scene";
+import Home from "@/components/Home";
 
-// Home: the animated invitation. Later pages (RSVP, programme, venue…) live next to this one
-// as app/<name>/page.tsx.
-export default function Home() {
-  return <Scene />;
+// Home: the animated drawing, then the invitation card. Other pages live next to this one as
+// app/<name>/page.tsx (app/rsvp/page.tsx for now).
+export default function Page() {
+  return <Home />;
 }
