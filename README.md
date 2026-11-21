@@ -13,13 +13,14 @@ A single full-screen page showing the invitation drawing (the house in the woods
   trunks, walks out to the middle of the left garden and looks around, then turns back and wanders
   off into the forest.
 - **The three children** (~5 s, then every 75 s) hide behind the big tree on the right. The girl leans
-  her head out on one side, the boy on the other; the girl bolts and the boy chases her across the
-  front lawn. A few seconds into the chase the teenager strolls out, waves once, then leans back
-  against the trunk, hands in pockets, one knee bent, while the kids run back to him and wave. When the kids run off behind the house he
-  pushes off the tree and runs after them. Sizes follow the house (a teenager by the steps is a bit shorter than the door)
-  and shrink with depth.
+  her head out on one side, the boy on the other (one long peek); the girl bolts and the boy chases
+  her across the front lawn. A few seconds in, Nayan (the teenager) strolls out and leans back
+  against the trunk, hands in pockets, one knee bent. The kids run back to him, wave, and slip away
+  behind the house; then Nayan straightens up, waves, and follows them. Sizes follow the house and
+  shrink with depth.
 - **Nóri & Max** (their own kit): right after each deer visit (~52 s, then once a minute) the front
-  doors open, they step out onto the steps, look at each other, kiss, go back in and close the doors.
+  doors open, they step out onto the steps, pause, open their arms to welcome everyone in, look at
+  each other, kiss, go back in and close the doors.
   Sizes are shared by everyone: Max is ~104 px on the steps (the doorway opening is 113 px), a little
   taller than the teenager; the deer's ears reach about two-thirds of his height.
 - Respects `prefers-reduced-motion` (still drawing with the owl perched), and falls back to the plain

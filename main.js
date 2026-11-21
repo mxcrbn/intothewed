@@ -75,33 +75,31 @@
              [820, 442], [940, 494], [1202, 494], [1258, 585], [1228, 585], [1228, 731]] },
     cast: [
       { id: "girl", height: 75, speed: 105, start: [1378, 786], steps: [
-        { face: "left" }, { idle: 1.0 }, { peek: -0.6, dur: 2.4 }, { idle: 1.3 },
-        { peek: -0.6, dur: 1.0 }, { until: 6.2 },
+        { face: "left" }, { idle: 1.0 }, { peek: -0.6, dur: 3.4 }, { until: 6.2 },   // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1262, 776] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 19.8 },
         { to: [1250, 724] }, { to: [1110, 706] },
       ] },
       { id: "boy", height: 100, speed: 105, start: [1404, 787], steps: [
-        { idle: 2.0 }, { peek: 0.42, dur: 2.4 }, { idle: 1.1 }, { peek: 0.42, dur: 0.7 },
-        { until: 6.9 },
+        { idle: 1.8 }, { peek: 0.42, dur: 3.4 }, { until: 6.9 },                 // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1215, 782] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
         { to: [1240, 726] }, { to: [1130, 708] },
       ] },
       { id: "teenager", height: 140, speed: 80, start: [1392, 788], steps: [
-        { until: 9.0 }, { to: [1338, 787] }, { face: "left" }, { clip: "wave" },   // ~3 s into the chase
-        // back against the left side of the trunk, chilling
-        { to: [1350, 790], speed: 40 }, { face: "left" },
-        { peek: 0.09, clip: "lean", dur: 7.9 },   // until the kids run off (~19.9 s)
-        // the kids are off: run after them
-        { to: [1262, 728], speed: 150 }, { to: [1150, 710], speed: 150 },
+        // Nayan: ~3 s into the chase he strolls out and leans back against the trunk, chilling
+        { until: 9.0 }, { to: [1350, 790] }, { face: "left" },
+        { peek: 0.11, clip: "lean", dur: 12.3 },   // until the kids have gone behind the house
+        // then straightens up, waves, and follows them behind the house
+        { idle: 0.6 }, { clip: "wave" }, { idle: 0.3 },
+        { to: [1262, 728], speed: 90 }, { to: [1150, 710], speed: 90 },
       ] },
     ],
   };
 
   // Nóri & Max (their own kit, assets/couple-kit/): after the deer has gone, the front doors
-  // open, they step out onto the steps, look at each other, kiss, go back in and close the
-  // doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
+  // open and they step out onto the steps. A half-second pause, then they open their arms to
+  // welcome everyone in, look at each other, kiss, go back in and close the doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
   // Size: ~104 px on the steps (Max a little taller than the teenager), ~99 px in the doorway,
   // whose opening is 113 px tall.
   const COUPLE = {
@@ -433,13 +431,16 @@
     else if (t >= 2.2 && t < 3.2) {
       const u = e(t - 2.2); pose = Math.floor((t - 2.2) * 5) % 2 ? 5 : 4; open = 1; visible = true;
       inside = u < 0.45; x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
-    } else if (t >= 3.2 && t < 7.5) {
+    } else if (t >= 3.2 && t < 9.6) {
       open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
-      pose = t < 3.5 ? 6 : t < 3.8 ? 7 : t < 4.3 ? 8 : t < 4.8 ? 9 : t < 5.6 ? 10 : t < 6.4 ? 11 : t < 7 ? 12 : 13;
-    } else if (t >= 7.5 && t < 8.6) {
-      const u = e((t - 7.5) / 1.1); pose = u < 0.18 ? 13 : 14; open = 1; visible = true;
+      // pause · welcome (arms open) · glance · turn inward · embrace · lean in · kiss · smile · turn back
+      const keys = [[3.7, 0], [4.0, 1], [4.9, 3], [5.2, 1], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
+                    [7.7, 10], [8.5, 11], [9.1, 12], [9.6, 13]];
+      pose = keys.find(([end]) => t < end)[1];
+    } else if (t >= 9.6 && t < 10.7) {
+      const u = e((t - 9.6) / 1.1); pose = u < 0.18 ? 13 : 14; open = 1; visible = true;
       inside = u > 0.58; x = mix(C.stepX, C.doorX, u); y = mix(C.stepY, C.doorY, u);
-    } else if (t >= 8.6 && t < 9.6) { pose = 15; open = 1 - e(t - 8.6); visible = true; }
+    } else if (t >= 10.7 && t < 11.7) { pose = 15; open = 1 - e(t - 10.7); visible = true; }
     return { pose, open, visible, inside, x, y };
   }
   // one door leaf swinging inwards, as thin vertical strips (the kit's doorStrips)
@@ -457,7 +458,7 @@
     if (t < COUPLE.firstAt) return;
     const c = (t - COUPLE.firstAt) % COUPLE.every;
     if (c < 1) return;                 // doors still shut: the background shows them
-    if (c >= 9.6) return;
+    if (c >= 11.7) return;
     const s = coupleAt(c), o = COUPLE.opening;
     const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
     const h = COUPLE.height * depth(s.y) / depth(COUPLE.stepY);
