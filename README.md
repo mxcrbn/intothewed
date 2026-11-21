@@ -34,8 +34,8 @@ Then open http://localhost:3000.
 Every push to `main` publishes the site at **https://noriandmax.com** (GitHub Pages):
 `.github/workflows/pages.yml` runs `npm run build`, which exports the site as plain files to `out/`
 (`output: "export"` in `next.config.ts`), and deploys them. The domain is set by `public/CNAME`.
-Static export means no server code: when the RSVP needs to store answers, it will need a form
-service or a move to a host that runs Next.js servers (e.g. Vercel).
+Static export means no server code: when the RSVP needs to store answers, it will use a form
+service that the static page posts to. (This is a personal site: it stays on GitHub Pages.)
 
 Handy URL parameters for working on it:
 
