@@ -1,12 +1,16 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
+
+import { useState } from "react";
 import Rings from "./Rings";
 import { TEXT, type Lang } from "./i18n";
 
-// The invitation card: the invite's own lettering and its rings (gently animated), then the place and month (the exact
-// venue and date stay on the printed card), and the RSVP button at the bottom.
+// The invitation card: the invite's own lettering and its rings (gently animated), then the place
+// and month (the exact venue and date stay on the printed card), and the RSVP button at the bottom.
+// Until the RSVP form exists, the button says so just under itself, without moving anything else.
 export default function Card({ lang, shown }: { lang: Lang; shown: boolean }) {
   const t = TEXT[lang];
+  const [soon, setSoon] = useState(false);
   return (
     <div className="card">
       <div className="card__body">
@@ -17,7 +21,10 @@ export default function Card({ lang, shown }: { lang: Lang; shown: boolean }) {
         <p className="card__line">{t.place}</p>
         <p className="card__line card__date">{t.date}</p>
       </div>
-      <Link className="sketch-button" href="/rsvp/">{t.rsvp}</Link>
+      <div className="rsvp">
+        <button type="button" className="sketch-button" onClick={() => setSoon(true)}>{t.rsvp}</button>
+        <p className={`rsvp__soon${soon ? " is-shown" : ""}`} aria-live="polite">{soon ? t.soon : ""}</p>
+      </div>
     </div>
   );
 }

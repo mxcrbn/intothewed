@@ -20,7 +20,7 @@ dissolves the drawing into the paper and brings up the **invitation card**, whic
 invite's own lettering and rings (which, every few seconds, gently rock together with two tiny pencil glints): Nóri & Max, Cegléd, Hungary, August 2027 (the exact venue and date
 stay on the printed card), and an RSVP button. The card speaks Magyar, English (the default) or
 Français, switched at the top left and remembered in the browser. The RSVP form itself is still to
-come (`/rsvp/` says so for now).
+come: for now the button says so, just under itself.
 
 All the motion is slow and discreet, so the page still feels like the drawing. With reduced motion
 turned on, it stays still, and without JavaScript it shows the plain drawing.
@@ -81,7 +81,6 @@ Handy URL parameters for working on it:
 ```
 app/layout.tsx, app/globals.css       the page shell
 app/page.tsx                          the home page: the drawing, then the card
-app/rsvp/page.tsx                     RSVP (placeholder until the form exists)
 components/Home.tsx                   the two screens and the scroll dissolve between them
 components/invitation/                the card, the language switch, all texts (i18n.ts)
 app/favicon.ico, icon.png, apple-icon.png  the wedding-rings favicon
