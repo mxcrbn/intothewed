@@ -41,16 +41,17 @@
     walkSpeed: 50,        // px / s
     start: [-90, 745],
     legs: [
-      { walk: [165, 752] },        // out of the woods, behind the trunks
-      { walk: [445, 790] },        // into the left garden, just past the first window
+      { walk: [140, 780] },        // out of the woods, behind the far-left trunk
+      { walk: [445, 792] },        // in front of the second trunk, into the left garden, just past the first window
       { idle: 6.5 },               // looks around, and once at us
       { walk: [240, 748] },        // turns back towards the trees
       { away: [172, 690], dur: 6 } // and wanders off into the forest
     ],
-    // outlines of the two big left trunks: the deer passes behind them
+    // outlines of the two big left trunks, with the y of their roots: the deer is hidden by a
+    // trunk only while its feet are further back (higher up) than that trunk's roots
     trunks: [
-      [[150, 480], [192, 480], [162, 600], [140, 700], [118, 790], [70, 790], [100, 700], [127, 600]],
-      [[240, 480], [258, 480], [238, 600], [232, 700], [240, 760], [262, 774], [182, 780], [205, 700], [222, 600]],
+      { roots: 790, shape: [[150, 480], [192, 480], [162, 600], [140, 700], [118, 790], [70, 790], [100, 700], [127, 600]] },
+      { roots: 778, shape: [[240, 480], [258, 480], [238, 600], [232, 700], [240, 760], [262, 774], [182, 780], [205, 700], [222, 600]] },
     ],
   };
 
@@ -98,8 +99,8 @@
   };
 
   // Nóri & Max (their own kit, assets/couple-kit/): after the deer has gone, the front doors
-  // open and they step out onto the steps. A half-second pause, then they open their arms to
-  // welcome everyone in, look at each other, kiss, go back in and close the doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
+  // open and they step out onto the steps. A half-second pause, then they wave hello, look
+  // at each other, kiss, go back in and close the doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
   // Size: ~104 px on the steps (Max a little taller than the teenager), ~99 px in the doorway,
   // whose opening is 113 px tall.
   const COUPLE = {
@@ -134,6 +135,8 @@
     hop:  { frames: [12, 13, 14, 15, 0], fps: 7, offsetY: [0, -9, -23, -4, 0] },
   };
   SPRITES.couple = { src: "assets/sprites/couple.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
+  // poses 16–18: waving (made by tools/make_couple_wave.py from the kit's hold-open pose)
+  SPRITES.coupleWave = { src: "assets/sprites/couple-wave.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
   SPRITES.teenager = { src: "assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
     ...CHILD_CLIPS,
     wave: { frames: [0, 1, 1, 1, 1, 0], fps: 3 },           // one wave
@@ -349,8 +352,8 @@
     } else {
       drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, sizeAt(y), seg.flip);
     }
-    // the deer walks behind the big trunks: cut their shapes out of it
-    cutOut(DEER.trunks);
+    // the deer walks behind the big trunks: cut their shapes out of it (only those in front)
+    cutOut(DEER.trunks.filter(tr => y < tr.roots).map(tr => tr.shape));
   }
 
   // Erase shapes from the characters canvas, so what was drawn there is hidden behind them.
@@ -433,8 +436,8 @@
       inside = u < 0.45; x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
     } else if (t >= 3.2 && t < 9.6) {
       open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
-      // pause · welcome (arms open) · glance · turn inward · embrace · lean in · kiss · smile · turn back
-      const keys = [[3.7, 0], [4.0, 1], [4.9, 3], [5.2, 1], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
+      // pause · wave hello (raise, two waves, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
+      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 17], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
                     [7.7, 10], [8.5, 11], [9.1, 12], [9.6, 13]];
       pose = keys.find(([end]) => t < end)[1];
     } else if (t >= 9.6 && t < 10.7) {
@@ -463,8 +466,9 @@
     const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
     const h = COUPLE.height * depth(s.y) / depth(COUPLE.stepY);
     const pair = () => {
-      const sp = SPRITES.couple, cell = sp.img.naturalWidth / 4, k = h / sp.nominalHeight;
-      life.drawImage(sp.img, (s.pose % 4) * cell, Math.floor(s.pose / 4) * cell, cell, cell,
+      const sp = s.pose >= 16 ? SPRITES.coupleWave : SPRITES.couple, p = s.pose % 16;
+      const cell = sp.img.naturalWidth / 4, k = h / sp.nominalHeight;
+      life.drawImage(sp.img, (p % 4) * cell, Math.floor(p / 4) * cell, cell, cell,
         s.x - sp.anchor[0] * k, s.y - sp.anchor[1] * k, 512 * k, 512 * k);
     };
     // the doorway: paper white behind, the couple inside it, then the two leaves

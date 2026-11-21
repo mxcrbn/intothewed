@@ -10,7 +10,7 @@ A single full-screen page showing the invitation drawing (the house in the woods
 - **The owl** (illustrator's kit) sits on its branch, blinks, and ~12 s after opening takes off, flies
   across the scene and lands on the big tree on the right. It flies back after ~28 s, and so on.
 - **The deer** comes out of the woods on the left (~22 s, then once a minute), passing behind the big
-  trunks, walks into the left garden just past the first window, looks around (and once at us), then turns back and wanders
+  trunks, walks (in front of the second trunk) into the left garden just past the first window, looks around (and once at us), then turns back and wanders
   off into the forest.
 - **The three children** (~5 s, then every 75 s) hide behind the big tree on the right. The girl leans
   her head out on one side, the boy on the other (one long peek); the girl bolts and the boy chases
@@ -19,7 +19,7 @@ A single full-screen page showing the invitation drawing (the house in the woods
   behind the house; then Nayan straightens up, waves, and follows them. Sizes follow the house and
   shrink with depth.
 - **Nóri & Max** (their own kit): right after each deer visit (~52 s, then once a minute) the front
-  doors open, they step out onto the steps, pause, open their arms to welcome everyone in, look at
+  doors open, they step out onto the steps, pause, wave hello, look at
   each other, kiss, go back in and close the doors.
   Sizes are shared by everyone: Max is ~104 px on the steps (the doorway opening is 113 px), a little
   taller than the teenager; the deer's ears reach about two-thirds of his height.
@@ -46,6 +46,8 @@ halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `
 - `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py`: lines
   restyled to the invite's pen at the size each figure has in the scene (same ~1.5 px dark-grey ink,
   a slight wobble, uneven pressure and a faint overdraw), white inside.
+- `ANIMATION-SCRIPTS.md` — beat-by-beat scripts and frame lists for regenerating every animation asset.
+- `tools/make_couple_wave.py` — makes the couple's waving poses (the kit has none) from its hold-open pose.
 - `assets/couple-kit/` — Nóri & Max kit as delivered: paired-pose atlas, rig, door leaves, its README
   and reference renderer (`couple-door.reference.js`, reproduced in `main.js`).
 - `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and

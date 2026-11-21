@@ -28,6 +28,7 @@ SHEETS = {
     "boy":      (74 / 288,  1024),
     # the couple (separate kit): keep the drawn faces exactly, so no wobble / overdraw
     "couple":   (104 / 287, 1536, "assets/couple-kit/spritesheets/couple.png", False),
+    "couple-wave": (104 / 287, 1536, "assets/couple-kit/spritesheets/couple-wave.png", False),  # tools/make_couple_wave.py
 }
 STROKE = 1.25         # target line width, drawing px (the invite: ~1.5–2, but the figures are tiny)
 WOBBLE = 0.45         # line wobble amplitude, drawing px
