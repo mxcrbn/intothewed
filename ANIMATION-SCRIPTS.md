@@ -1,5 +1,10 @@
 # Animation scripts — N + M wedding site
 
+> **Status:** the current assets (v3 pack, `art/characters/`, imported with
+> `tools/import_assets.py`) follow this brief: every frame is used at 1:1. Two things were fixed on
+> import or in the code: the children's peek frames were drawn lighter and are darkened to match,
+> and the hop lift values were in the old 512 px units (scaled down in `animation.js`).
+
 A brief for regenerating the animation assets. It covers the owl, the deer, the children with Nayan,
 and Nóri & Max. Each section has:
 
@@ -89,7 +94,7 @@ The house and the trees are drawn with a fine pen:
   Faces in particular are 8–12 px tall (Nóri & Max) and need a few strong, readable marks, not fine
   detail.
 
-With assets made this way, the restyling the site does today (`tools/prepare_sprites.py`) is no longer
+With assets made this way, the restyling the site used to do (`tools/prepare_sprites.py`) is no longer
 needed: the files are used exactly as delivered.
 
 ### Sizes relative to each other
@@ -346,6 +351,5 @@ For each character:
 - [ ] Feet on the anchor in every frame, no jitter on frames that stand still, no sliding feet in walk
   and run cycles.
 
-When the new sheets arrive, drop them into `public/assets/kit-source/spritesheets/` (or
-`public/assets/couple-kit/spritesheets/`), and the site will draw them 1 : 1 with no resampling or
-restyling (the sizes and ground points in `animation.js` get updated to the new sheets once).
+When a new pack arrives, run `python3 tools/import_assets.py <unzipped pack folder>`: the site
+draws the frames 1 : 1 with no resampling or restyling.

@@ -7,20 +7,20 @@ export function startScene(root) {
 
   // ===== Tuning =====================================================================
 
-  // Wind in the canopy: the illustrator's "forest wind" kit (assets/forest-wind/). 97 small
-  // leaf/twig fragments cut from the drawing, each rotating around its attachment point,
-  // with staggered timing and slowly changing gusts. House, trunks, fence stay still.
+  // Wind in the canopy: 97 small leaf/twig fragments cut from the drawing (assets/trees/), each
+  // rotating around its attachment point. House, trunks, fence stay still. The motion is the
+  // asset pack's "motion v3": a clear sway with gusts, never swinging a piece past ~38°.
+  // ?wind=0.6 for calmer, ?windSpeed=0.8 for slower.
+  const query = new URLSearchParams(location.search);
   const WIND = {
-    base: "/assets/forest-wind/",
-    // The kit's default (1) only moves each piece 1–2 screen pixels: invisible. These values
-    // make the canopy sway noticeably while staying calm. ?wind=2 / ?windSpeed=1 to try others.
-    intensity: Number(new URLSearchParams(location.search).get("wind")) || 7,
-    speed: Number(new URLSearchParams(location.search).get("windSpeed")) || 2.2, // ×kit tempo
+    base: "/assets/trees/",
+    intensity: Number(query.get("wind")) || 1,
+    speed: Number(query.get("windSpeed")) || 1,
     rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
 
   const OWL = {
-    height: 30,           // on-screen height of the owl
+    bodyLift: 14,         // perched feet → body centre in flight (the owl is 30 px tall)
     firstFlightAt: 12,    // seconds after opening
     restBetween: 28,      // seconds perched before flying back
     flightTime: 5.5,      // seconds in the air
@@ -37,8 +37,6 @@ export function startScene(root) {
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
-    height: 78,           // at y 752 (between the trunks); bigger further forward. A deer's ears
-                          // reach about 2/3 of a man's height (Max is ~104 on the steps)
     walkSpeed: 50,        // px / s
     start: [-90, 745],
     legs: [
@@ -58,93 +56,70 @@ export function startScene(root) {
 
   // The children hide behind the big tree on the right. The girl leans out on one side, the
   // boy on the other; the girl bolts and the boy chases her across the front lawn. They turn
-  // back to the tree. A few seconds into the chase the teenager strolls out, waves once and leans back against the trunk,
-  // hands in pockets, one knee bent. When the kids run off behind the house he pushes off the
-  // tree and runs after them.
-  // Steps: to [x, y] (+speed) (run) | clip (+dur) | idle s | until s (wait for a cue) | face |
-  //        peek angle (+dur, +clip: lean the figure around its feet, radians, negative = left).
-  // Sizes follow the house (a teenager by the front door is a bit shorter than the door) and
-  // shrink with depth.
+  // back to the tree. A few seconds into the chase Nayan strolls out and leans back against the
+  // trunk, hands in pockets, one knee bent. When the kids have run off behind the house he pushes
+  // off the tree, waves, and jogs after them.
+  // Steps: to [x, y] (+speed, +clip: run by default) | clip (+dur) | idle s | until s (wait for a
+  //        cue) | face.
+  // Everyone is drawn at the size of their frames (1:1 with the drawing).
   const CHASE = [[1290, 795], [1150, 800], [1060, 770], [1170, 752], [1300, 762]];
   const KIDS = {
     firstAt: 5,
     every: 75,
-    depth: { y: 995, perPx: 0.0012 },   // size = height × (1 − (995 − y) × 0.0012)
     // the big right trunk (kids behind it are hidden) and the house (kids behind it vanish)
     trunk: [[1352, 600], [1382, 600], [1394, 680], [1412, 700], [1430, 760], [1450, 795],
             [1356, 795], [1364, 700]],
     house: { baseY: 730, outline: [[316, 731], [316, 585], [290, 585], [476, 494], [700, 494],
              [820, 442], [940, 494], [1202, 494], [1258, 585], [1228, 585], [1228, 731]] },
     cast: [
-      { id: "girl", height: 75, speed: 105, start: [1378, 786], steps: [
-        { face: "left" }, { idle: 1.0 }, { peek: -0.6, dur: 3.4 }, { until: 6.2 },   // one long peek
+      { id: "girl", speed: 105, start: [1372, 786], steps: [
+        { face: "left" }, { idle: 1.0 }, { clip: "peekLong" }, { until: 6.2 },   // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1262, 776] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 19.8 },
         { to: [1250, 724] }, { to: [1110, 706] },
       ] },
-      { id: "boy", height: 100, speed: 105, start: [1404, 787], steps: [
-        { idle: 1.8 }, { peek: 0.42, dur: 3.4 }, { until: 6.9 },                 // one long peek
+      { id: "boy", speed: 105, start: [1407, 787], steps: [
+        { idle: 1.8 }, { clip: "peekLong" }, { until: 6.9 },                     // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1215, 782] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
         { to: [1240, 726] }, { to: [1130, 708] },
       ] },
-      { id: "teenager", height: 140, speed: 80, start: [1392, 788], steps: [
-        // Nayan: ~3 s into the chase he strolls out and leans back against the trunk, chilling
-        { until: 9.0 }, { to: [1350, 790] }, { face: "left" },
-        { peek: 0.11, clip: "lean", dur: 12.3 },   // until the kids have gone behind the house
-        // then straightens up, waves, and follows them behind the house
-        { idle: 0.6 }, { clip: "wave" }, { idle: 0.3 },
-        { to: [1262, 728], speed: 90 }, { to: [1150, 710], speed: 90 },
+      { id: "nayan", speed: 90, start: [1392, 788], steps: [
+        // ~3 s into the chase he strolls out and leans back against the trunk, chilling
+        { until: 9.0 }, { to: [1342, 790], clip: "walk", speed: 35 }, { face: "right" },
+        { clip: "lean", dur: 11.2 },               // until the kids have gone behind the house
+        // then pushes off the tree, waves, and jogs after them behind the house
+        { clip: "pushOff" }, { clip: "wave" }, { idle: 0.2 },
+        { to: [1262, 728] }, { to: [1150, 710] },
       ] },
     ],
   };
 
-  // Nóri & Max (their own kit, assets/couple-kit/): after the deer has gone, the front doors
+  // Nóri & Max: after the deer has gone, the front doors
   // open and they step out onto the steps. A half-second pause, then they wave hello, look
-  // at each other, kiss, go back in and close the doors. Poses and timing follow the kit's couple-door.js (16 hand-drawn paired poses).
-  // Size: ~104 px on the steps (Max a little taller than the teenager), ~99 px in the doorway,
-  // whose opening is 113 px tall.
+  // at each other, kiss, go back in and close the doors. Timing follows the first couple kit's
+  // couple-door.js. Max is 104 px tall (the doorway opening is 113 px).
   const COUPLE = {
     firstAt: 52,          // just after the deer has gone back into the forest
     every: 60,            // then once a minute, right after each deer visit
-    height: 104,          // at y 760 (the bottom step); same depth rule as everyone else
     opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
     doorX: 813, doorY: 733, stepX: 815, stepY: 760,
   };
 
-  // Sprite sheets (4x4 frames) prepared by tools/prepare_sprites.py from the animation kit.
-  // Anchors and clips come from the kit's animations.json, in its 512px frame units.
-  const SPRITES = {
-    owl: { src: "/assets/sprites/owl.webp", nominalHeight: 136, anchor: [256, 326], clips: {
-      perched: { frames: [0, 0, 0, 1, 0], fps: 2, loop: true },
-      takeoff: { frames: [2, 3], fps: 9 },
-      fly:     { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 10, loop: true, anchor: [256, 270] },
-      glide:   { frames: [12], fps: 2, loop: true, anchor: [256, 270] },
-      land:    { frames: [13, 14, 15], fps: 7 },
-    } },
-    deer: { src: "/assets/sprites/deer.webp", nominalHeight: 237, anchor: [256, 440], clips: {
-      idle:     { frames: [0, 0, 1, 0, 0, 2, 2, 2, 0, 3, 0, 0, 0], fps: 2 },   // one look at us (frame 2)
-      walk:     { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 8, loop: true },
-      walkAway: { frames: [12, 13, 14, 15], fps: 6, loop: true },
-    } },
+  // Characters: the asset pack in assets/characters/ (see tools/import_assets.py). Every frame
+  // is a 128 × 128 cell at the drawing's own scale, used exactly as delivered: never resized.
+  // Sheets hold 3 × 2 cells; frame i is in sheet floor(i / 6), cell i % 6. Clips come from the
+  // pack's animations.json, with these changes:
+  const CAST = "/assets/characters/";
+  const peekLong = { frames: [16, 16, 17, 17, 17, 17, 16], fps: 2 };   // one long peek, 3.5 s
+  const CLIP_CHANGES = {
+    deer: { idle: { frames: [0, 0, 1, 0, 0, 2, 2, 2, 0, 3, 0, 0, 0], fps: 2 } },   // one look at us (frame 2)
+    // the pack's hop lift is in the old 512 px units: these are the same moves at 1:1
+    girl: { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -5, -1] }, peekLong },
+    boy:  { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -6, -1] }, peekLong },
   };
-  const CHILD_CLIPS = {
-    idle: { frames: [0], fps: 1, loop: true },
-    wave: { frames: [0, 1, 1, 2, 1, 0], fps: 3 },
-    play: { frames: [0, 2, 3, 2, 0], fps: 3, loop: true },
-    run:  { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 9, loop: true },
-    hop:  { frames: [12, 13, 14, 15, 0], fps: 7, offsetY: [0, -9, -23, -4, 0] },
-  };
-  SPRITES.couple = { src: "/assets/sprites/couple.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
-  // poses 16–18: waving (made by tools/make_couple_wave.py from the kit's hold-open pose)
-  SPRITES.coupleWave = { src: "/assets/sprites/couple-wave.webp", nominalHeight: 287, anchor: [256, 448], clips: {} };
-  SPRITES.teenager = { src: "/assets/sprites/teenager.webp", nominalHeight: 281, anchor: [256, 440], clips: {
-    ...CHILD_CLIPS,
-    wave: { frames: [0, 1, 1, 1, 1, 0], fps: 3 },           // one wave
-    lean: { frames: [2], fps: 1, loop: true },               // hands in pockets, one knee bent
-  } };
-  SPRITES.girl     = { src: "/assets/sprites/girl.webp",     nominalHeight: 283, anchor: [256, 440], clips: CHILD_CLIPS };
-  SPRITES.boy      = { src: "/assets/sprites/boy.webp",      nominalHeight: 288, anchor: [256, 440], clips: CHILD_CLIPS };
+  const SPRITES = {};      // name → { sheets: [img], anchor, clips }, filled at load
+  let CELL = 128, COLS = 3, PER_SHEET = 6;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -159,16 +134,18 @@ export function startScene(root) {
     const k = Math.floor(t), f = t - k, u = f * f * f * (f * (f * 6 - 15) + 10);
     return hash1(k, seed) * (1 - u) + hash1(k + 1, seed) * u;
   }
-  // Rotation (radians) of one fragment: a shared gust travelling through the canopy
-  // plus the fragment's own delayed flutter.
+  // Rotation (radians) of one fragment: a travelling swell, slow gusts and the piece's own
+  // flutter, softly limited to ±0.66 rad (from the asset pack's tree-wind.js).
   function breezeAngle(piece, time, intensity) {
     if (!intensity) return 0;
     time *= WIND.speed;
-    const t = time - piece.lag;
-    const common = 0.62 * smoothNoise(t / 8.1, 17) + 0.25 * smoothNoise(t / 23.7, 41) + 0.13 * smoothNoise(t / 4.3, 59);
-    const local = tt => 0.24 * smoothNoise(tt / (2.8 + piece.depth) + piece.phase, 103) + 0.09 * smoothNoise(tt / 1.17 + piece.phase * 0.71, 211);
-    const flutter = 0.45 * local(time) + 0.30 * local(time - 0.16) + 0.25 * local(time - 0.37);
-    return piece.amplitude * piece.depth * intensity * (common + flutter);
+    const t = time * 1.15 - piece.lag * 0.55;
+    const swell = 0.55 * Math.sin(t * 0.92 + 0.85 * smoothNoise(t / 8.5, 17))
+                + 0.26 * Math.sin(t * 1.51 + 0.6 * smoothNoise(t / 13.7, 41))
+                + 0.19 * smoothNoise(t / 2.8, 59);
+    const local = 0.20 * smoothNoise(time / 1.35 + piece.phase, 103)
+                + 0.10 * Math.sin(time * 2.3 + piece.phase + 0.4 * smoothNoise(time / 3.1 + piece.phase, 211));
+    return 0.66 * Math.tanh(12.6 * piece.amplitude * piece.depth * intensity * (swell + local) / 0.66);
   }
 
   // ===== DOM ==========================================================================
@@ -195,7 +172,7 @@ export function startScene(root) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     Object.assign(view, { x, y, s, vw, vh, dpr });
     // Debug helper for tuning: ?focus=1300,700,4 zooms on a point of the drawing.
-    const focus = new URLSearchParams(location.search).get("focus");
+    const focus = query.get("focus");
     if (focus) {
       const [fx, fy, fs] = focus.split(",").map(Number);
       Object.assign(view, { s: fs, x: vw / 2 - fx * fs, y: vh / 2 - fy * fs });
@@ -222,8 +199,6 @@ export function startScene(root) {
     trees.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
     trees.imageSmoothingQuality = "high";
     trees.drawImage(forest.background, 0, 0, W, H);
-    // fragments contain white paper: multiply so only their ink shows
-    trees.globalCompositeOperation = "multiply";
     for (const p of forest.rig.pieces) {
       const [px, py] = p.pivot, [x, y, w, h] = p.source, [ax, ay] = p.atlas;
       trees.save();
@@ -232,7 +207,6 @@ export function startScene(root) {
       trees.drawImage(forest.atlas, ax, ay, w, h, x - px, y - py, w, h);
       trees.restore();
     }
-    trees.globalCompositeOperation = "source-over";
   }
 
   const load = src => new Promise((res, rej) => {
@@ -253,22 +227,24 @@ export function startScene(root) {
   };
   const clipLength = c => c.frames.length / c.fps;
 
-  // Draw one frame of a clip. (x, y) is the clip's anchor in the drawing, height its display height.
-  function drawSprite(id, clipName, seconds, x, y, height, flip = false, alpha = 1, tilt = 0) {
-    const sp = SPRITES[id], clip = sp.clips[clipName], img = sp.img;
-    const n = Math.max(0, Math.floor(seconds * clip.fps));
-    const step = clip.loop ? n % clip.frames.length : Math.min(n, clip.frames.length - 1);
-    const index = clip.frames[step];
-    const anchor = clip.anchor || sp.anchor;
-    const s = height / sp.nominalHeight;                 // drawing px per kit px
-    const cell = img.naturalWidth / 4;                   // sheet cell size (kit frame = 512)
+  // Draw one frame (global index) of a character at 1:1, its anchor at (x, y) in the drawing.
+  // Positions snap to whole drawing pixels, so the frame's pixels sit on the drawing's pixels and
+  // are scaled exactly like the house and the trees.
+  function drawFrame(sp, index, x, y, anchor, flip = false, alpha = 1) {
+    const img = sp.sheets[Math.floor(index / PER_SHEET)], c = index % PER_SHEET;
     life.save();
     life.globalAlpha = alpha;
-    life.translate(x, y + (clip.offsetY ? clip.offsetY[step] : 0) * s);
-    if (tilt) life.rotate(tilt);
-    life.scale(flip ? -s : s, s);
-    life.drawImage(img, (index % 4) * cell, Math.floor(index / 4) * cell, cell, cell, -anchor[0], -anchor[1], 512, 512);
+    life.translate(Math.round(x), Math.round(y));
+    if (flip) life.scale(-1, 1);
+    life.drawImage(img, (c % COLS) * CELL, Math.floor(c / COLS) * CELL, CELL, CELL, -anchor[0], -anchor[1], CELL, CELL);
     life.restore();
+  }
+  // Draw the frame of a clip at `seconds` into it.
+  function drawSprite(id, clipName, seconds, x, y, flip = false, alpha = 1) {
+    const sp = SPRITES[id], clip = sp.clips[clipName];
+    const n = Math.max(0, Math.floor(seconds * clip.fps));
+    const step = clip.loop ? n % clip.frames.length : Math.min(n, clip.frames.length - 1);
+    drawFrame(sp, clip.frames[step], x, y + (clip.offsetY ? clip.offsetY[step] : 0), clip.anchor || sp.anchor, flip, alpha);
   }
 
   // ===== Owl ==========================================================================
@@ -280,8 +256,7 @@ export function startScene(root) {
   }
 
   function drawOwl(t) {
-    const h = OWL.height;
-    const bodyLift = (326 - 270) * h / SPRITES.owl.nominalHeight; // foot anchor → body anchor
+    const bodyLift = OWL.bodyLift;
     const here = feetOn(owl.perch);
     const there = feetOn(1 - owl.perch);
     const dir = Math.sign(OWL.perches[1 - owl.perch].x - OWL.perches[owl.perch].x);
@@ -290,12 +265,12 @@ export function startScene(root) {
 
     if (owl.state === "perched") {
       // look towards the other tree
-      drawSprite("owl", "perched", local, here.x, here.y, h, faceLeft);
+      drawSprite("owl", "perched", local, here.x, here.y, faceLeft);
       if (!reduceMotion && t >= owl.nextFlightAt) { owl.state = "takeoff"; owl.since = t; }
       return;
     }
     if (owl.state === "takeoff") {
-      drawSprite("owl", "takeoff", local, here.x, here.y, h, faceLeft);
+      drawSprite("owl", "takeoff", local, here.x, here.y, faceLeft);
       if (local >= clipLength(SPRITES.owl.clips.takeoff)) { owl.state = "fly"; owl.since = t; }
       return;
     }
@@ -309,13 +284,13 @@ export function startScene(root) {
       const e = ease(u);
       const x = cubic(ax, c1x, c2x, bx, e), y = cubic(ay, c1y, c2y, by, e);
       const gliding = u > 0.4 && u < 0.62;
-      drawSprite("owl", gliding ? "glide" : "fly", local, x, y, h, faceLeft);
+      drawSprite("owl", gliding ? "glide" : "fly", local, x, y, faceLeft);
       if (u >= 1) { owl.state = "land"; owl.since = t; owl.perch = 1 - owl.perch; }
       return;
     }
     // land: just arrived, still facing the way it flew
     const arrivedFromLeft = owl.perch === 1;
-    drawSprite("owl", "land", local, here.x, here.y, h, !arrivedFromLeft);
+    drawSprite("owl", "land", local, here.x, here.y, !arrivedFromLeft);
     if (local >= clipLength(SPRITES.owl.clips.land)) {
       owl.state = "perched"; owl.since = t; owl.nextFlightAt = t + OWL.restBetween;
     }
@@ -342,16 +317,14 @@ export function startScene(root) {
     if (t < DEER.firstAt) return;
     const c = (t - DEER.firstAt) % DEER.every;
     if (c > deerTotal) return;
-    // same depth rule as the children, normalised so the deer is DEER.height at y 752
-    const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
-    const sizeAt = y => DEER.height * depth(y) / depth(752);
     const seg = deerSegs.find(s => c < s.t1) || deerSegs[deerSegs.length - 1];
     const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
     const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
     if (seg.away) {
-      drawSprite("deer", "walkAway", c - seg.t0, x, y, sizeAt(y) * lerp(1, 0.75, u), seg.flip, 1 - smooth(0.45, 1, u));
+      // the walking-away frames are drawn smaller (it is further away); it fades into the trees
+      drawSprite("deer", "walkAway", c - seg.t0, x, y, seg.flip, 1 - smooth(0.45, 1, u));
     } else {
-      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, sizeAt(y), seg.flip);
+      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip);
     }
     // the deer walks behind the big trunks: cut their shapes out of it (only those in front)
     cutOut(DEER.trunks.filter(tr => y < tr.roots).map(tr => tr.shape));
@@ -374,8 +347,8 @@ export function startScene(root) {
   function buildTimeline(kid) {
     const segs = [];
     let t = 0, [x, y] = kid.start, flip = false;
-    const stay = (clip, d, tilt = 0) => {
-      if (d > 0) segs.push({ t0: t, t1: t + d, clip, x0: x, y0: y, x1: x, y1: y, flip, tilt });
+    const stay = (clip, d) => {
+      if (d > 0) segs.push({ t0: t, t1: t + d, clip, x0: x, y0: y, x1: x, y1: y, flip });
       t += Math.max(d, 0);
     };
     for (const st of kid.steps) {
@@ -384,16 +357,15 @@ export function startScene(root) {
         const [tx, ty] = st.to;
         const d = Math.hypot(tx - x, ty - y) / (st.speed || kid.speed);
         if (tx !== x) flip = tx < x;
-        segs.push({ t0: t, t1: t + d, clip: "run", x0: x, y0: y, x1: tx, y1: ty, flip });
+        segs.push({ t0: t, t1: t + d, clip: st.clip || "run", moving: true, x0: x, y0: y, x1: tx, y1: ty, flip });
         x = tx; y = ty; t += d;
-      } else if (st.peek) stay(st.clip || "idle", st.dur, st.peek);
-      else if (st.until !== undefined) stay("idle", st.until - t);
+      } else if (st.until !== undefined) stay("idle", st.until - t);
       else if (st.idle) stay("idle", st.idle);
       else stay(st.clip, st.dur || clipLength(SPRITES[kid.id].clips[st.clip]));
     }
     return { segs, end: t };
   }
-  KIDS.cast.forEach(k => { k.timeline = buildTimeline(k); });
+  // (timelines are built once the clips are loaded: clip lengths come from animations.json)
 
   function drawKids(t) {
     if (t < KIDS.firstAt) return;
@@ -405,22 +377,19 @@ export function startScene(root) {
       const seg = tl.segs.find(s => c < s.t1) || tl.segs[tl.segs.length - 1];
       const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
       const y = lerp(seg.y0, seg.y1, u);
-      const size = kid.height * (1 - (KIDS.depth.y - y) * KIDS.depth.perPx);
-      const clipTime = seg.clip === "run" ? c : c - seg.t0; // keep the stride continuous
-      // lean out from behind the trunk and back
-      const tilt = seg.tilt ? seg.tilt * smooth(0, 0.22, u) * (1 - smooth(0.78, 1, u)) : 0;
-      now.push({ kid, x: lerp(seg.x0, seg.x1, u), y, size, seg, clipTime, tilt });
+      const clipTime = seg.moving ? c : c - seg.t0; // keep the stride continuous
+      now.push({ kid, x: lerp(seg.x0, seg.x1, u), y, seg, clipTime });
     }
     if (!now.length) return;
     now.sort((a, b) => a.y - b.y);   // further back = drawn first (behind)
-    const draw = k => drawSprite(k.kid.id, k.seg.clip, k.clipTime, k.x, k.y, k.size, k.seg.flip, 1, k.tilt);
+    const draw = k => drawSprite(k.kid.id, k.seg.clip, k.clipTime, k.x, k.y, k.seg.flip);
     // behind the house first, then hide the house's shape from them; then the rest
     now.filter(k => k.y < KIDS.house.baseY).forEach(draw);
     cutOut([KIDS.house.outline]);
     now.filter(k => k.y >= KIDS.house.baseY && k.seg.clip !== "lean").forEach(draw);
     // everyone in this scene stands behind the big right trunk…
     cutOut([KIDS.trunk]);
-    // …except the teenager leaning against it, who is in front of its edge
+    // …except Nayan leaning against it, who is in front of its edge
     now.filter(k => k.seg.clip === "lean").forEach(draw);
   }
 
@@ -433,12 +402,13 @@ export function startScene(root) {
     if (t >= 1 && t < 1.4) { pose = 1; visible = true; }
     else if (t >= 1.4 && t < 2.2) { const u = e((t - 1.4) / 0.8); pose = u < 0.55 ? 2 : 3; open = u; visible = true; }
     else if (t >= 2.2 && t < 3.2) {
-      const u = e(t - 2.2); pose = Math.floor((t - 2.2) * 5) % 2 ? 5 : 4; open = 1; visible = true;
-      inside = u < 0.45; x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
+      const u = e(t - 2.2), alt = Math.floor((t - 2.2) * 5) % 2; open = 1; visible = true;
+      inside = u < 0.45;
+      pose = inside ? (alt ? 5 : 4) : (alt ? 21 : 20);   // step out, then down the steps x = mix(C.doorX, C.stepX, u); y = mix(C.doorY, C.stepY, u);
     } else if (t >= 3.2 && t < 9.6) {
       open = 1; visible = true; inside = false; x = C.stepX; y = C.stepY;
-      // pause · wave hello (raise, two waves, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
-      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 17], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
+      // pause · wave hello (raise, two waves, a warm last one, lower) · glance · turn inward · embrace · lean in · kiss · smile · turn back
+      const keys = [[3.7, 0], [3.85, 16], [4.05, 17], [4.25, 18], [4.45, 17], [4.65, 18], [4.85, 19], [5.0, 16], [5.2, 0], [5.6, 6], [5.9, 7], [6.4, 8], [6.9, 9],
                     [7.7, 10], [8.5, 11], [9.1, 12], [9.6, 13]];
       pose = keys.find(([end]) => t < end)[1];
     } else if (t >= 9.6 && t < 10.7) {
@@ -464,14 +434,7 @@ export function startScene(root) {
     if (c < 1) return;                 // doors still shut: the background shows them
     if (c >= 11.7) return;
     const s = coupleAt(c), o = COUPLE.opening;
-    const depth = y => 1 - (KIDS.depth.y - y) * KIDS.depth.perPx;
-    const h = COUPLE.height * depth(s.y) / depth(COUPLE.stepY);
-    const pair = () => {
-      const sp = s.pose >= 16 ? SPRITES.coupleWave : SPRITES.couple, p = s.pose % 16;
-      const cell = sp.img.naturalWidth / 4, k = h / sp.nominalHeight;
-      life.drawImage(sp.img, (p % 4) * cell, Math.floor(p / 4) * cell, cell, cell,
-        s.x - sp.anchor[0] * k, s.y - sp.anchor[1] * k, 512 * k, 512 * k);
-    };
+    const pair = () => drawFrame(SPRITES.couple, s.pose, s.x, s.y, SPRITES.couple.anchor);
     // the doorway: paper white behind, the couple inside it, then the two leaves
     life.fillStyle = "#fefefe";
     life.fillRect(o.x, o.y, o.w, o.h);
@@ -487,11 +450,11 @@ export function startScene(root) {
   let last = 0, clock = 0, running = true;
 
   // Debug helper for tuning: ?t=40 starts the scene 40 s in.
-  const skip = Number(new URLSearchParams(location.search).get("t"));
+  const skip = Number(query.get("t"));
   if (skip > 0) { clock = skip; owl.nextFlightAt = Math.max(OWL.firstFlightAt, skip + 1); }
   if (skip > 0) scene.classList.add("nofade");
   // ?fly=0.5 puts the owl halfway through its flight (with ?t=)
-  const flyAt = Number(new URLSearchParams(location.search).get("fly"));
+  const flyAt = Number(query.get("fly"));
   if (skip > 0 && flyAt > 0) { owl.state = "fly"; owl.since = skip - flyAt * OWL.flightTime; }
 
   function frame(now) {
@@ -507,8 +470,10 @@ export function startScene(root) {
     life.clearRect(0, 0, lifeCanvas.width, lifeCanvas.height);
     life.setTransform(view.dpr * view.s, 0, 0, view.dpr * view.s, view.dpr * view.x, view.dpr * view.y);
     life.imageSmoothingQuality = "high";
-    // deer and children first: their trunk/house cut-outs must not touch the owl
-    if (!reduceMotion) { drawDeer(clock); drawKids(clock); drawCouple(clock); }
+    // Each cut-out (hiding someone behind a trunk or the house) erases everything drawn before
+    // it, so: the children first (house + right trunk), then the deer (left trunks only: never
+    // near the children), then the couple and the owl, which nothing hides.
+    if (!reduceMotion) { drawKids(clock); drawDeer(clock); drawCouple(clock); }
     drawOwl(clock);
     if (skip > 0) {   // debug readout when ?t= is used
       life.setTransform(view.dpr, 0, 0, view.dpr, 0, 0);
@@ -519,21 +484,30 @@ export function startScene(root) {
     if (!reduceMotion) requestAnimationFrame(frame);
   }
 
-  const sprites = Object.entries(SPRITES).map(([id, sp]) => load(sp.src).then(img => { SPRITES[id].img = img; }));
+  const castReady = fetch(CAST + "animations.json").then(r => r.json()).then(spec => {
+    [CELL, COLS] = [spec.cellSize[0], spec.grid.columns];
+    PER_SHEET = spec.grid.columns * spec.grid.rows;
+    const all = spec.characters || spec.assets;
+    return Promise.all(Object.entries(all).map(([name, a]) =>
+      Promise.all(a.sheets.map(sh => load(CAST + sh.split("/").pop()))).then(sheets => {
+        SPRITES[name] = { sheets, anchor: a.anchor, clips: { ...(a.clips || a.animations), ...CLIP_CHANGES[name] } };
+      })));
+  });
   const forestReady = fetch(WIND.base + "wind-rig.json").then(r => r.json()).then(rig =>
-    Promise.all([load(WIND.base + rig.background), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
+    Promise.all([load(WIND.base + "background.png"), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
       Object.assign(forest, { rig, background: bg, atlas });
     }));
   const leaves = ["left", "right"].map(side =>
-    load(`/assets/couple-kit/scene/door-${side}.png`).then(img => { doorLeaves[side] = img; }));
+    load(`/assets/doors/${side}.png`).then(img => { doorLeaves[side] = img; }));
   let disposed = false;
   const onResize = () => { layout(); if (reduceMotion) frame(performance.now()); };
   const onVisibility = () => {
     if (document.hidden) { running = false; }
     else if (!running && !disposed) { running = true; last = performance.now(); requestAnimationFrame(frame); }
   };
-  Promise.all([forestReady, ...sprites, ...leaves]).then(() => {
+  Promise.all([forestReady, castReady, ...leaves]).then(() => {
     if (disposed) return;
+    KIDS.cast.forEach(k => { k.timeline = buildTimeline(k); });
     layout();
     window.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVisibility);

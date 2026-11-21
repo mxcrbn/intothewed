@@ -34,24 +34,27 @@ Handy URL parameters for working on it:
 
 | parameter | what it does |
 |---|---|
-| `?t=40` | start 40 s in (shows a clock, no fade-in); `?t=27` deer, `?t=55` couple |
+| `?t=40` | start 40 s in (shows a clock, no fade-in); `?t=30` deer, `?t=56` couple |
 | `?fly=0.5` | with `?t=`, put the owl halfway through a flight |
 | `?focus=1300,700,4` | zoom ×4 on a point of the drawing |
-| `?wind=2&windSpeed=1` | try other wind settings (defaults 7 and 2.2) |
+| `?wind=0.6&windSpeed=0.8` | try other wind settings (defaults 1 and 1) |
 
 ## How it's made
 
-- **The drawing:** `public/assets/invite-original.webp`, the invitation itself, is the source of truth.
-  Every position in the code is in its pixels (1536 × 1024).
-- **The trees:** the illustrator's¹ forest-wind kit (`public/assets/forest-wind/`). It has 97 fragments cut
-  from the drawing, each rotating around where it is attached.
-- **The characters:** lovingly hand-drawn² sprite sheets (`public/assets/kit-source/`, `public/assets/couple-kit/`).
-  `tools/prepare_sprites.py` restyles them to match the invitation's pen (fine grey ink, slight
-  wobble, white inside) and writes `public/assets/sprites/`.
+- **The drawing:** `public/assets/invite-original.webp`, the invitation itself, is the source of
+  truth. Every position in the code is in its pixels (1536 × 1024).
+- **The trees:** 97 leaf and twig fragments cut from the illustrator's¹ drawing
+  (`public/assets/trees/`), each rotating around where it is attached, in front of the still
+  drawing.
+- **The characters:** lovingly hand-drawn² frames (`public/assets/characters/`). Every frame is
+  128 × 128 px at the drawing's own scale, so it is used exactly as delivered, never resized. That
+  way the lines match the house and the trees on any screen. New asset packs come in with
+  `python3 tools/import_assets.py <pack folder>`; the 4× masters and the pack's notes are kept in
+  `art/characters/`.
 - **The page:** a Next.js app. The home page (`app/page.tsx`) is the scene component
   (`components/scene/Scene.tsx`), which starts the animation engine
   (`components/scene/animation.js`, plain JavaScript with no dependencies). Two canvases: one for
-  the trees in the wind, one for the characters. All the choreography (paths, timing, sizes) is in
+  the trees in the wind, one for the characters. All the choreography (paths, timing, clips) is in
   plain settings at the top of `animation.js`. More pages (RSVP, programme, venue…) go in
   `app/<name>/page.tsx`.
 - **Animation scripts:** `ANIMATION-SCRIPTS.md` scripts every animation beat by beat and lists the
@@ -68,10 +71,9 @@ components/scene/Scene.tsx            the scene (canvases + fallback drawing)
 components/scene/animation.js         the animation engine and all its tuning
 ANIMATION-SCRIPTS.md                  beat-by-beat scripts for regenerating the animations
 public/assets/invite-original.webp    the invitation drawing
-public/assets/forest-wind/            wind kit: background, fragment atlas, rig
-public/assets/kit-source/             owl, deer, children sprite sheets as delivered
-public/assets/couple-kit/             Nóri & Max sprite sheets, rig and door leaves
-public/assets/sprites/                web-ready sprites (generated)
-tools/prepare_sprites.py              builds public/assets/sprites/ from the kits
-tools/make_couple_wave.py             makes the couple's waving poses
+public/assets/trees/                  still drawing, leaf/twig atlas and wind rig
+public/assets/characters/             owl, deer, kids, Nayan, Nóri & Max: 1:1 sheets + animations.json
+public/assets/doors/                  the two front-door leaves
+art/characters/                       4× masters and notes of the current asset pack
+tools/import_assets.py                brings a new asset pack into the site
 ```

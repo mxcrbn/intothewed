@@ -1,0 +1,1489 @@
+{
+  "poses": 106,
+  "records": [
+    {
+      "actor": "owl",
+      "frame": 0,
+      "masterInkBounds": [
+        216,
+        280,
+        297,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 1,
+      "masterInkBounds": [
+        215,
+        280,
+        296,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 2,
+      "masterInkBounds": [
+        189,
+        310,
+        323,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 3,
+      "masterInkBounds": [
+        195,
+        265,
+        318,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 4,
+      "masterInkBounds": [
+        188,
+        132,
+        339,
+        287
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 5,
+      "masterInkBounds": [
+        159,
+        174,
+        380,
+        285
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 6,
+      "masterInkBounds": [
+        141,
+        226,
+        404,
+        284
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 7,
+      "masterInkBounds": [
+        171,
+        209,
+        369,
+        334
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 8,
+      "masterInkBounds": [
+        175,
+        192,
+        301,
+        334
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 9,
+      "masterInkBounds": [
+        122,
+        205,
+        348,
+        295
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 10,
+      "masterInkBounds": [
+        124,
+        196,
+        403,
+        311
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 11,
+      "masterInkBounds": [
+        166,
+        123,
+        381,
+        308
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 12,
+      "masterInkBounds": [
+        114,
+        225,
+        434,
+        306
+      ],
+      "anchor4x": [
+        256,
+        256
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 13,
+      "masterInkBounds": [
+        191,
+        280,
+        321,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 14,
+      "masterInkBounds": [
+        151,
+        279,
+        360,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "owl",
+      "frame": 15,
+      "masterInkBounds": [
+        215,
+        280,
+        296,
+        400
+      ],
+      "anchor4x": [
+        256,
+        400
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 0,
+      "masterInkBounds": [
+        158,
+        152,
+        427,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 1,
+      "masterInkBounds": [
+        157,
+        152,
+        426,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 2,
+      "masterInkBounds": [
+        156,
+        158,
+        397,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 3,
+      "masterInkBounds": [
+        158,
+        189,
+        427,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 4,
+      "masterInkBounds": [
+        137,
+        175,
+        428,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 5,
+      "masterInkBounds": [
+        185,
+        173,
+        452,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 6,
+      "masterInkBounds": [
+        154,
+        167,
+        424,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 7,
+      "masterInkBounds": [
+        126,
+        167,
+        391,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 8,
+      "masterInkBounds": [
+        122,
+        169,
+        398,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 9,
+      "masterInkBounds": [
+        147,
+        166,
+        424,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 10,
+      "masterInkBounds": [
+        181,
+        169,
+        450,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 11,
+      "masterInkBounds": [
+        149,
+        171,
+        423,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 12,
+      "masterInkBounds": [
+        230,
+        192,
+        429,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 13,
+      "masterInkBounds": [
+        232,
+        192,
+        413,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 14,
+      "masterInkBounds": [
+        248,
+        192,
+        412,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "deer",
+      "frame": 15,
+      "masterInkBounds": [
+        241,
+        192,
+        405,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 0,
+      "masterInkBounds": [
+        194,
+        55,
+        317,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 1,
+      "masterInkBounds": [
+        159,
+        55,
+        317,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 2,
+      "masterInkBounds": [
+        139,
+        56,
+        316,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 3,
+      "masterInkBounds": [
+        217,
+        51,
+        373,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 4,
+      "masterInkBounds": [
+        148,
+        82,
+        318,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 5,
+      "masterInkBounds": [
+        182,
+        83,
+        331,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 6,
+      "masterInkBounds": [
+        168,
+        86,
+        336,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 7,
+      "masterInkBounds": [
+        140,
+        86,
+        348,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 8,
+      "masterInkBounds": [
+        120,
+        86,
+        337,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 9,
+      "masterInkBounds": [
+        167,
+        85,
+        301,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 10,
+      "masterInkBounds": [
+        166,
+        86,
+        324,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 11,
+      "masterInkBounds": [
+        115,
+        97,
+        364,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 12,
+      "masterInkBounds": [
+        224,
+        78,
+        392,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 13,
+      "masterInkBounds": [
+        134,
+        76,
+        322,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 14,
+      "masterInkBounds": [
+        172,
+        79,
+        381,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "nayan",
+      "frame": 15,
+      "masterInkBounds": [
+        128,
+        82,
+        332,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 0,
+      "masterInkBounds": [
+        210,
+        256,
+        310,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 1,
+      "masterInkBounds": [
+        188,
+        258,
+        314,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 2,
+      "masterInkBounds": [
+        181,
+        255,
+        311,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 3,
+      "masterInkBounds": [
+        183,
+        255,
+        312,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 4,
+      "masterInkBounds": [
+        174,
+        263,
+        317,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 5,
+      "masterInkBounds": [
+        206,
+        262,
+        314,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 6,
+      "masterInkBounds": [
+        184,
+        288,
+        329,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 7,
+      "masterInkBounds": [
+        201,
+        262,
+        311,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 8,
+      "masterInkBounds": [
+        170,
+        263,
+        315,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 9,
+      "masterInkBounds": [
+        205,
+        263,
+        311,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 10,
+      "masterInkBounds": [
+        175,
+        293,
+        329,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 11,
+      "masterInkBounds": [
+        199,
+        264,
+        315,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 12,
+      "masterInkBounds": [
+        200,
+        300,
+        328,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 13,
+      "masterInkBounds": [
+        209,
+        263,
+        343,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 14,
+      "masterInkBounds": [
+        203,
+        278,
+        345,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 15,
+      "masterInkBounds": [
+        191,
+        287,
+        322,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 16,
+      "masterInkBounds": [
+        220,
+        256,
+        353,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "girl",
+      "frame": 17,
+      "masterInkBounds": [
+        220,
+        256,
+        353,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 0,
+      "masterInkBounds": [
+        202,
+        180,
+        297,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 1,
+      "masterInkBounds": [
+        200,
+        181,
+        330,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 2,
+      "masterInkBounds": [
+        200,
+        179,
+        341,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 3,
+      "masterInkBounds": [
+        196,
+        180,
+        346,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 4,
+      "masterInkBounds": [
+        120,
+        195,
+        314,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 5,
+      "masterInkBounds": [
+        157,
+        195,
+        304,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 6,
+      "masterInkBounds": [
+        119,
+        233,
+        323,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 7,
+      "masterInkBounds": [
+        115,
+        195,
+        309,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 8,
+      "masterInkBounds": [
+        168,
+        188,
+        316,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 9,
+      "masterInkBounds": [
+        124,
+        239,
+        327,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 10,
+      "masterInkBounds": [
+        125,
+        188,
+        309,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 11,
+      "masterInkBounds": [
+        116,
+        189,
+        317,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 12,
+      "masterInkBounds": [
+        173,
+        236,
+        335,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 13,
+      "masterInkBounds": [
+        221,
+        188,
+        395,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 14,
+      "masterInkBounds": [
+        177,
+        212,
+        356,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 15,
+      "masterInkBounds": [
+        204,
+        223,
+        360,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 16,
+      "masterInkBounds": [
+        221,
+        180,
+        353,
+        481
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "boy",
+      "frame": 17,
+      "masterInkBounds": [
+        221,
+        180,
+        348,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 0,
+      "masterInkBounds": [
+        121,
+        64,
+        372,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 1,
+      "masterInkBounds": [
+        104,
+        64,
+        390,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 2,
+      "masterInkBounds": [
+        94,
+        64,
+        384,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 3,
+      "masterInkBounds": [
+        57,
+        64,
+        459,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 4,
+      "masterInkBounds": [
+        117,
+        64,
+        385,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 5,
+      "masterInkBounds": [
+        120,
+        64,
+        379,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 6,
+      "masterInkBounds": [
+        134,
+        64,
+        378,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 7,
+      "masterInkBounds": [
+        135,
+        64,
+        339,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 8,
+      "masterInkBounds": [
+        154,
+        64,
+        344,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 9,
+      "masterInkBounds": [
+        163,
+        76,
+        336,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 10,
+      "masterInkBounds": [
+        157,
+        80,
+        327,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 11,
+      "masterInkBounds": [
+        150,
+        80,
+        335,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 12,
+      "masterInkBounds": [
+        129,
+        64,
+        404,
+        479
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 13,
+      "masterInkBounds": [
+        138,
+        64,
+        390,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 14,
+      "masterInkBounds": [
+        87,
+        64,
+        414,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 15,
+      "masterInkBounds": [
+        137,
+        64,
+        365,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 16,
+      "masterInkBounds": [
+        100,
+        64,
+        398,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 17,
+      "masterInkBounds": [
+        111,
+        64,
+        382,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 18,
+      "masterInkBounds": [
+        117,
+        64,
+        390,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 19,
+      "masterInkBounds": [
+        116,
+        64,
+        376,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 20,
+      "masterInkBounds": [
+        129,
+        64,
+        388,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    },
+    {
+      "actor": "couple",
+      "frame": 21,
+      "masterInkBounds": [
+        122,
+        64,
+        389,
+        480
+      ],
+      "anchor4x": [
+        256,
+        480
+      ]
+    }
+  ]
+}

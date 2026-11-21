@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <head>
-        <link rel="preload" href="/assets/forest-wind/background.png" as="image" />
+        <link rel="preload" href="/assets/trees/background.png" as="image" />
       </head>
       <body>{children}</body>
     </html>

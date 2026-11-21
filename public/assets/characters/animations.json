@@ -1,0 +1,917 @@
+{
+  "version": 3,
+  "cellSize": [
+    128,
+    128
+  ],
+  "masterCellSize": [
+    512,
+    512
+  ],
+  "grid": {
+    "columns": 3,
+    "rows": 2
+  },
+  "sheetSize": [
+    384,
+    256
+  ],
+  "masterSheetSize": [
+    1536,
+    1024
+  ],
+  "scaleFactor": 4,
+  "ink": "neutral grey; white opaque interiors",
+  "characters": {
+    "owl": {
+      "sheet": "spritesheets/owl.png",
+      "sheets": [
+        "spritesheets/owl.png",
+        "spritesheets/owl-2.png",
+        "spritesheets/owl-3.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/owl.png",
+        "masters-4x/spritesheets/owl-2.png",
+        "masters-4x/spritesheets/owl-3.png"
+      ],
+      "frameCount": 16,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        100
+      ],
+      "anchor4x": [
+        256,
+        400
+      ],
+      "heightPixels": 30.0,
+      "frameFiles": [
+        "frames/owl/00.png",
+        "frames/owl/01.png",
+        "frames/owl/02.png",
+        "frames/owl/03.png",
+        "frames/owl/04.png",
+        "frames/owl/05.png",
+        "frames/owl/06.png",
+        "frames/owl/07.png",
+        "frames/owl/08.png",
+        "frames/owl/09.png",
+        "frames/owl/10.png",
+        "frames/owl/11.png",
+        "frames/owl/12.png",
+        "frames/owl/13.png",
+        "frames/owl/14.png",
+        "frames/owl/15.png"
+      ],
+      "animations": {
+        "perched": {
+          "frames": [
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "takeoff": {
+          "frames": [
+            2,
+            3
+          ],
+          "fps": 10,
+          "loop": false
+        },
+        "fly": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 10,
+          "loop": true,
+          "anchor": [
+            64,
+            64
+          ]
+        },
+        "glide": {
+          "frames": [
+            12
+          ],
+          "fps": 1,
+          "loop": true,
+          "anchor": [
+            64,
+            64
+          ]
+        },
+        "land": {
+          "frames": [
+            13,
+            14,
+            15
+          ],
+          "fps": 6.6667,
+          "loop": false
+        }
+      },
+      "nominalHeight": 30.0,
+      "masterAnchor": [
+        256,
+        400
+      ]
+    },
+    "deer": {
+      "sheet": "spritesheets/deer.png",
+      "sheets": [
+        "spritesheets/deer.png",
+        "spritesheets/deer-2.png",
+        "spritesheets/deer-3.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/deer.png",
+        "masters-4x/spritesheets/deer-2.png",
+        "masters-4x/spritesheets/deer-3.png"
+      ],
+      "frameCount": 16,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        120
+      ],
+      "anchor4x": [
+        256,
+        480
+      ],
+      "heightPixels": 82.0,
+      "frameFiles": [
+        "frames/deer/00.png",
+        "frames/deer/01.png",
+        "frames/deer/02.png",
+        "frames/deer/03.png",
+        "frames/deer/04.png",
+        "frames/deer/05.png",
+        "frames/deer/06.png",
+        "frames/deer/07.png",
+        "frames/deer/08.png",
+        "frames/deer/09.png",
+        "frames/deer/10.png",
+        "frames/deer/11.png",
+        "frames/deer/12.png",
+        "frames/deer/13.png",
+        "frames/deer/14.png",
+        "frames/deer/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0,
+            0,
+            1,
+            0,
+            2,
+            0,
+            3,
+            0
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "walk": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 8,
+          "loop": true
+        },
+        "walkAway": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "fps": 6,
+          "loop": true
+        }
+      },
+      "nominalHeight": 82.0,
+      "masterAnchor": [
+        256,
+        480
+      ]
+    },
+    "nayan": {
+      "sheet": "spritesheets/nayan.png",
+      "sheets": [
+        "spritesheets/nayan.png",
+        "spritesheets/nayan-2.png",
+        "spritesheets/nayan-3.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/nayan.png",
+        "masters-4x/spritesheets/nayan-2.png",
+        "masters-4x/spritesheets/nayan-3.png"
+      ],
+      "frameCount": 16,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        120
+      ],
+      "anchor4x": [
+        256,
+        480
+      ],
+      "heightPixels": 106.0,
+      "frameFiles": [
+        "frames/nayan/00.png",
+        "frames/nayan/01.png",
+        "frames/nayan/02.png",
+        "frames/nayan/03.png",
+        "frames/nayan/04.png",
+        "frames/nayan/05.png",
+        "frames/nayan/06.png",
+        "frames/nayan/07.png",
+        "frames/nayan/08.png",
+        "frames/nayan/09.png",
+        "frames/nayan/10.png",
+        "frames/nayan/11.png",
+        "frames/nayan/12.png",
+        "frames/nayan/13.png",
+        "frames/nayan/14.png",
+        "frames/nayan/15.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            2,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 4,
+          "loop": false
+        },
+        "lean": {
+          "frames": [
+            3
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "jog": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "pushOff": {
+          "frames": [
+            12,
+            13
+          ],
+          "fps": 3.3333,
+          "loop": false
+        },
+        "walk": {
+          "frames": [
+            14,
+            15
+          ],
+          "fps": 4,
+          "loop": true
+        }
+      },
+      "nominalHeight": 106.0,
+      "masterAnchor": [
+        256,
+        480
+      ]
+    },
+    "girl": {
+      "sheet": "spritesheets/girl.png",
+      "sheets": [
+        "spritesheets/girl.png",
+        "spritesheets/girl-2.png",
+        "spritesheets/girl-3.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/girl.png",
+        "masters-4x/spritesheets/girl-2.png",
+        "masters-4x/spritesheets/girl-3.png"
+      ],
+      "frameCount": 18,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        120
+      ],
+      "anchor4x": [
+        256,
+        480
+      ],
+      "heightPixels": 56.0,
+      "frameFiles": [
+        "frames/girl/00.png",
+        "frames/girl/01.png",
+        "frames/girl/02.png",
+        "frames/girl/03.png",
+        "frames/girl/04.png",
+        "frames/girl/05.png",
+        "frames/girl/06.png",
+        "frames/girl/07.png",
+        "frames/girl/08.png",
+        "frames/girl/09.png",
+        "frames/girl/10.png",
+        "frames/girl/11.png",
+        "frames/girl/12.png",
+        "frames/girl/13.png",
+        "frames/girl/14.png",
+        "frames/girl/15.png",
+        "frames/girl/16.png",
+        "frames/girl/17.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            2,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 4,
+          "loop": false
+        },
+        "play": {
+          "frames": [
+            0,
+            3,
+            0
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "hop": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "fps": 7,
+          "loop": false,
+          "offsetY": [
+            0,
+            -9,
+            -23,
+            -4
+          ]
+        },
+        "peek": {
+          "frames": [
+            16
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "peekGrin": {
+          "frames": [
+            17
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "peekOnce": {
+          "frames": [
+            16,
+            17,
+            17,
+            16
+          ],
+          "fps": 2,
+          "loop": false
+        }
+      },
+      "nominalHeight": 56.0,
+      "masterAnchor": [
+        256,
+        480
+      ]
+    },
+    "boy": {
+      "sheet": "spritesheets/boy.png",
+      "sheets": [
+        "spritesheets/boy.png",
+        "spritesheets/boy-2.png",
+        "spritesheets/boy-3.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/boy.png",
+        "masters-4x/spritesheets/boy-2.png",
+        "masters-4x/spritesheets/boy-3.png"
+      ],
+      "frameCount": 18,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        120
+      ],
+      "anchor4x": [
+        256,
+        480
+      ],
+      "heightPixels": 75.0,
+      "frameFiles": [
+        "frames/boy/00.png",
+        "frames/boy/01.png",
+        "frames/boy/02.png",
+        "frames/boy/03.png",
+        "frames/boy/04.png",
+        "frames/boy/05.png",
+        "frames/boy/06.png",
+        "frames/boy/07.png",
+        "frames/boy/08.png",
+        "frames/boy/09.png",
+        "frames/boy/10.png",
+        "frames/boy/11.png",
+        "frames/boy/12.png",
+        "frames/boy/13.png",
+        "frames/boy/14.png",
+        "frames/boy/15.png",
+        "frames/boy/16.png",
+        "frames/boy/17.png"
+      ],
+      "animations": {
+        "idle": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            0,
+            1,
+            2,
+            1,
+            2,
+            1,
+            0
+          ],
+          "fps": 4,
+          "loop": false
+        },
+        "play": {
+          "frames": [
+            0,
+            3,
+            0
+          ],
+          "fps": 2,
+          "loop": true
+        },
+        "run": {
+          "frames": [
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "fps": 9,
+          "loop": true
+        },
+        "hop": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "fps": 7,
+          "loop": false,
+          "offsetY": [
+            0,
+            -9,
+            -23,
+            -4
+          ]
+        },
+        "peek": {
+          "frames": [
+            16
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "peekGrin": {
+          "frames": [
+            17
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "peekOnce": {
+          "frames": [
+            16,
+            17,
+            17,
+            16
+          ],
+          "fps": 2,
+          "loop": false
+        }
+      },
+      "nominalHeight": 75.0,
+      "masterAnchor": [
+        256,
+        480
+      ]
+    },
+    "couple": {
+      "sheet": "spritesheets/couple.png",
+      "sheets": [
+        "spritesheets/couple.png",
+        "spritesheets/couple-2.png",
+        "spritesheets/couple-3.png",
+        "spritesheets/couple-4.png"
+      ],
+      "masterSheets": [
+        "masters-4x/spritesheets/couple.png",
+        "masters-4x/spritesheets/couple-2.png",
+        "masters-4x/spritesheets/couple-3.png",
+        "masters-4x/spritesheets/couple-4.png"
+      ],
+      "frameCount": 22,
+      "coreFrameCount": 16,
+      "columns": 3,
+      "rows": 2,
+      "framesPerSheet": 6,
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "anchor": [
+        64,
+        120
+      ],
+      "anchor4x": [
+        256,
+        480
+      ],
+      "heightPixels": 104.0,
+      "frameFiles": [
+        "frames/couple/00.png",
+        "frames/couple/01.png",
+        "frames/couple/02.png",
+        "frames/couple/03.png",
+        "frames/couple/04.png",
+        "frames/couple/05.png",
+        "frames/couple/06.png",
+        "frames/couple/07.png",
+        "frames/couple/08.png",
+        "frames/couple/09.png",
+        "frames/couple/10.png",
+        "frames/couple/11.png",
+        "frames/couple/12.png",
+        "frames/couple/13.png",
+        "frames/couple/14.png",
+        "frames/couple/15.png",
+        "frames/couple/16.png",
+        "frames/couple/17.png",
+        "frames/couple/18.png",
+        "frames/couple/19.png",
+        "frames/couple/20.png",
+        "frames/couple/21.png"
+      ],
+      "poseNames": [
+        "neutral",
+        "reachHandles",
+        "push",
+        "holdOpen",
+        "stepA",
+        "stepB",
+        "glance",
+        "turnInward",
+        "embrace",
+        "leanIn",
+        "kiss",
+        "kissHold",
+        "separate",
+        "turnBack",
+        "stepInside",
+        "pullShut",
+        "waveRaise",
+        "waveA",
+        "waveB",
+        "waveWarm",
+        "stepDownA",
+        "stepDownB"
+      ],
+      "animations": {
+        "neutral": {
+          "frames": [
+            0
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "reachHandles": {
+          "frames": [
+            1
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "push": {
+          "frames": [
+            2
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "holdOpen": {
+          "frames": [
+            3
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "stepA": {
+          "frames": [
+            4
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "stepB": {
+          "frames": [
+            5
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "glance": {
+          "frames": [
+            6
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "turnInward": {
+          "frames": [
+            7
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "embrace": {
+          "frames": [
+            8
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "leanIn": {
+          "frames": [
+            9
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "kiss": {
+          "frames": [
+            10
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "kissHold": {
+          "frames": [
+            11
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "separate": {
+          "frames": [
+            12
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "turnBack": {
+          "frames": [
+            13
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "stepInside": {
+          "frames": [
+            14
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "pullShut": {
+          "frames": [
+            15
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "waveRaise": {
+          "frames": [
+            16
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "waveA": {
+          "frames": [
+            17
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "waveB": {
+          "frames": [
+            18
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "waveWarm": {
+          "frames": [
+            19
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "stepDownA": {
+          "frames": [
+            20
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "stepDownB": {
+          "frames": [
+            21
+          ],
+          "fps": 1,
+          "loop": true
+        },
+        "wave": {
+          "frames": [
+            16,
+            17,
+            18,
+            17,
+            18,
+            17,
+            16,
+            0
+          ],
+          "fps": 5.3333,
+          "loop": false
+        },
+        "walkOut": {
+          "frames": [
+            4,
+            5
+          ],
+          "fps": 4,
+          "loop": true
+        },
+        "stepDown": {
+          "frames": [
+            20,
+            21
+          ],
+          "fps": 4,
+          "loop": false
+        },
+        "kissSequence": {
+          "frames": [
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "fps": 1.3,
+          "loop": false
+        }
+      },
+      "nominalHeight": 104.0,
+      "masterAnchor": [
+        256,
+        480
+      ]
+    }
+  },
+  "aliases": {
+    "teenager": "nayan"
+  }
+}

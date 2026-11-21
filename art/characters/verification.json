@@ -1,0 +1,51 @@
+{
+  "actors": {
+    "owl": {
+      "poses": 16,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 30,
+      "targetStandingHeight": 30.0,
+      "sheets": 3
+    },
+    "deer": {
+      "poses": 16,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 82,
+      "targetStandingHeight": 82.0,
+      "sheets": 3
+    },
+    "nayan": {
+      "poses": 16,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 106,
+      "targetStandingHeight": 106.0,
+      "sheets": 3
+    },
+    "girl": {
+      "poses": 18,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 56,
+      "targetStandingHeight": 56.0,
+      "sheets": 3
+    },
+    "boy": {
+      "poses": 18,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 75,
+      "targetStandingHeight": 75.0,
+      "sheets": 3
+    },
+    "couple": {
+      "poses": 22,
+      "coreUnique": 16,
+      "nativeStandingInkHeight": 104,
+      "targetStandingHeight": 104.0,
+      "sheets": 4
+    }
+  },
+  "totalPoses": 106,
+  "sceneFilesIncluded": false,
+  "treeFragments": 97,
+  "treeRestAssemblyMaxAlphaDifference": 0,
+  "format": "six 128px cells per 384x256 sheet; exact 4x masters"
+}
