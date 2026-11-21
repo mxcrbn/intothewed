@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>N + M</title>
+  <meta name="theme-color" content="#fefefe">
+  <link rel="preload" href="assets/scene.webp" as="image">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="scene" aria-label="Dessin de la maison dans les bois, avec une chouette perchée sur une branche">
+    <!-- Static fallback (no JS / no WebGL). Hidden once the animated scene is ready. -->
+    <img id="fallback" src="assets/invite-original.webp" alt="" width="1536" height="1024">
+    <canvas id="trees" aria-hidden="true"></canvas>
+
+    <!-- Stage is laid out in the drawing's own pixel space (1536x1024) and scaled to the screen -->
+    <div id="stage" aria-hidden="true">
+      <img id="owl-perched" src="assets/owl.png" alt="" width="30" height="36">
+      <svg id="owl-flying" viewBox="-22 -22 44 44" width="44" height="44">
+        <g class="ink">
+          <!-- far wing (behind the body) -->
+          <g id="wing-far" opacity="0.75">
+            <path d="M-1 -3 C-4 -13 -11 -19 -19 -20.5 C-16.5 -17 -15 -14.5 -14 -11.5 C-12 -12 -10.5 -10.5 -9.5 -8.5 C-7.5 -8.6 -5.5 -6.8 -4.5 -4.5 Z"/>
+          </g>
+          <!-- tail -->
+          <path d="M-10.5 0.8 L-16.5 0.2 L-16 3.6 L-10 4.2"/>
+          <!-- body -->
+          <path d="M-11 2 C-8 -5 4 -7 9 -4 C12 -1 10 5 4 7 C-2 9 -9 7 -11 2 Z"/>
+          <path class="thin" d="M-2 4.5 C0 5.4 2.5 5.4 4 4.6"/>
+          <!-- tucked feet -->
+          <path class="thin" d="M1 7.2 L-1.5 9.2 M3.5 6.8 L1.5 9"/>
+          <!-- head -->
+          <circle cx="10" cy="-6" r="6"/>
+          <path d="M5.6 -10.4 L5.2 -13.4 L7.9 -11.6"/>
+          <path d="M12.2 -11.7 L14.6 -13.6 L14.4 -10.6"/>
+          <circle class="dot" cx="12.9" cy="-6.6" r="0.85"/>
+          <path class="thin" d="M15.5 -5.2 L16.9 -3.8 L15.3 -3.3"/>
+          <!-- near wing (in front of the body) -->
+          <g id="wing-near">
+            <path d="M-1 -3 C-4 -14 -12 -20 -20 -21 C-17 -17 -15 -14 -14 -11 C-12 -12 -10 -10 -9 -8 C-7 -8 -5 -6 -4 -4 Z"/>
+            <path class="thin" d="M-6 -9 C-8 -12 -11 -15 -14 -16.5 M-4 -6 C-5.5 -8 -7 -9.5 -9 -10.5"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </main>
+  <script src="main.js"></script>
+</body>
+</html>
