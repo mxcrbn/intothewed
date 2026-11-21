@@ -41,9 +41,9 @@ Handy URL parameters for working on it:
 
 - **The drawing:** `assets/invite-original.webp`, the invitation itself, is the source of truth.
   Every position in the code is in its pixels (1536 × 1024).
-- **The trees:** the illustrator's forest-wind kit (`assets/forest-wind/`). It has 97 fragments cut
+- **The trees:** the illustrator's¹ forest-wind kit (`assets/forest-wind/`). It has 97 fragments cut
   from the drawing, each rotating around where it is attached.
-- **The characters:** hand-drawn sprite sheets (`assets/kit-source/`, `assets/couple-kit/`).
+- **The characters:** lovingly hand-drawn² sprite sheets (`assets/kit-source/`, `assets/couple-kit/`).
   `tools/prepare_sprites.py` restyles them to match the invitation's pen (fine grey ink, slight
   wobble, white inside) and writes `assets/sprites/`.
 - **The page:** `index.html`, `style.css` and `main.js`, with no dependencies. Two canvases: one
@@ -51,6 +51,8 @@ Handy URL parameters for working on it:
   in plain settings at the top of `main.js`.
 - **Animation scripts:** `ANIMATION-SCRIPTS.md` scripts every animation beat by beat and lists the
   frames to draw. Use it to regenerate better assets.
+
+<sub>¹ The illustrator is ChatGPT. ² The hand was also ChatGPT's. The love is ours.</sub>
 
 ## Files
 
