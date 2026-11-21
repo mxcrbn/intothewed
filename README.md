@@ -1,55 +1,67 @@
-# Wedding site — N + M
+# Into the Wed
 
-A single full-screen page showing the invitation drawing (the house in the woods), with discreet life in it:
+Our wedding website. The little house in the woods on our invitation is the special place where
+we'll marry, and here it gently comes to life: our 3 monsters, an owl, a deer, and the two of us
+waiting for our families and friends 🌲
 
-- **Wind in the trees**: the illustrator's forest-wind kit — 97 small leaf and twig fragments cut from
-  the drawing, each rotating around its attachment point, with staggered timing and slowly changing
-  gusts. The kit's default strength only moves pieces 1–2 screen pixels, so the site runs it at
-  intensity 7 and 2.2× tempo (`WIND` in `main.js`; try others with `?wind=2&windSpeed=1`). The house,
-  trunks, fence and garden never move.
-- **The owl** (illustrator's kit) sits on its branch, blinks, and ~12 s after opening takes off, flies
-  across the scene and lands on the big tree on the right. It flies back after ~28 s, and so on.
-- **The deer** comes out of the woods on the left (~22 s, then once a minute), passing behind the big
-  trunks, walks (in front of the second trunk) into the left garden just past the first window, looks around (and once at us), then turns back and wanders
-  off into the forest.
-- **The three children** (~5 s, then every 75 s) hide behind the big tree on the right. The girl leans
-  her head out on one side, the boy on the other (one long peek); the girl bolts and the boy chases
-  her across the front lawn. A few seconds in, Nayan (the teenager) strolls out and leans back
-  against the trunk, hands in pockets, one knee bent. The kids run back to him, wave, and slip away
-  behind the house; then Nayan straightens up, waves, and follows them. Sizes follow the house and
-  shrink with depth.
-- **Nóri & Max** (their own kit): right after each deer visit (~52 s, then once a minute) the front
-  doors open, they step out onto the steps, pause, wave hello, look at
-  each other, kiss, go back in and close the doors.
-  Sizes are shared by everyone: Max is ~104 px on the steps (the doorway opening is 113 px), a little
-  taller than the teenager; the deer's ears reach about two-thirds of his height.
-- Respects `prefers-reduced-motion` (still drawing with the owl perched), and falls back to the plain
-  image without JavaScript.
+It opens full screen on the drawing, and if you stay a moment, things start to happen:
 
-## Run locally
+- **The wind** moves through the trees: leaves and twigs sway, in calm, changing gusts.
+- **An owl** sits on a branch, blinks, and now and then flies across to the big tree on the right, and back.
+- **Our 3 monsters** hide behind the big tree. Two little heads peek out on either side, the girl
+  bolts, the boy chases her across the lawn, and **Nayan** strolls out to lean against the trunk and
+  watch. They wave at you, then all slip away behind the house.
+- **A deer** steps out of the woods on the left, walks into the garden, looks at you once, and
+  wanders back into the forest.
+- **Nóri & Max** open the front door, step out, wave hello, kiss, and go back inside.
+
+All the motion is slow and discreet, so the page still feels like the drawing. With reduced motion
+turned on, it stays still, and without JavaScript it shows the plain drawing.
+
+## Run it
+
+It's a static page with no build step:
 
 ```bash
 python3 -m http.server 8417
 ```
 
-Then open http://localhost:8417
+Then open http://localhost:8417.
 
-Tuning helpers: `?t=40` starts the scene 40 s in (shows a red clock, no fade-in; `?t=53` for the couple), `?t=30&fly=0.5` puts the owl
-halfway through a flight, `?focus=1300,700,4` zooms on a point of the drawing, `?wind=` / `?windSpeed=` try other wind settings.
+Handy URL parameters for working on it:
+
+| parameter | what it does |
+|---|---|
+| `?t=40` | start 40 s in (shows a clock, no fade-in); `?t=27` deer, `?t=55` couple |
+| `?fly=0.5` | with `?t=`, put the owl halfway through a flight |
+| `?focus=1300,700,4` | zoom ×4 on a point of the drawing |
+| `?wind=2&windSpeed=1` | try other wind settings (defaults 7 and 2.2) |
+
+## How it's made
+
+- **The drawing:** `assets/invite-original.webp`, the invitation itself, is the source of truth.
+  Every position in the code is in its pixels (1536 × 1024).
+- **The trees:** the illustrator's forest-wind kit (`assets/forest-wind/`). It has 97 fragments cut
+  from the drawing, each rotating around where it is attached.
+- **The characters:** hand-drawn sprite sheets (`assets/kit-source/`, `assets/couple-kit/`).
+  `tools/prepare_sprites.py` restyles them to match the invitation's pen (fine grey ink, slight
+  wobble, white inside) and writes `assets/sprites/`.
+- **The page:** `index.html`, `style.css` and `main.js`, with no dependencies. Two canvases: one
+  for the trees in the wind, one for the characters. All the choreography (paths, timing, sizes) is
+  in plain settings at the top of `main.js`.
+- **Animation scripts:** `ANIMATION-SCRIPTS.md` scripts every animation beat by beat and lists the
+  frames to draw. Use it to regenerate better assets.
 
 ## Files
 
-- `index.html`, `style.css`, `main.js` — the page. All tuning (wind, owl perches and timing, deer path,
-  the children's little choreography) is at the top of `main.js`.
-- `assets/invite-original.webp` — the drawing from the invite (source of truth).
-- `assets/kit-source/` — the illustrator's animation kit as delivered (sprite sheets + `animations.json`).
-- `assets/sprites/` — web versions of the kit sheets, built by `tools/prepare_sprites.py`: lines
-  restyled to the invite's pen at the size each figure has in the scene (same ~1.5 px dark-grey ink,
-  a slight wobble, uneven pressure and a faint overdraw), white inside.
-- `ANIMATION-SCRIPTS.md` — beat-by-beat scripts and frame lists for regenerating every animation asset.
-- `tools/make_couple_wave.py` — makes the couple's waving poses (the kit has none) from its hold-open pose.
-- `assets/couple-kit/` — Nóri & Max kit as delivered: paired-pose atlas, rig, door leaves, its README
-  and reference renderer (`couple-door.reference.js`, reproduced in `main.js`).
-- `assets/forest-wind/` — the forest-wind kit, owl-free variant: still background, fragment atlas and
-  `wind-rig.json` (pivot, amplitude, phase, depth, lag per fragment). Its wind function is reproduced in
-  `main.js`; the kit's own renderer and README are kept alongside for reference.
+```
+index.html, style.css, main.js    the page
+ANIMATION-SCRIPTS.md              beat-by-beat scripts for regenerating the animations
+assets/invite-original.webp       the invitation drawing
+assets/forest-wind/               wind kit: background, fragment atlas, rig
+assets/kit-source/                owl, deer, children sprite sheets as delivered
+assets/couple-kit/                Nóri & Max sprite sheets, rig and door leaves
+assets/sprites/                   web-ready sprites (generated)
+tools/prepare_sprites.py          builds assets/sprites/ from the kits
+tools/make_couple_wave.py         makes the couple's waving poses
+```
