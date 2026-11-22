@@ -41,8 +41,10 @@ export function startScene(root) {
     start: [-90, 745],
     legs: [
       { walk: [140, 780] },        // out of the woods, behind the far-left trunk
-      { walk: [402, 792] },        // in front of the second trunk, into the left garden: it stops right under the
-                                   // first window, clear of the thin trunk in front of the wall (x ≈ 460)
+      { walk: [402, 802] },        // in front of the second trunk, into the left garden: it stops right under the
+                                   // first window, clear of the thin trunk in front of the wall (x ≈ 460), and
+                                   // far enough forward that the house's base line passes behind its neck
+                                   // (10 px further back, the line ran exactly along its back)
       { idle: 6.5 },               // looks around, and once at us
       { walk: [240, 748] },        // turns back towards the trees
       { away: [172, 690], dur: 6 } // and wanders off into the forest
