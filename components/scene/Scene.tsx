@@ -25,18 +25,20 @@ export default function Scene({ label, cueLabel }: { label: string; cueLabel: st
       <canvas id="life" aria-hidden="true" />
       <a className="scroll-cue" href="#invitation" aria-label={cueLabel}>
         <span className="scroll-cue__fade">
-          {/* "SCROLL", written by hand above the arrow once the couple has kissed: six letters in the
-              arrow's own pen, each stroke a little unsteady, with a faint second pass here and there */}
-          <svg className="scroll-cue__word" viewBox="0 0 124 26" aria-hidden="true">
-            <g fill="none" stroke="#1c1c1c" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
-              <path d="M16.2 7.1C13.4 3.9 7.3 4.4 7.1 8.4 6.9 12.5 15.9 11.9 15.7 16.6 15.5 20.9 8.4 21 5.8 17.6" />
-              <path d="M38.6 7.6C35.8 3.7 27.2 5.6 27.5 13 27.8 20.1 35.6 21.5 38.9 17.3" />
-              <path d="M48.9 20.9C48.3 15.4 49.1 10 48.5 5M48.6 5.5C53.9 3.7 59 5.8 58.6 9.3 58.2 12.6 53.2 13.5 49.1 13" />
-              <path d="M52.8 13.3C55 15.9 57.2 18.5 59.9 21.1" />
-              <path d="M75.6 4.9C70.6 4.4 67.7 8.3 67.9 13 68.1 18.2 71.2 21.3 75.3 21.1 79.9 20.9 82.3 17.2 82.1 12.4 81.9 7.9 79.3 4.6 74.3 5.3" />
-              <path d="M91.5 4.8C92 10.2 91.2 15.6 91.7 20.8 94.6 20.3 97.6 20.9 100.5 20.4" />
-              <path d="M108.6 5.2C108.3 10.4 109 15.8 108.5 21 111.5 20.6 114.5 20.6 117.6 20.9" />
-              <path d="M9.4 5.6c2.1-.7 4.3-.3 6 1M70.4 18.6c1.3 1.6 3 2.4 4.9 2.3M93.4 20.6c1.9-.2 3.7-.1 5.5 0" strokeOpacity=".35" strokeWidth="1" />
+          {/* "scroll", written by hand above the arrow once the couple has kissed: a loose, slanted
+              hand with looped l's, uneven like a real one, roughened by the pencil filter (Home.tsx) */}
+          <svg className="scroll-cue__word" viewBox="0 0 112 46" aria-hidden="true">
+            <g fill="none" stroke="#1c1c1c" strokeLinecap="round" strokeLinejoin="round" transform="skewX(-9) translate(8 0)">
+              <g strokeWidth="1.9">
+                <path d="M14.5 25.5C10.5 21 3.6 23 4.8 27.2 5.9 31 14.4 30 13.8 35.2 13.2 40 5.2 39.8 2.6 35.6" />
+                <path d="M33.6 27C30 21.4 20.6 23.4 20.9 31.4 21.2 39.6 29.6 40.8 35 35.2" />
+                <path d="M41 23.2C42 28.6 40.4 34.2 41.3 39.6M41.2 30.4C42.8 25.6 47.4 22.4 52.6 24.8" />
+                <path d="M65.4 23.6C59.4 22.2 55.6 26.6 56.2 32 56.8 37.4 60.4 40.4 64.8 39.6 69.4 38.8 71.8 34.8 71 30 70.2 25.4 67 22.6 62 24.6" />
+                <path d="M77.6 40.2C84.4 31 89.6 17.4 86.4 8.2 84.4 2.8 79.6 6 79.3 13 78.8 22.4 80 31.6 81.8 37 83 40.4 86.2 40 88.6 36.8" />
+                <path d="M91.2 40.8C97.6 31.8 102.2 19 99.6 10 97.8 4.4 93.2 7.4 92.9 14.2 92.5 23.2 93.4 32 95.2 37.4 96.4 40.8 100 40.2 103.6 35.4" />
+              </g>
+              {/* the pen pressing harder here and there */}
+              <path d="M5.2 27.6c1.6 2.4 6 2.6 8 5M21.4 29c-.6 4.6 1.2 8 4.4 9.4M56.6 30c-.2 4 1.4 7.4 4.4 8.8M79.4 14c-.4 7 .4 14 1.6 20M93 15c-.4 6.4.2 13 1.4 18.8" strokeWidth="2.6" strokeOpacity=".5" />
             </g>
           </svg>
           {/* eslint-disable-next-line @next/next/no-img-element */}
