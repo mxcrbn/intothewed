@@ -21,10 +21,16 @@ export function startScene(root) {
     rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
 
+  // One loop for everybody: every act comes back at the same moment of each 75 s, so the acts keep
+  // the places they have the first time round (kids at 5 s, owl at 12, deer at 22, owl back at 46,
+  // couple at 52) and never run into each other. (They used to repeat every 60, 68 and 75 s and
+  // drifted onto one another: the couple shared its moment with the kids or the owl most times.)
+  const LOOP = 75;
+
   const OWL = {
     bodyLift: 14,         // perched feet → body centre in flight (the owl is 30 px tall)
-    firstFlightAt: 12,    // seconds after opening
-    restBetween: 28,      // seconds perched before flying back
+    flightsAt: [12, 46],  // seconds into each loop: across to the big right tree, and back (it lands just
+                          // before the front door opens)
     flightTime: 5.5,      // seconds in the air
     perches: [            // where the feet sit on each branch
       { x: 315, y: 301 }, // left tree (as on the invite)
@@ -39,7 +45,7 @@ export function startScene(root) {
   //       spot, through a view from the front) | away to [x, y] (walking off, fading).
   const DEER = {
     firstAt: 22,          // seconds after opening
-    every: 60,            // then once a minute
+    every: LOOP,
     walkSpeed: 50,        // px / s
     start: [-90, 745],
     legs: [
@@ -77,7 +83,7 @@ export function startScene(root) {
   const BOY_PEEK_X = 1432;
   const KIDS = {
     firstAt: 5,
-    every: 75,
+    every: LOOP,
     // the big right trunk (kids behind it are hidden) and the house (kids behind it vanish)
     // (traced on the trunk's drawn outline, so a child beside it is cut exactly at the line)
     trunk: [[1359, 600], [1398, 600], [1397, 650], [1403, 670], [1410, 700], [1418, 720],
@@ -131,7 +137,7 @@ export function startScene(root) {
   // couple-door.js. Max is 104 px tall (the doorway opening is 113 px).
   const COUPLE = {
     firstAt: 52,          // just after the deer has gone back into the forest
-    every: 60,            // then once a minute, right after each deer visit
+    every: LOOP,          // each time right after the deer's visit
     opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
     doorX: 813, doorY: 733, stepX: 815, stepY: 760,
     length: 11.9,         // seconds, from the doors starting to open to shut again
@@ -299,7 +305,12 @@ export function startScene(root) {
   }
 
   // ===== Owl ==========================================================================
-  const owl = { perch: 0, state: "perched", since: 0, nextFlightAt: OWL.firstFlightAt };
+  // when the owl next leaves the branch it sits on (it is on the left one at the start of each loop)
+  const nextOwlFlight = (t, perch) => {
+    const at = OWL.flightsAt[perch];
+    return at + LOOP * Math.max(0, Math.ceil((t - at) / LOOP));
+  };
+  const owl = { perch: 0, state: "perched", since: 0, nextFlightAt: nextOwlFlight(0, 0) };
 
   // the owl's two branches are part of the still background
   function feetOn(i) {
@@ -357,7 +368,7 @@ export function startScene(root) {
     // the other way, it used to flip round in a single frame a moment later)
     drawSprite("owl", "land", local, here.x, here.y, faceLeft);
     if (local >= clipLength(SPRITES.owl.clips.land)) {
-      owl.state = "perched"; owl.since = t; owl.nextFlightAt = t + OWL.restBetween;
+      owl.state = "perched"; owl.since = t; owl.nextFlightAt = nextOwlFlight(t, owl.perch);
     }
   }
 
@@ -541,7 +552,12 @@ export function startScene(root) {
 
   // Debug helper for tuning: ?t=40 starts the scene 40 s in.
   const skip = Number(query.get("t"));
-  if (skip > 0) { clock = skip; owl.nextFlightAt = Math.max(OWL.firstFlightAt, skip + 1); }
+  if (skip > 0) {
+    clock = skip;
+    const into = skip % LOOP;        // the owl is on the right tree between its two flights
+    owl.perch = into >= OWL.flightsAt[0] && into < OWL.flightsAt[1] ? 1 : 0;
+    owl.nextFlightAt = nextOwlFlight(skip + 1, owl.perch);
+  }
   if (skip > 0) scene.classList.add("nofade");
   // ?fly=0.5 puts the owl halfway through its flight (with ?t=)
   const flyAt = Number(query.get("fly"));

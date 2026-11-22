@@ -116,7 +116,7 @@ the garden). The owl is 30.
 | 12 s | **Take-off** (0.2 s): it crouches, opens its wings and pushes off. |
 | 12.2 – 17.7 s | **Flight** (5.5 s): it climbs a little off the branch, then makes a long, gentle swoop just above the roof line, about 50 px above the branches at its highest and dipping about 80 px at the lowest, and rises again to the big right tree. It flaps for the first 40 % of the flight, glides from 40 to 62 %, then flaps again. |
 | 17.7 s | **Landing** (0.45 s): it flares up with wings spread forward and tail down, grips the branch at (1289, 280) and folds its wings. |
-| then | It sits facing the way it flew for about 28 s, then flies back to the left tree facing left (the same frames mirrored). |
+| then | It sits looking back at the tree it came from until 46 s, then flies back to the left tree facing left (the same frames mirrored), landing just before the front door opens. The whole scene repeats every 75 s. |
 
 ### Frames (one sheet, 16 frames of 128 × 128, owl 30 px tall, facing right)
 
@@ -148,7 +148,7 @@ about 15 pen strokes; draw it like the invite's original perched owl, which is t
 
 ## 2. The deer
 
-### Story (first at 22 s, then once a minute)
+### Story (at 22 s of each 75 s loop)
 
 | time (from its start) | what happens | position (feet) |
 |---|---|---|
@@ -192,7 +192,7 @@ about 15 pen strokes; draw it like the invite's original perched owl, which is t
 The big right trunk runs from x 1352 to 1450 at its base (y 795). A child behind it is hidden by
 it. Once they pass behind the house (y < 730) they disappear behind the wall.
 
-### Story (first at 5 s, then every 75 s)
+### Story (at 5 s of each 75 s loop)
 
 | time | girl | boy | Nayan |
 |---|---|---|---|
@@ -286,7 +286,7 @@ kiss line up.
   (813, 733). The pair fits within the 58 px opening when they stand side by side close together.
 - Nóri is on the left and Max on the right (as seen by us), Max a head taller.
 
-### Story (first at 52 s, right after the deer has gone; then once a minute)
+### Story (at 52 s of each 75 s loop, right after the deer has gone)
 
 | time | what happens | pose |
 |---|---|---|
