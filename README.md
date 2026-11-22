@@ -19,8 +19,10 @@ After the first kiss, a small hand-drawn arrow appears at the bottom: scrolling 
 dissolves the drawing into the paper and brings up the **invitation card**, which uses the printed
 invite's own lettering and rings (which, every few seconds, gently rock together with two tiny pencil glints): Nóri & Max, Cegléd, Hungary, August 2027 (the exact venue and date
 stay on the printed card), and an RSVP button. The card speaks Magyar, English (the default) or
-Français, switched at the top left and remembered in the browser. The RSVP form itself is still to
-come: for now the button says so, just under itself.
+Français, switched at the top left and remembered in the browser. The RSVP button opens a short form (name, yes/no, how many, children, other names, allergies,
+email, a note); answers go to a Google Sheet and are emailed to both of you through a small Google
+Apps Script in your own account (one-time setup: `docs/RSVP-SETUP.md`). Until it's connected, the
+button says the form is coming soon.
 
 On a phone held upright, the drawing only fills a band, so the page simply stacks: the drawing at
 the top (with all its animations), the language switch under it, then the card, on one screen with
@@ -87,6 +89,8 @@ app/layout.tsx, app/globals.css       the page shell
 app/page.tsx                          the home page: the drawing, then the card
 components/Home.tsx                   the two screens and the scroll dissolve (stacked when upright)
 components/invitation/                the card, the language switch, all texts (i18n.ts)
+tools/rsvp/Code.gs                    the RSVP endpoint (Google Apps Script: sheet + emails)
+docs/RSVP-SETUP.md                    how to set it up
 app/favicon.ico, icon.png, apple-icon.png  the wedding-rings favicon
 components/scene/Scene.tsx            the scene (canvases + fallback drawing)
 components/scene/animation.js         the animation engine and all its tuning

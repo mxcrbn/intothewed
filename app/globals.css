@@ -130,21 +130,30 @@ body {
   letter-spacing: .12em;
 }
 .langs__dot { margin: 0 .55em; opacity: .6; }
+/* the current language is underlined with a fine pen stroke like the drawing's: wavering, with a
+   small pen lift and a faint second pass (an SVG that stretches to the word) */
+:root {
+  --pen-underline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1.5 3.6C10 3.1 19 3.9 29 3.4S48 2.8 61 3.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.88' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M64.5 3.6c9 .1 18-.3 26-.1 3 .1 5.5-.1 8-.5' fill='none' stroke='%231c1c1c' stroke-opacity='0.8' stroke-width='0.9' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M40 2.9c7-.3 14-.2 21 .2' fill='none' stroke='%231c1c1c' stroke-opacity='0.3' stroke-width='0.7' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-underline-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1.5 3.6C10 3.1 19 3.9 29 3.4S48 2.8 61 3.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.3' stroke-width='0.9' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M64.5 3.6c9 .1 18-.3 26-.1 3 .1 5.5-.1 8-.5' fill='none' stroke='%231c1c1c' stroke-opacity='0.28' stroke-width='0.85' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-rule: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M.8 3.3C14 3.6 27 2.9 41 3.2s14 .2 21 0' fill='none' stroke='%231c1c1c' stroke-opacity='0.5' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M59.5 2.9c13 .4 26 .5 38.7-.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.45' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M18 3.5c8 .2 15 0 21-.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.22' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-rule-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M.6 3.0C11 2.7 22 3.4 34 3.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.5' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M31.5 3.4c17-.4 33 .3 49 0s12-.3 18.7.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.45' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M66 2.8c9-.2 17 0 24 .3' fill='none' stroke='%231c1c1c' stroke-opacity='0.22' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-rule-b-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M.6 3.0C11 2.7 22 3.4 34 3.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.95' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M31.5 3.4c17-.4 33 .3 49 0s12-.3 18.7.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M66 2.8c9-.2 17 0 24 .3' fill='none' stroke='%231c1c1c' stroke-opacity='0.4' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-rule-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M.8 3.3C14 3.6 27 2.9 41 3.2s14 .2 21 0' fill='none' stroke='%231c1c1c' stroke-opacity='0.95' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M59.5 2.9c13 .4 26 .5 38.7-.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M18 3.5c8 .2 15 0 21-.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.4' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
 .langs__item {
   font: inherit;
   letter-spacing: inherit;
   color: var(--ink);
   background: none;
   border: 0;
-  padding: 8px 1px;
+  padding: 8px 1px 9px;
   cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 6px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: calc(100% - .1em) 6px;   /* the tracking after the last letter isn't underlined */
 }
-.langs__item:hover { text-decoration-color: rgba(28, 28, 28, .35); }
-.langs__item[aria-current="true"] { text-decoration-color: var(--ink); }
+.langs__item:hover { background-image: var(--pen-underline-light); }
+.langs__item[aria-current="true"] { background-image: var(--pen-underline); }
 .langs__item:focus-visible { outline: 1px dashed #6a6a6a; outline-offset: 2px; }
 
 .card {
@@ -233,6 +242,124 @@ body {
   color: var(--paper);
   outline: none;
 }
+
+/* ===== The RSVP form: a full sheet of paper over the card ================================= */
+html:has(.rsvp-dialog[open]) { overflow: hidden; }
+.rsvp-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+}
+.rsvp-dialog::backdrop { background: var(--paper); }
+.rsvp-dialog[open] { animation: rsvp-in .5s ease; }
+@keyframes rsvp-in { from { opacity: 0; transform: translateY(10px); } }
+.rsvp-dialog__close {
+  position: absolute;
+  top: calc(8px + env(safe-area-inset-top));
+  right: calc(8px + env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  font: inherit;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.rsvp-dialog__close:focus-visible { outline: 1px dashed #6a6a6a; border-radius: 6px; }
+.rsvp-dialog__inner {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: calc(clamp(40px, 8vh, 80px) + env(safe-area-inset-top)) 20px calc(56px + env(safe-area-inset-bottom));
+}
+.rsvp-dialog__rings { display: block; width: 120px; height: auto; margin: 0 auto 10px; }
+.rsvp-dialog__title {
+  font-weight: 400;
+  font-size: clamp(21px, 2.6vw, 27px);
+  letter-spacing: .16em;
+  margin-right: -.16em;
+  text-align: center;
+  margin-bottom: clamp(26px, 5vh, 44px);
+}
+.rsvp-dialog__done { text-align: center; }
+.rsvp-dialog__thanks { font-size: 19px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 32px; }
+
+.field { display: block; margin: 0 0 24px; border: 0; padding: 0; min-width: 0; }
+.field__label { display: block; font-size: 14px; letter-spacing: .08em; margin-bottom: 4px; }
+.field__label em { font-style: normal; font-size: 12px; opacity: .55; margin-left: .3em; }
+.field input,
+.field select,
+.field textarea {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 17px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 6px 2px 8px;
+  outline: none;
+  /* a fine hand-ruled line under each field, darker when typing in it */
+  background: var(--pen-rule) no-repeat 0 100% / 100% 5px;
+}
+.field textarea { resize: vertical; min-height: 84px; line-height: 1.5; }
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 24px;
+  cursor: pointer;
+  background: var(--pen-rule) no-repeat 0 100% / 100% 5px, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.4 6.1 6.6 11 1.2' fill='none' stroke='%231c1c1c' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 4px center;
+}
+.field input:focus,
+.field textarea:focus { background-image: var(--pen-rule-dark); }
+/* every other field is ruled with a different stroke, so the lines don't repeat */
+.rsvp-form > .field:nth-of-type(even) input,
+.rsvp-form > .field:nth-of-type(even) textarea { background-image: var(--pen-rule-b); }
+.field-row .field:nth-of-type(even) select { background-image: var(--pen-rule-b), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.4 6.1 6.6 11 1.2' fill='none' stroke='%231c1c1c' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.rsvp-form > .field:nth-of-type(even) input:focus,
+.rsvp-form > .field:nth-of-type(even) textarea:focus { background-image: var(--pen-rule-b-dark); }
+.field select:focus { background-image: var(--pen-rule-dark), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.4 6.1 6.6 11 1.2' fill='none' stroke='%231c1c1c' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.field-row { display: flex; gap: 20px; }
+.field-row .field { flex: 1; }
+.field-row .field__label { min-height: 2.6em; }   /* labels of different lengths: fields stay aligned */
+
+.field--choice .field__label { margin-bottom: 10px; }
+.choice { display: inline-flex; align-items: center; gap: 10px; margin: 0 26px 6px 0; font-size: 17px; cursor: pointer; }
+.choice input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.choice input::after { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); transform: scale(0); transition: transform .2s ease; }
+.choice input:checked::after { transform: scale(1); }
+.choice input:focus-visible { outline: 1px dashed #6a6a6a; outline-offset: 3px; }
+
+.rsvp-form__trap { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; }
+.rsvp-form__send { text-align: center; margin-top: 34px; }
+.rsvp-form__send .sketch-button { margin-top: 0; }
+.rsvp-form__send .sketch-button:disabled { opacity: .6; cursor: progress; }
+.rsvp-form__error { margin-top: 16px; font-size: 15px; letter-spacing: .04em; }
 
 /* ===== Upright screens (portrait phones): the drawing as a band at the top, the card under it ==
    The drawing keeps its usual crop (x 100 → 1450: the deer, both owl branches, the big right tree),
