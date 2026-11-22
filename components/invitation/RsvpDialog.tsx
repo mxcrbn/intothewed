@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
-import Emoji from "./Emoji";
+import { WithEmoji } from "./Emoji";
 import { RSVP_TEXT, type Lang } from "./i18n";
 import { RSVP_ENDPOINT } from "./rsvp-config";
 
@@ -22,7 +22,12 @@ export default function RsvpDialog({ lang, open, onClose }: { lang: Lang; open: 
   useEffect(() => {
     const d = dialog.current;
     if (!d) return;
-    if (open && !d.open) d.showModal();
+    if (open && !d.open) {
+      d.showModal();
+      // showModal focuses the × button, which then shows its keyboard-focus outline (Safari does even
+      // after a tap): start with the focus on the sheet itself; Tab still reaches the ×
+      d.focus();
+    }
     if (!open && d.open) d.close();
   }, [open, mounted]);
 
@@ -43,14 +48,14 @@ export default function RsvpDialog({ lang, open, onClose }: { lang: Lang; open: 
 
   if (!mounted) return null;
   return createPortal(
-    <dialog ref={dialog} className="rsvp-dialog" onClose={onClose} aria-labelledby="rsvp-title" lang={lang}>
+    <dialog ref={dialog} className="rsvp-dialog" tabIndex={-1} onClose={onClose} aria-labelledby="rsvp-title" lang={lang}>
       <button type="button" className="rsvp-dialog__close" onClick={onClose} aria-label={t.close}>×</button>
       <div className="rsvp-dialog__inner">
         <img className="rsvp-dialog__rings" src="/assets/rings/rings.png" width={1536} height={960} alt="" />
         <h2 id="rsvp-title" className="rsvp-dialog__title">{t.title}</h2>
         {status !== "sent" && (
           <p className="rsvp-dialog__intro">
-            {t.intro[0]}&nbsp;<Emoji name="heart-hands" /> {t.intro[1]}&nbsp;<Emoji name="hugging" />
+            <WithEmoji text={t.intro[0]} name="heart-hands" /> <WithEmoji text={t.intro[1]} name="hugging" />
           </p>
         )}
 
