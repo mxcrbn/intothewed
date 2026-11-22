@@ -296,7 +296,7 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   text-align: center;
   margin-bottom: 16px;
 }
-/* a few words from the two of you under the title, with hand-drawn doodles for emojis */
+/* a few words from the two of you under the title, with hand-drawn emojis */
 .rsvp-dialog__intro {
   max-width: 30em;
   margin: 0 auto clamp(28px, 5vh, 44px);
@@ -306,15 +306,12 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   text-align: center;
   text-wrap: pretty;
 }
-.doodle {
+.emoji {
   display: inline-block;
-  width: 1.4em;
-  height: 1.4em;
-  vertical-align: -.36em;
-  fill: none;
-  stroke: var(--ink);
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  width: 2.2em;
+  height: 2.2em;
+  vertical-align: -.68em;
+  margin: -.5em -.1em;      /* the drawing's blank margin doesn't push the lines apart */
 }
 .rsvp-dialog__done { text-align: center; margin-top: clamp(26px, 5vh, 44px); }
 .rsvp-dialog__thanks { font-size: 19px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 32px; }

@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
-import Doodle from "./Doodle";
+import Emoji from "./Emoji";
 import { RSVP_TEXT, type Lang } from "./i18n";
 import { RSVP_ENDPOINT } from "./rsvp-config";
 
@@ -50,7 +50,7 @@ export default function RsvpDialog({ lang, open, onClose }: { lang: Lang; open: 
         <h2 id="rsvp-title" className="rsvp-dialog__title">{t.title}</h2>
         {status !== "sent" && (
           <p className="rsvp-dialog__intro">
-            {t.intro[0]}&nbsp;<Doodle kind="heart" /> {t.intro[1]}&nbsp;<Doodle kind="hug" />
+            {t.intro[0]}&nbsp;<Emoji name="heart-hands" /> {t.intro[1]}&nbsp;<Emoji name="hugging" />
           </p>
         )}
 

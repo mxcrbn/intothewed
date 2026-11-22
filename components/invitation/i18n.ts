@@ -45,7 +45,7 @@ export const RSVP_TEXT: Record<Lang, {
 }> = {
   en: {
     title: "Will you join us?",
-    // two sentences, each followed by a little hand-drawn doodle (a heart, then a hugging smiley)
+    // two sentences, each followed by a hand-drawn emoji (heart hands 🫶, then a hug 🤗)
     intro: [
       "If you’re filling in this form, it means we’ve come a long way together",
       "We made it to keep things simple, but please call or write to us too, even if you fill it in! Nothing beats hearing from you directly",
