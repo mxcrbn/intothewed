@@ -5,9 +5,10 @@ Run from the repo root:
 
 Every frame is rebuilt from the pack's 4x master (512 px cell) into a 1:1 cell of 128 px, in one
 high-quality reduction. Along the way, a few corrections (all listed in FIXES below):
-  - ink: the owl and the deer are drawn lighter than the invitation's pen (they sit right next to
-    the heavy tree trunks), so their ink is darkened. The children's two peek frames are lighter
-    than their other frames and are darkened to match them.
+  - ink: one pen for everything. Every character's line is brought to the drawing's own line
+    (house and trees, measured on public/assets/trees/background.png): the same mean ink darkness
+    and the same stroke width, with one tone curve per character, then each frame levelled to the
+    same darkness so no frame looks paler than its neighbours.
   - register: in the deer's walk cycle the body slides ±7 px back and forth (the frames are
     aligned on the feet), which makes the walk judder. Those frames are re-centred on the body.
   - scale: three couple frames (lean in, kiss, smile) drawn ~4 % smaller are brought back to size.
@@ -27,12 +28,11 @@ import numpy as np
 from PIL import Image
 
 FIXES = {
-    "owl":    {"ink_p90": 165},
-    "deer":   {"ink_p90": 165, "register": range(4, 12)},
+    "deer":   {"register": range(4, 12)},
     # the children a little smaller, so Nayan (96) clearly stands above them while staying below
     # Nóri (~97) and Max (104): girl 54 px (5 years old), boy 68 px (7)
-    "girl":   {"match_ink": [16, 17], "scale": 54 / 56},
-    "boy":    {"match_ink": [16, 17], "scale": 68 / 75},
+    "girl":   {"scale": 54 / 56},
+    "boy":    {"scale": 68 / 75},
     "nayan":  {"scale": 96 / 106},
     # the lean-in, kiss and smile frames are drawn ~4 % smaller than the rest (Max's head drops
     # 4 px even standing upright, their feet are narrower): back to the common size
@@ -63,22 +63,67 @@ def cell_box(i, size):
     return ((c % COLS) * size, (c // COLS) * size, (c % COLS + 1) * size, (c // COLS + 1) * size)
 
 
-def ink(px):
-    """Darkness of each pixel (0 paper … 255 black), alpha-weighted."""
+PAPER = 254.0        # the drawing's paper
+INK = 0.35           # a pixel counts as ink above this darkness (0 paper … 1 black)
+
+
+def darkness(px):
+    """Darkness of each pixel as it looks on the paper (0 paper … 1 black)."""
     px = px.astype(float)
-    return (255 - px[..., :3].mean(-1)) * px[..., 3] / 255
+    return np.clip(1 - px[..., :3].mean(-1) / PAPER, 0, 1) * px[..., 3] / 255
 
 
-def p90(px):
-    d = ink(px)
-    return np.percentile(d[d > 40], 90)
+def line(ds):
+    """The pen of a set of darkness maps: (mean darkness of the ink, stroke width in px).
+    The width is twice the ink area over its outline length."""
+    area = edge = total = 0
+    for d in ds:
+        ink = d > INK
+        p = np.pad(ink, 1)
+        inside = p[:-2, 1:-1] & p[2:, 1:-1] & p[1:-1, :-2] & p[1:-1, 2:]
+        area += ink.sum()
+        edge += (ink & ~inside).sum()
+        total += d[ink].sum()
+    return total / max(area, 1), 2 * area / max(edge, 1)
 
 
-def darken(px, k):
-    px = px.astype(float)
-    px[..., :3] = 255 - np.clip((255 - px[..., :3]) * k, 0, 255)
-    return px.round().astype(np.uint8)
+def curve(d, k, gamma):
+    """The tone curve: gamma thins or thickens the stroke (it moves the soft edge), k darkens it."""
+    return np.clip(k * d ** gamma, 0, 1)
 
+
+def gain_for(ds, gamma, dark):
+    """The k that gives these darkness maps the wanted mean ink darkness, for a given gamma."""
+    lo, hi = 0.3, 30.0
+    for _ in range(30):
+        k = (lo + hi) / 2
+        lo, hi = (k, hi) if line([curve(d, k, gamma) for d in ds])[0] < dark else (lo, k)
+    return (lo + hi) / 2
+
+
+def repen(frames, dark, width):
+    """Redraw frames with the drawing's pen: same mean ink darkness, same stroke width."""
+    ds = [darkness(f) for f in frames]
+    best = None
+    for gamma in np.arange(0.5, 3.01, 0.05):
+        k = gain_for(ds, gamma, dark)
+        miss = abs(line([curve(d, k, gamma) for d in ds])[1] - width)
+        if best is None or miss < best[0]:
+            best = (miss, gamma, k)
+    _, gamma, k = best
+    out = []
+    for f, d in zip(frames, ds):
+        d2 = curve(d, gain_for([d], gamma, dark), gamma)       # each frame levelled to the same darkness
+        alpha = np.maximum(f[..., 3] / 255, d2)                # (a line may need more than its soft edge held)
+        grey = PAPER * (1 - np.divide(d2, alpha, out=np.zeros_like(d2), where=alpha > 0))
+        px = np.dstack([grey, grey, grey, alpha * 255])
+        out.append(px.round().astype(np.uint8))
+    return out, gamma, k
+
+
+# the drawing's own pen: what every character is matched to
+PEN = line([darkness(np.asarray(Image.open(trees / "background.png").convert("RGBA")))])
+print(f"the drawing: ink {PEN[0]:.3f}, stroke {PEN[1]:.2f} px")
 
 for name, a in assets.items():
     fx = FIXES.get(name, {})
@@ -117,16 +162,11 @@ for name, a in assets.items():
 
     frames = [np.asarray(m.resize((CELL, CELL), Image.LANCZOS)) for m in masters]
 
-    if "ink_p90" in fx:
-        k = fx["ink_p90"] / np.median([p90(f) for f in frames])
-        frames = [darken(f, k) for f in frames]
-        print(f"{name}: ink x{k:.2f}")
-    if "match_ink" in fx:
-        ref = np.mean([p90(frames[i]) for i in (0, 1, 3)])
-        for i in fx["match_ink"]:
-            k = ref / p90(frames[i])
-            frames[i] = darken(frames[i], k)
-            print(f"{name} frame {i}: ink x{k:.2f}")
+    before = line([darkness(f) for f in frames])
+    frames, gamma, k = repen(frames, *PEN)
+    after = line([darkness(f) for f in frames])
+    print(f"{name}: ink {before[0]:.3f} → {after[0]:.3f}, stroke {before[1]:.2f} → {after[1]:.2f} px "
+          f"(curve x{k:.2f}, gamma {gamma:.2f})")
 
     for s, sheet_path in enumerate(a["sheets"]):
         sheet = Image.new("RGBA", (COLS * CELL, ROWS * CELL), (0, 0, 0, 0))
@@ -143,7 +183,8 @@ shutil.copy2(pack / "trees/branches-atlas.png", trees / "branches-atlas.png")
 shutil.copy2(pack / "trees/wind-rig.json", trees / "wind-rig.json")
 
 # source files, kept out of the served folder
-if (art / "masters-4x").resolve() != (pack / "masters-4x").resolve():
+same = (art / "masters-4x").exists() and (pack / "masters-4x").samefile(art / "masters-4x")
+if not same:   # (never delete the kept masters when they are the pack being imported)
     if (art / "masters-4x").exists():
         shutil.rmtree(art / "masters-4x")
     shutil.copytree(pack / "masters-4x", art / "masters-4x")
