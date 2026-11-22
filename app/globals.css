@@ -281,8 +281,7 @@ body {
 }
 /* the card's button: its label written by hand, so no tracking to balance */
 .sketch-button--hand { padding-left: 32px; padding-right: 32px; }
-.sketch-button--hand { color: #5c5c5c; padding-top: 13px; padding-bottom: 12px; opacity: .85; }
-.sketch-button--hand:hover, .sketch-button--hand:focus-visible { opacity: 1; }
+.sketch-button--hand { color: #333; padding-top: 13px; padding-bottom: 12px; }
 .sketch-button--hand .hand { height: 1.3em; }
 .sketch-button:hover,
 .sketch-button:focus-visible {
