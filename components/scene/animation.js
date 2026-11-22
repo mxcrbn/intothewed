@@ -91,8 +91,11 @@ export function startScene(root) {
         { clip: "peekLong" }, { to: [1394, 786], clip: "peek", speed: 55, face: "left" }, { until: 6.2 },
         // she leaves the loop before its last stretch and curls round to the front of the lawn, so her
         // brother, a second behind on the same loop, passes well behind her (they used to cross)
-        ...CHASE.slice(0, -1).map(p => ({ to: p })), { to: [1262, 770] }, { to: [1215, 802] }, { until: 13.6 }, { face: "right" },
-        { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 20.4 },
+        ...CHASE.slice(0, -1).map(p => ({ to: p })), { to: [1262, 770] }, { to: [1215, 802] },
+        // while she waits she points at her brother still running, hops when he gets there, waves to
+        // us, and hops again: never standing frozen for long
+        { face: "right" }, { clip: "play" }, { until: 13.6 }, { clip: "hop" }, { clip: "wave" },
+        { idle: 0.5 }, { clip: "hop" }, { until: 18.3 },
         // follows her brother round the corner of the house
         { to: [1288, 750] }, { to: [1240, 728] }, { to: [1150, 724] },
       ] },
@@ -103,7 +106,7 @@ export function startScene(root) {
         { clip: "peekLong" }, { to: [1408, 787], clip: "peek", speed: 55, face: "right" }, { until: 7.2 },
         // (she arrives first and stops further left and further forward, so he never runs across her)
         ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },
-        { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
+        { idle: 0.3 }, { clip: "wave" }, { idle: 0.35 }, { clip: "play" }, { until: 17.5 },   // waves, points to the tree, and off
         // off behind the house: round its corner on the level, just behind its base line (y 731), so
         // he slips behind the wall with his feet on the ground (not climbing the picture beside it)
         { to: [1298, 748] }, { to: [1240, 728] }, { to: [1150, 722] },
@@ -112,7 +115,7 @@ export function startScene(root) {
         // ~3 s into the chase he strolls out (one step every two frames: 15 px a frame, so his feet
         // don't slide), faces us for a moment, and settles back against the trunk, chilling
         { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 45 }, { face: "right" }, { idle: 0.35 },
-        { clip: "lean", dur: 10.8 },               // until the kids have gone behind the house
+        { clip: "lean", dur: 9.4 },                // until the kids have gone behind the house
         // then he pushes off the tree, waves to us, and jogs off after them, round the corner of the house
         { face: "left" }, { clip: "pushOff", dur: 0.35 }, { face: "right" }, { clip: "wave" }, { idle: 0.25 },
         { to: [1296, 752], speed: 70 }, { to: [1240, 727], speed: 70 }, { to: [1140, 722], speed: 70 },
