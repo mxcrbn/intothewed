@@ -26,7 +26,7 @@ export default function Scene({ label, cueLabel }: { label: string; cueLabel: st
       <a className="scroll-cue" href="#invitation" aria-label={cueLabel}>
         <span className="scroll-cue__fade">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/ui/scroll-arrow.png" width={192} height={256} alt="" />
+          <img src="/assets/ui/scroll-arrow.png" width={192} height={256} alt="" loading="lazy" />
         </span>
       </a>
     </main>

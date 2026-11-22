@@ -545,7 +545,10 @@ export function startScene(root) {
   }
 
   // ===== Main loop ====================================================================
-  let last = 0, clock = 0, running = true;
+  let last = 0, clock = 0, running = true, lastDraw = -1e9;
+  // Nothing here moves faster than 10 drawings a second, and the wind is slow: the scene is redrawn
+  // 30 times a second at most (not 60 or 120), which halves or quarters the work and the battery use.
+  const FRAME = 1000 / 30;
 
   // Debug helper for tuning: ?t=40 starts the scene 40 s in.
   const skip = Number(query.get("t"));
@@ -581,6 +584,8 @@ export function startScene(root) {
       if (!reduceMotion) requestAnimationFrame(frame);
       return;
     }
+    if (!reduceMotion && now - lastDraw < FRAME - 4) { requestAnimationFrame(frame); return; }
+    lastDraw = now;
     const strength = reduceMotion ? 0 : WIND.intensity * smooth(0.3, WIND.rampIn, clock);
     drawForest(clock, strength);
 
@@ -617,13 +622,13 @@ export function startScene(root) {
       })));
   });
   const forestReady = fetch(WIND.base + "wind-rig.json").then(r => r.json()).then(rig =>
-    Promise.all([load(WIND.base + "background.png"), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
+    Promise.all([load(WIND.base + "background.webp"), load(WIND.base + rig.atlas)]).then(([bg, atlas]) => {
       Object.assign(forest, { rig, background: bg, atlas });
     }));
   const leaves = ["left", "right"].map(side =>
     load(`/assets/doors/${side}.png`).then(img => { doorLeaves[side] = img; }));
   let disposed = false;
-  const onResize = () => { layout(); if (reduceMotion) frame(performance.now()); };
+  const onResize = () => { layout(); lastDraw = -1e9; if (reduceMotion) frame(performance.now()); };
   const onVisibility = () => {
     if (document.hidden) { running = false; }
     else if (!running && !disposed) { running = true; last = performance.now(); requestAnimationFrame(frame); }

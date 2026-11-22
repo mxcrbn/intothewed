@@ -6,7 +6,7 @@ Run from the repo root:
 Every frame is rebuilt from the pack's 4x master (512 px cell) into a 1:1 cell of 128 px, in one
 high-quality reduction. Along the way, a few corrections (all listed in FIXES below):
   - ink: one pen for everything. Every character's line is brought to the drawing's own line
-    (house and trees, measured on public/assets/trees/background.png): the same mean ink darkness
+    (house and trees, measured on art/trees/background.png): the same mean ink darkness
     and the same stroke width, with one tone curve per character, then each frame levelled to the
     same darkness so no frame looks paler than its neighbours.
   - owl: perched, it is the invitation's own owl, cut out of the invite (see invite_owl).
@@ -131,7 +131,7 @@ def invite_owl(blink=False):
     x0, y0 = FEET[0] - ANCHOR[0], FEET[1] - ANCHOR[1]
     box = (x0, y0, x0 + CELL, y0 + CELL)
     inv = np.asarray(Image.open(site / "public/assets/invite-original.webp").convert("RGBA").crop(box))
-    bg = np.asarray(Image.open(trees / "background.png").convert("RGBA").crop(box))
+    bg = np.asarray(Image.open(DRAWING).convert("RGBA").crop(box))
     # the owl's own ink: what the invite has that the owl-less background doesn't, around the owl
     d = np.clip(darkness(inv) - darkness(bg), 0, 1)
     keep = np.zeros_like(d, bool)
@@ -160,7 +160,8 @@ def invite_owl(blink=False):
 
 
 # the drawing's own pen: what every character is matched to
-PEN = line([darkness(np.asarray(Image.open(trees / "background.png").convert("RGBA")))])
+DRAWING = site / "art/trees/background.png"      # the drawing without the owl (served as a WebP)
+PEN = line([darkness(np.asarray(Image.open(DRAWING).convert("RGBA")))])
 print(f"the drawing: ink {PEN[0]:.3f}, stroke {PEN[1]:.2f} px")
 
 for name, a in assets.items():
