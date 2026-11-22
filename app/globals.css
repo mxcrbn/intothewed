@@ -214,8 +214,8 @@ body {
   display: block;
   width: min(88vw, 660px);
   height: auto;
-  /* the lettering's hairlines, a quarter-pixel fuller: the darkest ink on the card */
-  filter: drop-shadow(.3px 0 0 var(--ink)) drop-shadow(-.3px 0 0 var(--ink));
+  /* the lettering's hairlines, a hair fuller: still the darkest ink on the card */
+  filter: drop-shadow(.12px 0 0 var(--ink)) drop-shadow(-.12px 0 0 var(--ink));
 }
 /* the rings' canvas keeps transparent room around the drawing for the rocking motion: the
    drawing itself is ~81 % of the canvas width (so ~210 px here), and the margins are smaller */
