@@ -9,6 +9,7 @@ high-quality reduction. Along the way, a few corrections (all listed in FIXES be
     (house and trees, measured on public/assets/trees/background.png): the same mean ink darkness
     and the same stroke width, with one tone curve per character, then each frame levelled to the
     same darkness so no frame looks paler than its neighbours.
+  - owl: perched, it is the invitation's own owl, cut out of the invite (see invite_owl).
   - register: in the deer's walk cycle the body slides ±7 px back and forth (the frames are
     aligned on the feet), which makes the walk judder. Those frames are re-centred on the body.
   - scale: three couple frames (lean in, kiss, smile) drawn ~4 % smaller are brought back to size.
@@ -25,7 +26,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFilter
 
 FIXES = {
     "deer":   {"register": range(4, 12)},
@@ -121,6 +122,43 @@ def repen(frames, dark, width):
     return out, gamma, k
 
 
+def invite_owl(blink=False):
+    """The owl as it is drawn on the invitation (ear tufts, facing us), cut out of the invite as a
+    128 px cell with its feet on the anchor: the perched owl is then the very same one people see
+    on the still drawing while the page loads. Paper white inside, transparent outside.
+    blink: the two eye dots replaced by two short closed-eye strokes."""
+    FEET, ANCHOR = (315, 301), (64, 100)                # where it sits in the drawing; the cell's anchor
+    x0, y0 = FEET[0] - ANCHOR[0], FEET[1] - ANCHOR[1]
+    box = (x0, y0, x0 + CELL, y0 + CELL)
+    inv = np.asarray(Image.open(site / "public/assets/invite-original.webp").convert("RGBA").crop(box))
+    bg = np.asarray(Image.open(trees / "background.png").convert("RGBA").crop(box))
+    # the owl's own ink: what the invite has that the owl-less background doesn't, around the owl
+    d = np.clip(darkness(inv) - darkness(bg), 0, 1)
+    keep = np.zeros_like(d, bool)
+    keep[266 - y0:306 - y0, 301 - x0:330 - x0] = True
+    d[~keep] = 0
+    # its silhouette: the outline closed (the pen lifts here and there), and everything inside it
+    line_ = Image.fromarray(((d > 0.2) * 255).astype(np.uint8))
+    closed = line_.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.MinFilter(5))
+    flood = closed.copy()
+    ImageDraw.floodfill(flood, (0, 0), 128)
+    inside = np.asarray(flood) != 128
+    # its feet grip the branch, whose line the background has too: there, take the invite's ink as it is
+    feet = np.zeros_like(inside)
+    feet[295 - y0:306 - y0] = True
+    d = np.where(inside & feet, darkness(inv), d)
+    if blink:
+        eyes = [(313, 275), (319, 275)]
+        for ex, ey in eyes:
+            d[ey - y0 - 2:ey - y0 + 3, ex - x0 - 2:ex - x0 + 3] = 0
+        for ex, ey in eyes:                              # a short stroke, a touch lower at its ends
+            d[ey - y0, ex - x0 - 1:ex - x0 + 2] = 0.8
+            d[ey - y0 + 1, [ex - x0 - 2, ex - x0 + 2]] = 0.45
+    alpha = np.maximum(inside.astype(float), d)
+    grey = PAPER * (1 - np.divide(d, alpha, out=np.zeros_like(d), where=alpha > 0))
+    return np.dstack([grey, grey, grey, alpha * 255]).round().astype(np.uint8)
+
+
 # the drawing's own pen: what every character is matched to
 PEN = line([darkness(np.asarray(Image.open(trees / "background.png").convert("RGBA")))])
 print(f"the drawing: ink {PEN[0]:.3f}, stroke {PEN[1]:.2f} px")
@@ -167,6 +205,11 @@ for name, a in assets.items():
     after = line([darkness(f) for f in frames])
     print(f"{name}: ink {before[0]:.3f} → {after[0]:.3f}, stroke {before[1]:.2f} → {after[1]:.2f} px "
           f"(curve x{k:.2f}, gamma {gamma:.2f})")
+
+    if name == "owl":
+        # perched, it is the invitation's own owl (0 at rest, 1 blinking, 15 just settled); the pack's
+        # perched owl was a different bird (round head, in profile)
+        frames[0], frames[1], frames[15] = invite_owl(), invite_owl(blink=True), invite_owl()
 
     for s, sheet_path in enumerate(a["sheets"]):
         sheet = Image.new("RGBA", (COLS * CELL, ROWS * CELL), (0, 0, 0, 0))
