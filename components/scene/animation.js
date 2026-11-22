@@ -84,24 +84,26 @@ export function startScene(root) {
         { face: "left" }, { idle: 1.0 }, { clip: "peekLong" }, { until: 6.2 },   // one long peek
         ...CHASE.map(p => ({ to: p })), { to: [1215, 780] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 20.4 },
-        // follows her brother: up along the side of the house first, then behind it
-        { to: [1250, 742] }, { to: [1258, 722] }, { to: [1150, 704] },
+        // follows her brother round the corner of the house
+        { to: [1288, 750] }, { to: [1240, 728] }, { to: [1150, 724] },
       ] },
       { id: "boy", speed: 105, start: [1410, 787], steps: [
         { idle: 1.8 }, { clip: "peekLong" }, { until: 7.2 },                     // one long peek
         // (she arrives first and stops further left, so he never runs across her)
         ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
-        { to: [1258, 724] }, { to: [1150, 706] },
+        // off behind the house: round its corner on the level, just behind its base line (y 731), so
+        // he slips behind the wall with his feet on the ground (not climbing the picture beside it)
+        { to: [1298, 748] }, { to: [1240, 728] }, { to: [1150, 722] },
       ] },
       { id: "nayan", speed: 90, start: [1392, 788], steps: [
         // ~3 s into the chase he strolls out (one step every two frames: 15 px a frame, so his feet
         // don't slide), faces us for a moment, and settles back against the trunk, chilling
         { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 45 }, { face: "right" }, { idle: 0.35 },
         { clip: "lean", dur: 10.8 },               // until the kids have gone behind the house
-        // then he pushes off the tree, waves to us, and jogs off after them, behind the corner of the house
+        // then he pushes off the tree, waves to us, and jogs off after them, round the corner of the house
         { face: "left" }, { clip: "pushOff", dur: 0.35 }, { face: "right" }, { clip: "wave" }, { idle: 0.25 },
-        { to: [1250, 724], speed: 70 }, { to: [1180, 674], speed: 70 },
+        { to: [1296, 752], speed: 70 }, { to: [1240, 727], speed: 70 }, { to: [1140, 722], speed: 70 },
       ] },
     ],
   };
