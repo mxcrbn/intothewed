@@ -89,7 +89,9 @@ export function startScene(root) {
       { id: "girl", speed: 105, start: [1394, 786], steps: [
         { face: "left" }, { idle: 1.0 }, { to: [1372, 786], clip: "peek", speed: 55, face: "left" },
         { clip: "peekLong" }, { to: [1394, 786], clip: "peek", speed: 55, face: "left" }, { until: 6.2 },
-        ...CHASE.map(p => ({ to: p })), { to: [1215, 780] }, { until: 13.6 }, { face: "right" },
+        // she leaves the loop before its last stretch and curls round to the front of the lawn, so her
+        // brother, a second behind on the same loop, passes well behind her (they used to cross)
+        ...CHASE.slice(0, -1).map(p => ({ to: p })), { to: [1262, 770] }, { to: [1215, 802] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 20.4 },
         // follows her brother round the corner of the house
         { to: [1288, 750] }, { to: [1240, 728] }, { to: [1150, 724] },
@@ -99,7 +101,7 @@ export function startScene(root) {
       { id: "boy", speed: 105, start: [1408, 787], steps: [
         { idle: 1.8 }, { to: [BOY_PEEK_X, 787], clip: "peek", speed: 55, face: "right" },
         { clip: "peekLong" }, { to: [1408, 787], clip: "peek", speed: 55, face: "right" }, { until: 7.2 },
-        // (she arrives first and stops further left, so he never runs across her)
+        // (she arrives first and stops further left and further forward, so he never runs across her)
         ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
         // off behind the house: round its corner on the level, just behind its base line (y 731), so
