@@ -41,13 +41,15 @@ export function startScene(root) {
   // The deer comes out of the woods on the left, passing behind the two big trunks, walks out
   // to the middle of the left garden and looks around, then turns back and wanders off into
   // the forest, between the trunks.
-  // Legs: walk to [x, y] (+size: it ends the leg at this size) | idle s | turn s (it turns round on the
-  //       spot, through a view from the front) | away to [x, y] (walking off, fading).
+  // Legs: walk to [x, y] (+size: it ends the leg at this size) | idle s | away to [x, y] (walking
+  //       off, fading). It turns round by simply facing the other way: a deliberately simple move.
   const DEER = {
-    firstAt: 22,          // seconds after opening
+    firstAt: 24.5,        // seconds after opening
     every: LOOP,
     walkSpeed: 50,        // px / s
-    start: [-90, 745],
+    start: [34, 764],     // among the trees at the left edge of the drawing: it fades in there (it used to
+                          // walk in from outside the drawing, out of the blank paper on wide screens)
+    fadeIn: 1.6,          // seconds
     legs: [
       { walk: [140, 780] },        // out of the woods, behind the far-left trunk
       { walk: [402, 802] },        // in front of the second trunk, into the left garden: it stops right under the
@@ -55,7 +57,6 @@ export function startScene(root) {
                                    // far enough forward that the house's base line passes behind its neck
                                    // (10 px further back, the line ran exactly along its back)
       { idle: 6.5 },               // looks around, and once at us
-      { turn: 0.6 },               // turns round, head towards us
       { walk: [240, 748], size: 0.88 },   // back towards the trees: further from us, so a little smaller
                                    // (the frames that follow, seen from behind, are drawn at 72 px for 82)
       { away: [172, 690], dur: 6 } // and wanders off into the forest
@@ -124,8 +125,8 @@ export function startScene(root) {
         // don't slide), faces us for a moment, and settles back against the trunk, chilling
         { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 45 }, { face: "right" }, { idle: 0.35 },
         { clip: "lean", dur: 9.4 },                // until the kids have gone behind the house
-        // then he pushes off the tree, waves to us, and jogs off after them, round the corner of the house
-        { face: "left" }, { clip: "pushOff", dur: 0.35 }, { face: "right" }, { clip: "wave" }, { idle: 0.25 },
+        // then he simply stands up, waves to us, and jogs off after them, round the corner of the house
+        { idle: 0.4 }, { clip: "wave" }, { idle: 0.25 },
         { to: [1296, 752], speed: 70 }, { to: [1240, 727], speed: 70 }, { to: [1140, 722], speed: 70 },
       ] },
     ],
@@ -164,7 +165,6 @@ export function startScene(root) {
     nayan: {
       run: { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 6.5, loop: true },   // an easy jog (70 px/s)
       walk: { frames: [14, 15], fps: 3, loop: true },      // a stroll: a 30 px step every two frames (45 px/s)
-      pushOff: { frames: [12], fps: 1, loop: true },       // weight forward, coming off the trunk
     },
   };
   const SPRITES = {};      // name → { sheets: [img], anchor, clips }, filled at load
@@ -379,7 +379,6 @@ export function startScene(root) {
     let t = 0, [x, y] = DEER.start, flip = false;
     for (const leg of DEER.legs) {
       if (leg.idle) { segs.push({ t0: t, t1: t + leg.idle, clip: "idle", x0: x, y0: y, x1: x, y1: y, flip }); t += leg.idle; continue; }
-      if (leg.turn) { segs.push({ t0: t, t1: t + leg.turn, turn: true, x0: x, y0: y, x1: x, y1: y, flip }); t += leg.turn; flip = !flip; continue; }
       const [tx, ty] = leg.walk || leg.away;
       const d = leg.dur || Math.hypot(tx - x, ty - y) / DEER.walkSpeed;
       if (leg.walk) flip = tx < x;
@@ -394,23 +393,21 @@ export function startScene(root) {
     if (t < DEER.firstAt) return;
     const c = (t - DEER.firstAt) % DEER.every;
     if (c > deerTotal) return;
+    // never outside the drawing (wide screens show blank paper on either side of it)
+    life.save(); life.beginPath(); life.rect(0, 0, W, H); life.clip();
     const seg = deerSegs.find(s => c < s.t1) || deerSegs[deerSegs.length - 1];
     const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
     const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
-    if (seg.turn) {
-      // turning round on the spot: the head comes to face us while the body, swinging towards us, is
-      // seen shorter and shorter, then lengthens again the other way
-      const w = Math.max(0.5, Math.abs(Math.cos(Math.PI * smooth(0, 1, u))));
-      drawFrame(SPRITES.deer, 2, x, y, SPRITES.deer.anchor, u < 0.5 ? seg.flip : !seg.flip, 1, [w, 1]);
-    } else if (seg.away) {
+    if (seg.away) {
       // the walking-away frames are drawn smaller (it is further away); it fades into the trees
       drawSprite("deer", "walkAway", c - seg.t0, x, y, seg.flip, 1 - smooth(0.45, 1, u));
     } else {
       const size = lerp(1, seg.size || 1, u);
-      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip, 1, size === 1 ? null : [size, size]);
+      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip, smooth(0, DEER.fadeIn, c), size === 1 ? null : [size, size]);
     }
     // the deer walks behind the big trunks: cut their shapes out of it (only those in front)
     cutOut(DEER.trunks.filter(tr => y < tr.roots).map(tr => tr.shape));
+    life.restore();
   }
 
   // Erase shapes from the characters canvas, so what was drawn there is hidden behind them.
