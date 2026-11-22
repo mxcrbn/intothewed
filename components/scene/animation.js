@@ -33,7 +33,8 @@ export function startScene(root) {
   // The deer comes out of the woods on the left, passing behind the two big trunks, walks out
   // to the middle of the left garden and looks around, then turns back and wanders off into
   // the forest, between the trunks.
-  // Legs: walk to [x, y] | idle s | away to [x, y] (walking off, shrinking and fading).
+  // Legs: walk to [x, y] (+size: it ends the leg at this size) | idle s | turn s (it turns round on the
+  //       spot, through a view from the front) | away to [x, y] (walking off, fading).
   const DEER = {
     firstAt: 22,          // seconds after opening
     every: 60,            // then once a minute
@@ -46,7 +47,9 @@ export function startScene(root) {
                                    // far enough forward that the house's base line passes behind its neck
                                    // (10 px further back, the line ran exactly along its back)
       { idle: 6.5 },               // looks around, and once at us
-      { walk: [240, 748] },        // turns back towards the trees
+      { turn: 0.6 },               // turns round, head towards us
+      { walk: [240, 748], size: 0.88 },   // back towards the trees: further from us, so a little smaller
+                                   // (the frames that follow, seen from behind, are drawn at 72 px for 82)
       { away: [172, 690], dur: 6 } // and wanders off into the forest
     ],
     // outlines of the two big left trunks, with the y of their roots: the deer is hidden by a
@@ -262,21 +265,23 @@ export function startScene(root) {
   // Draw one frame (global index) of a character at 1:1, its anchor at (x, y) in the drawing.
   // Positions snap to whole drawing pixels, so the frame's pixels sit on the drawing's pixels and
   // are scaled exactly like the house and the trees.
-  function drawFrame(sp, index, x, y, anchor, flip = false, alpha = 1) {
+  // (size: only the deer uses it, as it turns round and as it walks away from us; [width, height])
+  function drawFrame(sp, index, x, y, anchor, flip = false, alpha = 1, size = null) {
     const img = sp.sheets[Math.floor(index / PER_SHEET)], c = index % PER_SHEET;
     life.save();
     life.globalAlpha = alpha;
     life.translate(Math.round(x), Math.round(y));
+    if (size) life.scale(size[0], size[1]);
     if (flip) life.scale(-1, 1);
     life.drawImage(img, (c % COLS) * CELL, Math.floor(c / COLS) * CELL, CELL, CELL, -anchor[0], -anchor[1], CELL, CELL);
     life.restore();
   }
   // Draw the frame of a clip at `seconds` into it.
-  function drawSprite(id, clipName, seconds, x, y, flip = false, alpha = 1) {
+  function drawSprite(id, clipName, seconds, x, y, flip = false, alpha = 1, size = null) {
     const sp = SPRITES[id], clip = sp.clips[clipName];
     const n = Math.max(0, Math.floor(seconds * clip.fps));
     const step = clip.loop ? n % clip.frames.length : Math.min(n, clip.frames.length - 1);
-    drawFrame(sp, clip.frames[step], x, y + (clip.offsetY ? clip.offsetY[step] : 0), clip.anchor || sp.anchor, flip, alpha);
+    drawFrame(sp, clip.frames[step], x, y + (clip.offsetY ? clip.offsetY[step] : 0), clip.anchor || sp.anchor, flip, alpha, size);
   }
 
   // ===== Owl ==========================================================================
@@ -349,10 +354,11 @@ export function startScene(root) {
     let t = 0, [x, y] = DEER.start, flip = false;
     for (const leg of DEER.legs) {
       if (leg.idle) { segs.push({ t0: t, t1: t + leg.idle, clip: "idle", x0: x, y0: y, x1: x, y1: y, flip }); t += leg.idle; continue; }
+      if (leg.turn) { segs.push({ t0: t, t1: t + leg.turn, turn: true, x0: x, y0: y, x1: x, y1: y, flip }); t += leg.turn; flip = !flip; continue; }
       const [tx, ty] = leg.walk || leg.away;
       const d = leg.dur || Math.hypot(tx - x, ty - y) / DEER.walkSpeed;
       if (leg.walk) flip = tx < x;
-      segs.push({ t0: t, t1: t + d, clip: leg.walk ? "walk" : "walkAway", away: !!leg.away, x0: x, y0: y, x1: tx, y1: ty, flip });
+      segs.push({ t0: t, t1: t + d, clip: leg.walk ? "walk" : "walkAway", away: !!leg.away, size: leg.size || 1, x0: x, y0: y, x1: tx, y1: ty, flip });
       x = tx; y = ty; t += d;
     }
     return segs;
@@ -366,11 +372,17 @@ export function startScene(root) {
     const seg = deerSegs.find(s => c < s.t1) || deerSegs[deerSegs.length - 1];
     const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
     const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
-    if (seg.away) {
+    if (seg.turn) {
+      // turning round on the spot: the head comes to face us while the body, swinging towards us, is
+      // seen shorter and shorter, then lengthens again the other way
+      const w = Math.max(0.5, Math.abs(Math.cos(Math.PI * smooth(0, 1, u))));
+      drawFrame(SPRITES.deer, 2, x, y, SPRITES.deer.anchor, u < 0.5 ? seg.flip : !seg.flip, 1, [w, 1]);
+    } else if (seg.away) {
       // the walking-away frames are drawn smaller (it is further away); it fades into the trees
       drawSprite("deer", "walkAway", c - seg.t0, x, y, seg.flip, 1 - smooth(0.45, 1, u));
     } else {
-      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip);
+      const size = lerp(1, seg.size || 1, u);
+      drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip, 1, size === 1 ? null : [size, size]);
     }
     // the deer walks behind the big trunks: cut their shapes out of it (only those in front)
     cutOut(DEER.trunks.filter(tr => y < tr.roots).map(tr => tr.shape));
