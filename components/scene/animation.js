@@ -112,8 +112,11 @@ export function startScene(root) {
     opening: { x: 784, y: 619, w: 58, h: 113 },   // the real doorway in the drawing
     doorX: 813, doorY: 733, stepX: 815, stepY: 760,
     length: 11.9,         // seconds, from the doors starting to open to shut again
-    cueAt: 9.0,           // the first kiss is over: show the scroll arrow (class "cue" on the scene)
+    cueAt: 9.0,           // the first kiss is over: show the scroll arrow in full (class "cue" on the scene)
   };
+  // The scroll arrow is there, faintly, from a few seconds in (class "hint"), so nobody has to wait
+  // for the kiss to find the invitation card; after the kiss it comes up in full.
+  const ARROW = { hintAt: 4 };
 
   // Characters: the asset pack in assets/characters/ (see tools/import_assets.py). Every frame
   // is a 128 × 128 cell at the drawing's own scale, used exactly as delivered: never resized.
@@ -485,13 +488,18 @@ export function startScene(root) {
   const flyAt = Number(query.get("fly"));
   if (skip > 0 && flyAt > 0) { owl.state = "fly"; owl.since = skip - flyAt * OWL.flightTime; }
 
-  let cueShown = false;
+  let cueShown = false, hintShown = false;
   function frame(now) {
     if (!running) return;
     const dt = Math.min((now - last) / 1000, 0.1); // pause-safe clock
     last = now;
     clock += dt;
-    // after the first kiss (or straight away without motion), invite people to scroll down
+    // a faint arrow from the start, so the card can always be found…
+    if (!hintShown && (reduceMotion || clock >= ARROW.hintAt)) {
+      hintShown = true;
+      scene.classList.add("hint");
+    }
+    // …and after the first kiss (or straight away without motion), invite people to scroll down
     if (!cueShown && (reduceMotion || clock >= COUPLE.firstAt + COUPLE.cueAt)) {
       cueShown = true;
       scene.classList.add("cue");
@@ -561,6 +569,6 @@ export function startScene(root) {
     running = false;
     window.removeEventListener("resize", onResize);
     document.removeEventListener("visibilitychange", onVisibility);
-    scene.classList.remove("ready", "nofade", "cue");
+    scene.classList.remove("ready", "nofade", "hint", "cue");
   };
 }

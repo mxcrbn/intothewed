@@ -70,7 +70,8 @@ body {
 .nofade #trees,
 .nofade #life { transition: none; }
 
-/* the hand-drawn arrow, bottom centre, once the couple has kissed (class "cue") */
+/* the hand-drawn arrow, bottom centre: faint from a few seconds in (class "hint"), so the card can
+   always be found, and in full once the couple has kissed (class "cue") */
 .scroll-cue {
   position: absolute;
   left: 50%;
@@ -87,11 +88,12 @@ body {
   transition: opacity 1.6s ease, visibility 0s linear 1.6s;
   -webkit-tap-highlight-color: transparent;
 }
-.cue .scroll-cue {
-  opacity: 1;
+.hint .scroll-cue {
+  opacity: .45;
   visibility: visible;
   transition: opacity 1.6s ease;
 }
+.cue .scroll-cue { opacity: 1; }
 .scroll-cue__fade { opacity: clamp(0, calc(1 - var(--p) * 4), 1); }
 .scroll-cue img {
   display: block;
