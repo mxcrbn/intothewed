@@ -484,7 +484,9 @@ export function startScene(root) {
     life.fillStyle = "#fefefe";
     life.fillRect(o.x, o.y, o.w, o.h);
     if (s.visible && s.inside) {
-      life.save(); life.beginPath(); life.rect(o.x, o.y, o.w, o.h + 1); life.clip(); pair(); life.restore();
+      // inside, the doorway hides them at the top and sides; below, it stays open down to their feet,
+      // so their legs aren't cut at the threshold while they step over it
+      life.save(); life.beginPath(); life.rect(o.x, o.y, o.w, Math.max(o.h, s.y - o.y) + 1); life.clip(); pair(); life.restore();
     }
     if (s.open > 1e-6) { drawLeaf("left", s.open); drawLeaf("right", s.open); }
     else { life.drawImage(doorLeaves.left, o.x, o.y, 29, o.h); life.drawImage(doorLeaves.right, o.x + 29, o.y, 29, o.h); }
