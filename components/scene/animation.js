@@ -42,7 +42,7 @@ export function startScene(root) {
   // to the middle of the left garden and looks around, then turns back and wanders off into
   // the forest, between the trunks.
   // Legs: walk to [x, y] (+size: it ends the leg at this size) | idle s | away to [x, y] (walking
-  //       off, fading). It turns round by simply facing the other way: a deliberately simple move.
+  //       off into the distance, +size). It turns round by simply facing the other way: a deliberately simple move.
   const DEER = {
     firstAt: 24.5,        // seconds after opening
     every: LOOP,
@@ -59,7 +59,9 @@ export function startScene(root) {
       { idle: 6.5 },               // looks around, and once at us
       { walk: [240, 748], size: 0.88 },   // back towards the trees: further from us, so a little smaller
                                    // (the frames that follow, seen from behind, are drawn at 72 px for 82)
-      { away: [172, 690], dur: 6 } // and wanders off into the forest
+      // and wanders off into the forest, smaller and smaller, until it slips behind the far-left trunk
+      // (it used to fade out between the trunks, and the trees showed through it as it went)
+      { away: [127, 664], dur: 6.5, size: 0.5 }
     ],
     // outlines of the two big left trunks, with the y of their roots: the deer is hidden by a
     // trunk only while its feet are further back (higher up) than that trunk's roots
@@ -399,8 +401,10 @@ export function startScene(root) {
     const u = clamp01((c - seg.t0) / Math.max(seg.t1 - seg.t0, 1e-6));
     const x = lerp(seg.x0, seg.x1, u), y = lerp(seg.y0, seg.y1, u);
     if (seg.away) {
-      // the walking-away frames are drawn smaller (it is further away); it fades into the trees
-      drawSprite("deer", "walkAway", c - seg.t0, x, y, seg.flip, 1 - smooth(0.45, 1, u));
+      // the walking-away frames are drawn smaller (it is further away), and it shrinks on into the
+      // distance; never see-through: it ends hidden behind a trunk
+      const size = lerp(1, seg.size || 1, u);
+      drawSprite("deer", "walkAway", c - seg.t0, x, y, seg.flip, 1, [size, size]);
     } else {
       const size = lerp(1, seg.size || 1, u);
       drawSprite("deer", seg.clip, seg.clip === "walk" ? c : c - seg.t0, x, y, seg.flip, smooth(0, DEER.fadeIn, c), size === 1 ? null : [size, size]);
