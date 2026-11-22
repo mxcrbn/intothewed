@@ -95,11 +95,13 @@ export function startScene(root) {
         { to: [1258, 724] }, { to: [1150, 706] },
       ] },
       { id: "nayan", speed: 90, start: [1392, 788], steps: [
-        // ~3 s into the chase he strolls out and leans back against the trunk, chilling
-        { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 35 }, { face: "right" },
-        { clip: "lean", dur: 11.2 },               // until the kids have gone behind the house
-        // then stands up and jogs off after them in one straight line, behind the corner of the house
-        { idle: 0.8 }, { to: [1250, 724], speed: 70 }, { to: [1180, 674], speed: 70 },
+        // ~3 s into the chase he strolls out (one step every two frames: 15 px a frame, so his feet
+        // don't slide), faces us for a moment, and settles back against the trunk, chilling
+        { until: 9.0 }, { to: [1344, 790], clip: "walk", speed: 45 }, { face: "right" }, { idle: 0.35 },
+        { clip: "lean", dur: 10.8 },               // until the kids have gone behind the house
+        // then he pushes off the tree, waves to us, and jogs off after them, behind the corner of the house
+        { face: "left" }, { clip: "pushOff", dur: 0.35 }, { face: "right" }, { clip: "wave" }, { idle: 0.25 },
+        { to: [1250, 724], speed: 70 }, { to: [1180, 674], speed: 70 },
       ] },
     ],
   };
@@ -131,7 +133,11 @@ export function startScene(root) {
     // the pack's hop lift is in the old 512 px units: these are the same moves at 1:1
     girl: { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -5, -1] }, peekLong },
     boy:  { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -6, -1] }, peekLong },
-    nayan: { run: { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 6.5, loop: true } },   // an easy jog (70 px/s)
+    nayan: {
+      run: { frames: [4, 5, 6, 7, 8, 9, 10, 11], fps: 6.5, loop: true },   // an easy jog (70 px/s)
+      walk: { frames: [14, 15], fps: 3, loop: true },      // a stroll: a 30 px step every two frames (45 px/s)
+      pushOff: { frames: [12], fps: 1, loop: true },       // weight forward, coming off the trunk
+    },
   };
   const SPRITES = {};      // name → { sheets: [img], anchor, clips }, filled at load
   let CELL = 128, COLS = 3, PER_SHEET = 6;
