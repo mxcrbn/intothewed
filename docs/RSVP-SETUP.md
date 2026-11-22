@@ -16,8 +16,8 @@ Until the script's link is set, the RSVP button just says the form is coming soo
 
 1. In the sheet: **Extensions → Apps Script**.
 2. Delete the sample code, and paste the whole content of [`tools/rsvp/Code.gs`](../tools/rsvp/Code.gs).
-3. On the line `const RECIPIENTS = "you@example.com, nori@example.com";`, put your two email
-   addresses (separated by a comma).
+3. On the line `const RECIPIENTS = "you@domain.com";`, put the address that should get each
+   answer (several, separated by a comma, if you both want it).
 4. Save (the disk icon), and name the project *RSVP*.
 
 ## 3. Publish it as a web app

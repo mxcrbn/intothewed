@@ -7,8 +7,8 @@
  * or in the GitHub repo. Setup: see docs/RSVP-SETUP.md.
  */
 
-// ← your two email addresses, separated by a comma
-const RECIPIENTS = "you@example.com, nori@example.com";
+// ← the address(es) that get each answer; several are separated by a comma
+const RECIPIENTS = "you@domain.com";
 
 const SHEET_NAME = "Answers";
 const HEADERS = ["Received", "Name", "Attending", "People", "Children", "Other names",
