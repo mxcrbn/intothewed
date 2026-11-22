@@ -65,13 +65,14 @@ export function startScene(root) {
   // back to the tree. A few seconds into the chase Nayan strolls out and leans back against the
   // trunk, hands in pockets, one knee bent. When the kids have run off behind the house he stands
   // up and jogs after them.
-  // Steps: to [x, y] (+speed, +clip: run by default) | clip (+dur) | idle s | until s (wait for a
-  //        cue) | face.
+  // Steps: to [x, y] (+speed, +clip: run by default, +face: keep facing that way) | clip (+dur) |
+  //        idle s | until s (wait for a cue) | face.
   // Everyone is drawn at the size of their frames (1:1 with the drawing).
   // a wide loop: out along the front of the lawn, round, and back higher up the lawn, so they
   // never run into each other (the boy is ~1 s behind her on the same loop)
   // (turning right of the gate pillar, x 995–1065, which stands in front of the lawn)
   const CHASE = [[1290, 800], [1185, 806], [1125, 796], [1102, 774], [1128, 751], [1205, 743], [1300, 756]];
+  const BOY_PEEK_X = 1432;
   const KIDS = {
     firstAt: 5,
     every: 75,
@@ -83,15 +84,21 @@ export function startScene(root) {
     house: { baseY: 730, outline: [[316, 731], [316, 585], [290, 585], [476, 494], [700, 494],
              [820, 442], [940, 494], [1202, 494], [1258, 585], [1228, 585], [1228, 731]] },
     cast: [
-      { id: "girl", speed: 105, start: [1372, 786], steps: [
-        { face: "left" }, { idle: 1.0 }, { clip: "peekLong" }, { until: 6.2 },   // one long peek
+      // she waits right behind the trunk, out of sight; leans out on the left for one long peek, and
+      // ducks back out of sight before she bolts
+      { id: "girl", speed: 105, start: [1394, 786], steps: [
+        { face: "left" }, { idle: 1.0 }, { to: [1372, 786], clip: "peek", speed: 55, face: "left" },
+        { clip: "peekLong" }, { to: [1394, 786], clip: "peek", speed: 55, face: "left" }, { until: 6.2 },
         ...CHASE.map(p => ({ to: p })), { to: [1215, 780] }, { until: 13.6 }, { face: "right" },
         { until: 14.8 }, { clip: "hop" }, { clip: "wave" }, { until: 20.4 },
         // follows her brother round the corner of the house
         { to: [1288, 750] }, { to: [1240, 728] }, { to: [1150, 724] },
       ] },
-      { id: "boy", speed: 105, start: [1410, 787], steps: [
-        { idle: 1.8 }, { clip: "peekLong" }, { until: 7.2 },                     // one long peek
+      // he does the same on the right, a beat after her, leaning far enough out for his whole head
+      // to clear the trunk
+      { id: "boy", speed: 105, start: [1408, 787], steps: [
+        { idle: 1.8 }, { to: [BOY_PEEK_X, 787], clip: "peek", speed: 55, face: "right" },
+        { clip: "peekLong" }, { to: [1408, 787], clip: "peek", speed: 55, face: "right" }, { until: 7.2 },
         // (she arrives first and stops further left, so he never runs across her)
         ...CHASE.map(p => ({ to: p })), { to: [1265, 778] }, { until: 13.6 }, { face: "right" },
         { until: 14.6 }, { clip: "wave" }, { until: 19.6 },
@@ -410,11 +417,12 @@ export function startScene(root) {
       t += Math.max(d, 0);
     };
     for (const st of kid.steps) {
-      if (st.face) { flip = st.face === "left"; continue; }
+      if (st.face && !st.to) { flip = st.face === "left"; continue; }
       if (st.to) {
         const [tx, ty] = st.to;
         const d = Math.hypot(tx - x, ty - y) / (st.speed || kid.speed);
-        if (tx !== x) flip = tx < x;
+        if (st.face) flip = st.face === "left";       // (moving without turning: leaning out, ducking back)
+        else if (tx !== x) flip = tx < x;
         segs.push({ t0: t, t1: t + d, clip: st.clip || "run", moving: true, x0: x, y0: y, x1: tx, y1: ty, flip });
         x = tx; y = ty; t += d;
       } else if (st.until !== undefined) stay("idle", st.until - t);
