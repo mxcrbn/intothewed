@@ -531,6 +531,10 @@ export function startScene(root) {
     if (!reduceMotion) requestAnimationFrame(frame);
   }
 
+  // place the still drawing exactly where the canvases will draw it, straight away: it shows while
+  // the assets load, and the animated scene then fades in over it without a shift
+  layout();
+
   const castReady = fetch(CAST + "animations.json").then(r => r.json()).then(spec => {
     [CELL, COLS] = [spec.cellSize[0], spec.grid.columns];
     PER_SHEET = spec.grid.columns * spec.grid.rows;
