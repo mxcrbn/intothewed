@@ -131,6 +131,9 @@ export function startScene(root) {
   const CAST = "/assets/characters/";
   const peekLong = { frames: [16, 16, 17, 17, 17, 17, 16], fps: 2 };   // one long peek, 3.5 s
   const CLIP_CHANGES = {
+    // (the pack's first landing frame, 13, is drawn about a third smaller than its neighbours and made
+    // the owl shrink for a blink: it lands on the half-folded frame, held a little, then settles)
+    owl: { land: { frames: [14, 14, 15], fps: 6.6667 } },
     deer: { idle: { frames: [0, 0, 1, 0, 0, 2, 2, 2, 0, 3, 0, 0, 0], fps: 2 } },   // one look at us (frame 2)
     // the pack's hop lift is in the old 512 px units: these are the same moves at 1:1
     girl: { hop: { frames: [12, 13, 14, 15], fps: 7, offsetY: [0, -2, -5, -1] }, peekLong },
@@ -284,6 +287,18 @@ export function startScene(root) {
     return OWL.perches[i];
   }
 
+  // Blinks while perched: 0.15 s, at uneven intervals of 3 to 7 s, sometimes twice in a row.
+  const OWL_BLINKS = [2.6, 4.1, 0.4, 5.3, 3.2, 6.7, 3.9, 0.35, 4.8];   // seconds between blinks, repeating
+  const OWL_BLINKS_TOTAL = OWL_BLINKS.reduce((a, b) => a + b, 0);
+  function owlBlinks(seconds) {
+    let u = seconds % OWL_BLINKS_TOTAL;
+    for (const gap of OWL_BLINKS) {
+      if (u < gap) return gap - u < 0.15;
+      u -= gap;
+    }
+    return false;
+  }
+
   function drawOwl(t) {
     const bodyLift = OWL.bodyLift;
     const here = feetOn(owl.perch);
@@ -293,8 +308,8 @@ export function startScene(root) {
     const local = t - owl.since;
 
     if (owl.state === "perched") {
-      // look towards the other tree
-      drawSprite("owl", "perched", local, here.x, here.y, faceLeft);
+      // look towards the other tree; a quick blink now and then, never on a beat
+      drawFrame(SPRITES.owl, owlBlinks(local) ? 1 : 0, here.x, here.y, SPRITES.owl.anchor, faceLeft);
       if (!reduceMotion && t >= owl.nextFlightAt) { owl.state = "takeoff"; owl.since = t; }
       return;
     }
@@ -318,9 +333,10 @@ export function startScene(root) {
       if (u >= 1) { owl.state = "land"; owl.since = t; owl.perch = 1 - owl.perch; }
       return;
     }
-    // land: just arrived, still facing the way it flew
-    const arrivedFromLeft = owl.perch === 1;
-    drawSprite("owl", "land", local, here.x, here.y, !arrivedFromLeft);
+    // land: it turns as it flares onto the branch, so it settles already looking back at the tree it
+    // came from (the flying frames are seen from the front, so the turn doesn't show; landing facing
+    // the other way, it used to flip round in a single frame a moment later)
+    drawSprite("owl", "land", local, here.x, here.y, faceLeft);
     if (local >= clipLength(SPRITES.owl.clips.land)) {
       owl.state = "perched"; owl.since = t; owl.nextFlightAt = t + OWL.restBetween;
     }
