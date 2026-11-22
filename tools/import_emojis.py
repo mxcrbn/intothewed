@@ -19,6 +19,7 @@ INK = (28, 28, 28)                       # the drawing's charcoal, #1c1c1c
 EMOJIS = {                               # name: stroke thickening in the 1024 px drawing (odd, px)
     "heart-hands": 15,                   # 14 px strokes -> ~28
     "hugging": 21,                       # 7 px strokes -> ~27
+    "smiling-hearts": 21,                # 🥰, for the thank-you
 }
 HEIGHT = 128                             # px; the emojis show at ~13–20 CSS px tall: crisp on 3x screens
 PAD = 0.03                               # clear margin kept around the drawing, as a share of its size

@@ -17,15 +17,16 @@ const HEADERS = ["Received", "Name", "Attending", "People", "Children", "Other n
 function doPost(e) {
   try {
     const d = JSON.parse((e && e.postData && e.postData.contents) || "{}");
-    if (d.website) return reply({ ok: true });          // the hidden field: only bots fill it in
+    if (d.hp || d.website) return reply({ ok: true });  // the hidden field: only bots fill it in
 
     const name = clean(d.name, 120);
     if (!name) return reply({ ok: false, error: "name" });
     const yes = d.attending === "yes";
+    const maybe = d.attending === "maybe";              // "we'd love to, will confirm soon"
     const email = clean(d.email, 160);
     const answer = {
       name,
-      attending: yes ? "yes" : "no",
+      attending: yes ? "yes" : maybe ? "maybe" : "no",
       people: yes ? count(d.people, 1, 12) : 0,
       children: yes ? count(d.children, 0, 12) : 0,
       others: yes ? clean(d.others, 400) : "",
@@ -47,9 +48,10 @@ function doPost(e) {
     const options = {
       to: RECIPIENTS,
       subject: yes ? `RSVP — ${name}: yes, ${answer.people} ${answer.people > 1 ? "people" : "person"}`
-                   : `RSVP — ${name}: sadly no`,
+             : maybe ? `RSVP — ${name}: maybe, will confirm soon`
+                     : `RSVP — ${name}: sadly no`,
       body: [
-        `${name} ${yes ? "will be there" : "can't come"}.`,
+        `${name} ${yes ? "will be there" : maybe ? "would love to come and will confirm soon" : "can't come"}.`,
         "",
         yes ? `People: ${answer.people}${answer.children ? ` (incl. ${answer.children} ${answer.children > 1 ? "children" : "child"})` : ""}` : "",
         answer.others ? `With: ${answer.others}` : "",

@@ -6,13 +6,14 @@
 const EMOJIS = {
   "heart-hands": { emoji: "🫶", width: 222, height: 128 },
   hugging: { emoji: "🤗", width: 150, height: 128 },
+  "smiling-hearts": { emoji: "🥰", width: 141, height: 128 },
 } as const;
 
 export type EmojiName = keyof typeof EMOJIS;
 
 export default function Emoji({ name }: { name: EmojiName }) {
   const { width, height } = EMOJIS[name];
-  return <img className={`emoji emoji--${name}`} src={`/assets/emoji/${name}.png`} width={width} height={height} alt="" />;
+  return <img className={`emoji emoji--${name}`} src={`/assets/emoji/${name}.png`} width={width} height={height} alt="" loading="lazy" />;
 }
 
 // A sentence ending with an emoji: the last word and the emoji stay together on one line.

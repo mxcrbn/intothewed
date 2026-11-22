@@ -39,9 +39,9 @@ export const TEXT: Record<Lang, {
 
 // The RSVP form.
 export const RSVP_TEXT: Record<Lang, {
-  title: string; intro: [string, string]; name: string; attending: string; yes: string; no: string; people: string;
+  title: string; intro: [string, string]; name: string; attending: string; yes: string; maybe: string; no: string; people: string;
   children: string; others: string; dietary: string; email: string; note: string; optional: string;
-  send: string; sending: string; thanksYes: string; thanksNo: string; error: string; close: string;
+  send: string; sending: string; thanksYes: string; thanksMaybe: string; thanksNo: string; error: string; close: string;
 }> = {
   en: {
     title: "Will you join us?",
@@ -53,6 +53,7 @@ export const RSVP_TEXT: Record<Lang, {
     name: "Your name",
     attending: "Will you be there?",
     yes: "Yes, with joy",
+    maybe: "We’d love to, will confirm soon",
     no: "Sadly, no",
     people: "How many of you, including you?",
     children: "Children among them",
@@ -64,6 +65,7 @@ export const RSVP_TEXT: Record<Lang, {
     send: "Send",
     sending: "Sending…",
     thanksYes: "Thank you! We can’t wait to celebrate with you.",
+    thanksMaybe: "Thank you! We hope you can make it. Let us know as soon as you can.",
     thanksNo: "Thank you for letting us know. You’ll be missed!",
     error: "Something went wrong. Please try again in a moment.",
     close: "Close",
@@ -77,6 +79,7 @@ export const RSVP_TEXT: Record<Lang, {
     name: "Neved",
     attending: "Ott leszel?",
     yes: "Igen, örömmel",
+    maybe: "Szeretnék, hamarosan megerősítem",
     no: "Sajnos nem",
     people: "Hányan lesztek, veled együtt?",
     children: "Ebből gyerek",
@@ -88,21 +91,23 @@ export const RSVP_TEXT: Record<Lang, {
     send: "Küldés",
     sending: "Küldés…",
     thanksYes: "Köszönjük! Alig várjuk, hogy együtt ünnepeljünk.",
+    thanksMaybe: "Köszönjük! Reméljük, el tudsz jönni. Jelezz, amint tudod!",
     thanksNo: "Köszönjük, hogy szóltál. Hiányozni fogsz!",
     error: "Valami hiba történt. Kérjük, próbáld újra egy kicsit később.",
     close: "Bezárás",
   },
   fr: {
-    title: "Serez-vous des nôtres ?",
+    title: "Serez-vous des nôtres\u00a0?",
     intro: [
       "Si vous remplissez ce formulaire, c’est que nous avons fait un long bout de chemin ensemble",
       "Nous l’avons préparé pour vous simplifier la vie, mais appelez-nous ou écrivez-nous aussi, même si vous l’avez rempli\u00a0! Rien ne vaut le plaisir d’avoir de vos nouvelles en direct",
     ],
     name: "Votre nom",
-    attending: "Serez-vous là ?",
+    attending: "Serez-vous là\u00a0?",
     yes: "Oui, avec joie",
+    maybe: "Nous aimerions, réponse très bientôt",
     no: "Hélas, non",
-    people: "Combien serez-vous, vous compris ?",
+    people: "Combien serez-vous, vous compris\u00a0?",
     children: "Dont enfants",
     others: "Noms des autres personnes",
     dietary: "Allergies ou régime (végétarien…)",
@@ -111,8 +116,9 @@ export const RSVP_TEXT: Record<Lang, {
     optional: "facultatif",
     send: "Envoyer",
     sending: "Envoi…",
-    thanksYes: "Merci ! Nous avons hâte de fêter ça avec vous.",
-    thanksNo: "Merci de nous avoir prévenus. Vous nous manquerez !",
+    thanksYes: "Merci\u00a0! Nous avons hâte de fêter ça avec vous.",
+    thanksMaybe: "Merci\u00a0! Nous espérons que vous pourrez venir. Tenez-nous au courant dès que possible.",
+    thanksNo: "Merci de nous avoir prévenus. Vous nous manquerez\u00a0!",
     error: "Une erreur s’est produite. Merci de réessayer dans un instant.",
     close: "Fermer",
   },

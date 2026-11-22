@@ -144,6 +144,11 @@ body {
   --pen-rule-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M.6 3.4C6 4.1 13 4.7 21 4.6S31 3.9 36.5 3.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.55' stroke-width='1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M34.8 4.6C42 4.4 50 3.6 59 3.8S74 5 83 4.7 95 3.9 99.4 4.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.5' stroke-width='0.95' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M68 4.4C76 4.8 84 4.6 91 4.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.22' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   --pen-cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4.4 5.2C6.9 9.1 10.8 12.6 14.6 15.6 16.4 17 18.2 18.3 20 19.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M18.6 4.6C16.8 6.9 14.1 9.6 11.6 12.4 9.4 14.9 7.3 17.6 5.6 20.4' fill='none' stroke='%231c1c1c' stroke-opacity='0.86' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.3 8.9c1.9 2.1 3.9 3.9 5.9 5.5' fill='none' stroke='%231c1c1c' stroke-opacity='0.35' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --pen-cross-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5.6 4.4C8.1 8.1 11.4 11.6 14.4 14.7 16.1 16.4 17.6 17.9 19.1 19.8' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M20.1 7.2C16.9 8.9 13.8 11.5 11 14.3 8.9 16.4 6.6 18.3 4.2 19.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.86' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.8 10.3c-1.5 1-2.9 2.2-4.2 3.5' fill='none' stroke='%231c1c1c' stroke-opacity='0.35' stroke-width='0.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  /* the buttons' frame, drawn twice like the invitation's lines; the answer circles */
+  --pen-frame: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M1.1 1.9C18 1.2 39 2.1 61 1.4S88 1 98.9 1.7C99.4 12 98.5 27 99 38.3 76 39.1 43 38.2 1 38.8 1.6 27 .6 13 1.2 1.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.88' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-frame-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 40' preserveAspectRatio='none'%3E%3Cpath d='M.4 2.6C24 .7 52 1.1 99.6 .5 98.9 14 99.7 26 99.2 39.5 70 38.6 34 39.6 .7 39.1 .2 26 1 12 .5 1.6' fill='none' stroke='%231c1c1c' stroke-opacity='0.32' stroke-width='1' stroke-linecap='round' stroke-linejoin='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+  --pen-circle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12.6 3C7.3 2.6 3.1 6.8 3.2 12.1 3.3 17.4 7.3 21.1 12.3 20.9 17.3 20.7 21 17 20.8 11.8 20.6 6.9 17.2 3.4 11.2 3.5' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.25' stroke-linecap='round'/%3E%3C/svg%3E");
+  --pen-circle-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10.9 3.4C16 2.5 20.6 6.3 20.9 11.6 21.2 16.9 17.4 21 12.2 21 7 21 3.3 17.4 3.1 12.3 2.9 7.6 6.2 3.9 12.3 3.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.9' stroke-width='1.25' stroke-linecap='round'/%3E%3C/svg%3E");
   --pen-rule-b-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M.6 3.4C6 4.1 13 4.7 21 4.6S31 3.9 36.5 3.2' fill='none' stroke='%231c1c1c' stroke-opacity='0.96' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M34.8 4.6C42 4.4 50 3.6 59 3.8S74 5 83 4.7 95 3.9 99.4 4.3' fill='none' stroke='%231c1c1c' stroke-opacity='0.88' stroke-width='1.04' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M68 4.4C76 4.8 84 4.6 91 4.1' fill='none' stroke='%231c1c1c' stroke-opacity='0.39' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
   --pen-rule-dark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 8' preserveAspectRatio='none'%3E%3Cpath d='M.8 4.9C2 4.6 4 4.5 8 4.3 15 3.8 23 3.6 30 4.1S44 5.1 52 4.7 58 4 60.5 3.4' fill='none' stroke='%231c1c1c' stroke-opacity='0.96' stroke-width='1.1' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M58.8 5C64 4.9 70 4.8 77 4.3S90 3.4 99.2 3.9' fill='none' stroke='%231c1c1c' stroke-opacity='0.88' stroke-width='1.04' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M16 4.2C24 3.7 31 4 38 4.6' fill='none' stroke='%231c1c1c' stroke-opacity='0.39' stroke-width='0.75' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
 }
@@ -230,22 +235,25 @@ body {
   text-transform: uppercase;
   color: var(--ink);
   text-decoration: none;
-  border: 1px solid rgba(28, 28, 28, .85);
+  /* a hand-drawn frame (no ruler-straight border), and a fainter second pass just outside it */
+  border: 0;
   border-radius: 2px;
+  background-image: var(--pen-frame);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   transition: background-color .35s ease, color .35s ease;
 }
 .sketch-button::after {
   content: "";
   position: absolute;
   inset: -3px -2px -2px -4px;
-  border: 1px solid rgba(28, 28, 28, .3);
-  border-radius: 3px;
+  background: var(--pen-frame-light) no-repeat 0 0 / 100% 100%;
   transform: rotate(-.6deg);
   pointer-events: none;
 }
 .sketch-button:hover,
 .sketch-button:focus-visible {
-  background: var(--ink);
+  background-color: var(--ink);
   color: var(--paper);
   outline: none;
 }
@@ -278,13 +286,17 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   right: calc(8px + env(safe-area-inset-right));
   width: 48px;
   height: 48px;
-  font: inherit;
-  font-size: 30px;
-  line-height: 1;
-  color: var(--ink);
   background: none;
   border: 0;
   cursor: pointer;
+}
+/* the close cross is drawn by hand, like the cross on the chosen answer */
+.rsvp-dialog__close span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  background: var(--pen-cross-b) center / contain no-repeat;
 }
 .rsvp-dialog:focus { outline: none; }
 .rsvp-dialog__close:focus-visible { outline: 1px dashed #6a6a6a; border-radius: 6px; }
@@ -323,11 +335,21 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
 .emoji--hugging { height: 1.18em; vertical-align: -.3em; }
 .nobreak { white-space: nowrap; }
 .rsvp-dialog__done { text-align: center; margin-top: clamp(26px, 5vh, 44px); }
-.rsvp-dialog__thanks { font-size: 19px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 32px; }
+.rsvp-dialog__thanks { font-size: 19px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 32px; text-wrap: balance; }
+.rsvp-dialog__thanks:focus { outline: none; }
+.emoji--smiling-hearts { height: 1.3em; vertical-align: -.33em; }
 
 .field { display: block; margin: 0 0 24px; border: 0; padding: 0; min-width: 0; }
 .field__label { display: block; font-size: 14px; letter-spacing: .08em; margin-bottom: 4px; }
-.field__label em { font-style: normal; font-size: 12px; opacity: .55; margin-left: .3em; }
+.field__label em { font-style: normal; font-size: 12px; opacity: .75; margin-left: .3em; }
+/* a field still to fill in when sending: its label is underlined by hand and its line goes dark */
+.field:has([aria-invalid="true"]) .field__label {
+  display: table;                 /* as wide as its words, so the stroke sits under them */
+  background: var(--pen-underline) no-repeat 0 100% / 100% 6px;
+  padding-bottom: 5px;
+}
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] { background-image: var(--pen-rule-dark); }
 .field input,
 .field select,
 .field textarea {
@@ -344,7 +366,8 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   /* a fine hand-ruled line under each field, darker when typing in it */
   background: var(--pen-rule) no-repeat 0 100% / 100% 8px;
 }
-.field textarea { resize: vertical; min-height: 84px; line-height: 1.5; }
+/* (no resize grip: the note grows with what is written, where the browser can do it) */
+.field textarea { resize: none; field-sizing: content; min-height: 84px; line-height: 1.5; }
 .field select {
   appearance: none;
   -webkit-appearance: none;
@@ -362,24 +385,27 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
 .rsvp-form > .field:nth-of-type(even) textarea:focus { background-image: var(--pen-rule-b-dark); }
 .field select:focus { background-image: var(--pen-rule-dark), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.4 6.1 6.6 11 1.2' fill='none' stroke='%231c1c1c' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E"); }
 .field-row { display: flex; gap: 20px; }
-.field-row .field { flex: 1; }
-.field-row .field__label { min-height: 2.6em; }   /* labels of different lengths: fields stay aligned */
+/* labels of different lengths (one may wrap onto two or three lines): the fields stay level */
+.field-row .field { flex: 1; display: flex; flex-direction: column; }
+.field-row .field select { margin-top: auto; }
 
 .field--choice .field__label { margin-bottom: 10px; }
-.choice { display: inline-flex; align-items: center; gap: 10px; margin: 0 26px 6px 0; font-size: 17px; cursor: pointer; }
+.choice { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 17px; cursor: pointer; width: fit-content; }
 .choice input {
   appearance: none;
   -webkit-appearance: none;
-  width: 17px;
-  height: 17px;
+  width: 19px;
+  height: 19px;
   margin: 0;
-  border: 1px solid var(--ink);
+  border: 0;
   border-radius: 50%;
   position: relative;
   cursor: pointer;
 }
 /* the answer circles don't take the text fields' ruled line, padding or shrinking */
-.rsvp-form .field .choice input[type="radio"] { padding: 0; background: none; flex: none; }
+/* (and are drawn by hand: a pen circle that doesn't quite close, a different one each time) */
+.rsvp-form .field .choice input[type="radio"] { padding: 0; background: var(--pen-circle) center / contain no-repeat; flex: none; }
+.rsvp-form .field .choice:nth-of-type(even) input[type="radio"] { background-image: var(--pen-circle-b); }
 /* the chosen answer is crossed by hand: two slightly bent pen strokes, a bit bigger than the
    circle so they run over its edge, with a faint second pass; each answer has its own cross */
 .choice input::after {
@@ -396,7 +422,7 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   transition: opacity .15s ease, transform .22s ease;
   pointer-events: none;
 }
-.choice + .choice input::after { background-image: var(--pen-cross-b); }
+.choice:nth-of-type(even) input::after { background-image: var(--pen-cross-b); }
 .choice input:checked::after { opacity: 1; transform: none; }
 .choice input:focus-visible { outline: 1px dashed #6a6a6a; outline-offset: 3px; }
 
@@ -475,6 +501,11 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
 /* phones: a little less tracking, so the longest label (French) stays on one line */
 @media (max-width: 420px) {
   .sketch-button { letter-spacing: .18em; padding: 15px 22px 14px 25px; }
+}
+/* the smallest phones (320 px wide) */
+@media (max-width: 360px) {
+  .sketch-button { letter-spacing: .1em; font-size: 14px; padding: 15px 16px 14px 18px; }
+  .rsvp-dialog__title { letter-spacing: .1em; margin-right: -.1em; }
 }
 
 @media (prefers-reduced-motion: reduce) {

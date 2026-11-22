@@ -51,3 +51,11 @@ and both of you get the email (you can then delete the test row).
   deployments → ✏️ → Version: New version → Deploy**. The link stays the same.
 - The form's fields and texts (in the three languages) are in
   `components/invitation/RsvpDialog.tsx` and `components/invitation/i18n.ts`.
+
+## When `tools/rsvp/Code.gs` changes
+
+The script runs in your Google account, not on the site: a push does not update it. After a change
+to `Code.gs` (for example the "maybe" answer), paste the new file over the old one in the Apps
+Script editor, keeping your own `RECIPIENTS` line, then **Deploy → Manage deployments → edit (the
+pencil) → Version: New version → Deploy**. The web app link stays the same. Until then, the old
+script records a "maybe" as a "no".

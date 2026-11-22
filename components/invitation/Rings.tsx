@@ -26,7 +26,7 @@ export default function Rings({ active, className }: { active: boolean; classNam
   return (
     <span className={`wedding-rings ${className ?? ""}`} ref={el} aria-hidden="true">
       <span className="wedding-rings__art">
-        <img className="wedding-rings__image" src="/assets/rings/rings.png" width={1536} height={960} alt="" decoding="async" />
+        <img className="wedding-rings__image" src="/assets/rings/rings.png" width={768} height={480} alt="" decoding="async" loading="lazy" />
         <span className="wedding-rings__twinkle wedding-rings__twinkle--a" />
         <span className="wedding-rings__twinkle wedding-rings__twinkle--b" />
       </span>
