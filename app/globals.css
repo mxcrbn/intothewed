@@ -97,7 +97,19 @@ body {
   transition: opacity 1.6s ease;
 }
 .cue .scroll-cue { opacity: 1; }
-.scroll-cue__fade { opacity: clamp(0, calc(1 - var(--p) * 4), 1); }
+.scroll-cue__fade { position: relative; opacity: clamp(0, calc(1 - var(--p) * 4), 1); }
+/* the hand-written word above the arrow: only once the couple has kissed */
+.scroll-cue__word {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  width: clamp(46px, 3.9vw, 60px);
+  height: auto;
+  transform: translateX(-50%) rotate(-1.5deg);
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.cue .scroll-cue__word { opacity: .9; }
 .scroll-cue img {
   display: block;
   width: clamp(26px, 2.2vw, 34px);
