@@ -9,7 +9,8 @@ high-quality reduction. Along the way, a few corrections (all listed in FIXES be
     (house and trees, measured on art/trees/background.png): the same mean ink darkness
     and the same stroke width, with one tone curve per character, then each frame levelled to the
     same darkness so no frame looks paler than its neighbours.
-  - owl: perched, it is the invitation's own owl, cut out of the invite (see invite_owl).
+  - owl: it is the invitation's own owl, cut out of the invite (see invite_owl): as it is when
+    perched, and in place of the pack's bird between the pack's wings when it flies.
   - register: in the deer's walk cycle the body slides ±7 px back and forth (the frames are
     aligned on the feet), which makes the walk judder. Those frames are re-centred on the body.
   - scale: three couple frames (lean in, kiss, smile) drawn ~4 % smaller are brought back to size.
@@ -159,6 +160,21 @@ def invite_owl(blink=False):
     return np.dstack([grey, grey, grey, alpha * 255]).round().astype(np.uint8)
 
 
+def erased(px, cx, cy, rx, ry):
+    """The frame with an ellipse cleared (to take the pack's bird out from between its wings)."""
+    yy, xx = np.mgrid[0:px.shape[0], 0:px.shape[1]]
+    out = px.copy()
+    out[((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2 <= 1] = 0
+    return out
+
+
+def over(px, piece, x, y):
+    """The frame with a piece drawn over it at (x, y)."""
+    im = Image.fromarray(px)
+    im.alpha_composite(piece, (x, y))
+    return np.asarray(im)
+
+
 # the drawing's own pen: what every character is matched to
 DRAWING = site / "art/trees/background.png"      # the drawing without the owl (served as a WebP)
 PEN = line([darkness(np.asarray(Image.open(DRAWING).convert("RGBA")))])
@@ -208,9 +224,30 @@ for name, a in assets.items():
           f"(curve x{k:.2f}, gamma {gamma:.2f})")
 
     if name == "owl":
-        # perched, it is the invitation's own owl (0 at rest, 1 blinking, 15 just settled); the pack's
-        # perched owl was a different bird (round head, in profile)
-        frames[0], frames[1], frames[15] = invite_owl(), invite_owl(blink=True), invite_owl()
+        # It is the invitation's own owl in every frame (the pack's was a different bird: round head, in
+        # profile). Perched (0 at rest, 1 blinking, 15 just settled): the invite's owl as it is.
+        rest = invite_owl()
+        frames[0], frames[1], frames[15] = rest, invite_owl(blink=True), rest
+        # Taking off and landing (3, 14): the pack's wings, the invite's owl standing in front of them.
+        # Crouching before take-off (2): the invite's owl, a little squashed onto its feet.
+        for i, hole in {3: (71, 84, 12, 16), 14: (65, 84, 9, 16)}.items():
+            frames[i] = over(erased(erased(frames[i], *hole), 82, 76, 9, 11) if i == 3 else erased(frames[i], *hole),
+                             Image.fromarray(rest), 0, 0)
+        squat = Image.fromarray(rest).convert("RGBa").resize((CELL, round(CELL * .9)), Image.LANCZOS).convert("RGBA")
+        frames[2] = repen([np.asarray(over(np.zeros_like(rest), squat, 0, 100 - round(100 * .9)))], *PEN)[0][0]
+        # Flying and gliding (4 – 12): the pack's wings, with the invite's owl (head and body, without
+        # its feet, at its own size and in its own line) in place of the pack's little round bird.
+        body = Image.new("RGBA", (28, 36), (0, 0, 0, 0))
+        body.paste(Image.fromarray(rest).crop((50, 64, 78, 97)), (0, 0))
+        # (without its feet the outline is open underneath: closed with one shallow pen stroke)
+        ink_ = np.nonzero(darkness(np.asarray(body))[32] > INK)[0]
+        belly = Image.new("RGBA", (28 * 4, 36 * 4), (0, 0, 0, 0))
+        ImageDraw.Draw(belly).arc((ink_.min() * 4, 26 * 4, ink_.max() * 4 + 4, 34 * 4 + 2), 12, 168, fill=(60, 60, 60, 235), width=6)
+        body.alpha_composite(belly.convert("RGBa").resize(body.size, Image.LANCZOS).convert("RGBA"))
+        CENTRES = {4: (65, 64), 5: (63, 64), 6: (64, 63), 7: (69, 58), 8: (62, 54), 9: (61, 57),
+                   10: (64, 63), 11: (64, 64), 12: (64, 63)}        # where the pack's bird is, in each cell
+        for i, (cx, cy) in CENTRES.items():
+            frames[i] = over(erased(frames[i], cx, cy + 1, 10, 12), body, cx - body.width // 2, cy - 11)
 
     for s, sheet_path in enumerate(a["sheets"]):
         sheet = Image.new("RGBA", (COLS * CELL, ROWS * CELL), (0, 0, 0, 0))
