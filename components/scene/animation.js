@@ -9,12 +9,14 @@ export function startScene(root) {
 
   // Wind in the canopy: 97 small leaf/twig fragments cut from the drawing (assets/trees/), each
   // rotating around its attachment point. House, trunks, fence stay still. The motion is the
-  // asset pack's "motion v3": a clear sway with gusts, never swinging a piece past ~38°.
-  // ?wind=0.6 for calmer, ?windSpeed=0.8 for slower.
+  // asset pack's "motion v3", at 0.6 of its strength and with a lower limit: a calm sway with gusts,
+  // a piece swinging 23° at the very most (in the pack's own setting, up to 36°, twigs visibly came
+  // off their stems). ?wind=1 for stronger, ?windSpeed=0.8 for slower.
   const query = new URLSearchParams(location.search);
   const WIND = {
     base: "/assets/trees/",
-    intensity: Number(query.get("wind")) || 1,
+    intensity: Number(query.get("wind")) || 0.6,
+    limit: 0.42,       // radians: no piece ever swings further than this (24°)
     speed: Number(query.get("windSpeed")) || 1,
     rampIn: 2.5,       // seconds to ease the wind in after the page opens
   };
@@ -176,7 +178,7 @@ export function startScene(root) {
     return hash1(k, seed) * (1 - u) + hash1(k + 1, seed) * u;
   }
   // Rotation (radians) of one fragment: a travelling swell, slow gusts and the piece's own
-  // flutter, softly limited to ±0.66 rad (from the asset pack's tree-wind.js).
+  // flutter, softly limited to ±WIND.limit (from the asset pack's tree-wind.js, where it is 0.66 rad).
   function breezeAngle(piece, time, intensity) {
     if (!intensity) return 0;
     time *= WIND.speed;
@@ -186,7 +188,7 @@ export function startScene(root) {
                 + 0.19 * smoothNoise(t / 2.8, 59);
     const local = 0.20 * smoothNoise(time / 1.35 + piece.phase, 103)
                 + 0.10 * Math.sin(time * 2.3 + piece.phase + 0.4 * smoothNoise(time / 3.1 + piece.phase, 211));
-    return 0.66 * Math.tanh(12.6 * piece.amplitude * piece.depth * intensity * (swell + local) / 0.66);
+    return WIND.limit * Math.tanh(12.6 * piece.amplitude * piece.depth * intensity * (swell + local) / WIND.limit);
   }
 
   // ===== DOM ==========================================================================
