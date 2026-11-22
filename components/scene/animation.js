@@ -250,7 +250,6 @@ export function startScene(root) {
   const clamp01 = u => Math.min(Math.max(u, 0), 1);
   const smooth = (a, b, u) => { const x = clamp01((u - a) / (b - a)); return x * x * (3 - 2 * x); };
   const lerp = (a, b, u) => a + (b - a) * u;
-  const ease = u => u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
   const cubic = (p0, p1, p2, p3, u) => {
     const v = 1 - u;
     return v * v * v * p0 + 3 * v * v * u * p1 + 3 * v * u * u * p2 + u * u * u * p3;
@@ -311,7 +310,8 @@ export function startScene(root) {
       // up off the branch, a long gentle swoop above the roof line, flare up to land
       const c1x = ax + span * 0.2, c1y = Math.min(ay, by) - 50;
       const c2x = ax + span * 0.72, c2y = Math.max(ay, by) + 80;
-      const e = ease(u);
+      // a soft start and stop (the steeper cubic ease kept it flapping over each branch for a second)
+      const e = smooth(0, 1, u);
       const x = cubic(ax, c1x, c2x, bx, e), y = cubic(ay, c1y, c2y, by, e);
       const gliding = u > 0.4 && u < 0.62;
       drawSprite("owl", gliding ? "glide" : "fly", local, x, y, faceLeft);
