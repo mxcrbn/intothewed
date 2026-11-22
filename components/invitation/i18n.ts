@@ -39,12 +39,17 @@ export const TEXT: Record<Lang, {
 
 // The RSVP form.
 export const RSVP_TEXT: Record<Lang, {
-  title: string; name: string; attending: string; yes: string; no: string; people: string;
+  title: string; intro: [string, string]; name: string; attending: string; yes: string; no: string; people: string;
   children: string; others: string; dietary: string; email: string; note: string; optional: string;
   send: string; sending: string; thanksYes: string; thanksNo: string; error: string; close: string;
 }> = {
   en: {
     title: "Will you join us?",
+    // two sentences, each followed by a little hand-drawn doodle (a heart, then a hugging smiley)
+    intro: [
+      "If you’re filling in this form, it means we’ve come a long way together",
+      "We made it to keep things simple, but please call or write to us too, even if you fill it in! Nothing beats hearing from you directly",
+    ],
     name: "Your name",
     attending: "Will you be there?",
     yes: "Yes, with joy",
@@ -65,6 +70,10 @@ export const RSVP_TEXT: Record<Lang, {
   },
   hu: {
     title: "Velünk ünnepelsz?",
+    intro: [
+      "Ha ezt az űrlapot töltöd ki, az azt jelenti, hogy hosszú utat tettünk meg együtt",
+      "Azért készítettük, hogy egyszerűbb legyen, de hívj fel minket vagy írj nekünk akkor is, ha kitöltötted! Nincs is jobb annál, mint amikor közvetlenül tőled hallunk",
+    ],
     name: "Neved",
     attending: "Ott leszel?",
     yes: "Igen, örömmel",
@@ -85,6 +94,10 @@ export const RSVP_TEXT: Record<Lang, {
   },
   fr: {
     title: "Serez-vous des nôtres ?",
+    intro: [
+      "Si vous remplissez ce formulaire, c’est que nous avons fait un long bout de chemin ensemble",
+      "Nous l’avons préparé pour vous simplifier la vie, mais appelez-nous ou écrivez-nous aussi, même si vous l’avez rempli\u00a0! Rien ne vaut le plaisir d’avoir de vos nouvelles en direct",
+    ],
     name: "Votre nom",
     attending: "Serez-vous là ?",
     yes: "Oui, avec joie",

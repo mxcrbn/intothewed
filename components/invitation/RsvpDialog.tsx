@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
+import Doodle from "./Doodle";
 import { RSVP_TEXT, type Lang } from "./i18n";
 import { RSVP_ENDPOINT } from "./rsvp-config";
 
@@ -47,6 +48,11 @@ export default function RsvpDialog({ lang, open, onClose }: { lang: Lang; open: 
       <div className="rsvp-dialog__inner">
         <img className="rsvp-dialog__rings" src="/assets/rings/rings.png" width={1536} height={960} alt="" />
         <h2 id="rsvp-title" className="rsvp-dialog__title">{t.title}</h2>
+        {status !== "sent" && (
+          <p className="rsvp-dialog__intro">
+            {t.intro[0]}&nbsp;<Doodle kind="heart" /> {t.intro[1]}&nbsp;<Doodle kind="hug" />
+          </p>
+        )}
 
         {status === "sent" ? (
           <div className="rsvp-dialog__done">

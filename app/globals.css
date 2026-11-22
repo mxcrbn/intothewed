@@ -294,9 +294,29 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   letter-spacing: .16em;
   margin-right: -.16em;
   text-align: center;
-  margin-bottom: clamp(26px, 5vh, 44px);
+  margin-bottom: 16px;
 }
-.rsvp-dialog__done { text-align: center; }
+/* a few words from the two of you under the title, with hand-drawn doodles for emojis */
+.rsvp-dialog__intro {
+  max-width: 30em;
+  margin: 0 auto clamp(28px, 5vh, 44px);
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: .03em;
+  text-align: center;
+  text-wrap: pretty;
+}
+.doodle {
+  display: inline-block;
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: -.36em;
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.rsvp-dialog__done { text-align: center; margin-top: clamp(26px, 5vh, 44px); }
 .rsvp-dialog__thanks { font-size: 19px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 32px; }
 
 .field { display: block; margin: 0 0 24px; border: 0; padding: 0; min-width: 0; }
