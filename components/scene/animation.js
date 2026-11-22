@@ -177,7 +177,11 @@ export function startScene(root) {
     const cover = Math.max(vw / W, vh / H);
     const contain = Math.min(vw / W, vh / H);
     const keepRange = vw / 1350;               // x 100 → 1450 (deer, owl, right tree) stays on screen
-    const s = Math.max(contain, Math.min(cover, keepRange));
+    // very wide screens (phones held sideways, ultrawide monitors): filling the width would crop the
+    // owl's branches and its flight off the top, so the drawing stops growing once y 190 → 1015 fills
+    // the height; the paper shows on both sides (the drawing fades to white at its edges)
+    const keepSky = vh / (1015 - 190);
+    const s = Math.max(contain, Math.min(cover, keepRange, keepSky));
     let x, y;
     if (W * s <= vw) x = (vw - W * s) / 2;
     else x = Math.min(0, Math.max(vw - W * s, vw / 2 - 775 * s));    // centred on the door
