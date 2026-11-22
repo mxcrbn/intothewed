@@ -55,6 +55,14 @@ export default function Home() {
 
   return (
     <>
+      {/* the pencil: makes a hand-written line waver and vary a little, like the drawing's (used by the
+          words written by hand: .hand and the arrow's "scroll") */}
+      <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <filter id="pencil" x="-10%" y="-20%" width="120%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="7" result="grain" />
+          <feDisplacementMap in="SourceGraphic" in2="grain" scale="1.7" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
       <Scene label={TEXT[lang].scene} cueLabel={TEXT[lang].scroll} />
       <div className="card-layer" ref={overlay}>
         <LangSwitch lang={lang} onChange={setLang} />

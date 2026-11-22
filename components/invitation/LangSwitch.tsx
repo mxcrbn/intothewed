@@ -1,8 +1,9 @@
 "use client";
 
+import HandWord from "./HandWord";
 import { LANGS, LANG_NAMES, TEXT, type Lang } from "./i18n";
 
-// Magyar · English · Français, top left; the current one is underlined.
+// Magyar · English · Français, top left, written by hand; the current one is underlined.
 export default function LangSwitch({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   return (
     <nav className="langs" aria-label={TEXT[lang].languages}>
@@ -14,9 +15,10 @@ export default function LangSwitch({ lang, onChange }: { lang: Lang; onChange: (
             lang={l}
             className="langs__item"
             aria-current={l === lang ? "true" : undefined}
+            aria-label={LANG_NAMES[l]}
             onClick={() => onChange(l)}
           >
-            {LANG_NAMES[l]}
+            <HandWord text={LANG_NAMES[l]} />
           </button>
         </span>
       ))}

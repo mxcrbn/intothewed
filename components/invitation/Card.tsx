@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
+import HandWord from "./HandWord";
 import Rings from "./Rings";
 import RsvpDialog from "./RsvpDialog";
 import { TEXT, type Lang } from "./i18n";
@@ -26,8 +27,9 @@ export default function Card({ lang, shown }: { lang: Lang; shown: boolean }) {
         <p className="card__line card__date">{t.date}</p>
       </div>
       <div className="rsvp">
-        <button type="button" className="sketch-button" onClick={() => (RSVP_ENDPOINT ? setForm(true) : setSoon(true))}>
-          {t.rsvp}
+        <button type="button" className="sketch-button sketch-button--hand" aria-label={t.rsvp}
+                onClick={() => (RSVP_ENDPOINT ? setForm(true) : setSoon(true))}>
+          <HandWord text={t.rsvp} />
         </button>
         <p className={`rsvp__soon${soon ? " is-shown" : ""}`} aria-live="polite">{soon ? t.soon : ""}</p>
       </div>

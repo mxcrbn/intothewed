@@ -103,9 +103,10 @@ body {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 6px);
-  width: clamp(46px, 3.9vw, 60px);
+  width: clamp(58px, 4.6vw, 74px);
   height: auto;
-  transform: translateX(-50%) rotate(-1.5deg);
+  transform: translateX(-50%) rotate(-3deg);
+  filter: url(#pencil);
   opacity: 0;
   transition: opacity 1.6s ease;
 }
@@ -147,6 +148,11 @@ body {
   letter-spacing: .12em;
 }
 .langs__dot { margin: 0 .55em; opacity: .6; }
+/* a word written by hand (HandWord.tsx): sized on the text around it, in its colour */
+.hand { display: block; height: 1.45em; width: auto; max-width: 100%; overflow: visible; filter: url(#pencil); }
+.langs { display: flex; align-items: center; }
+.langs > span { display: flex; align-items: center; }
+.langs .hand { height: 1.3em; }
 /* the current language is underlined with a fine pen stroke like the drawing's: wavering, with a
    small pen lift and a faint second pass (an SVG that stretches to the word) */
 :root {
@@ -174,7 +180,7 @@ body {
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: 0 100%;
-  background-size: calc(100% - .1em) 6px;   /* the tracking after the last letter isn't underlined */
+  background-size: 100% 6px;
 }
 .langs__item:hover { background-image: var(--pen-underline-light); }
 .langs__item[aria-current="true"] { background-image: var(--pen-underline); }
@@ -263,6 +269,9 @@ body {
   transform: rotate(-.6deg);
   pointer-events: none;
 }
+/* the card's button: its label written by hand, so no tracking to balance */
+.sketch-button--hand { padding-left: 32px; padding-right: 32px; }
+.sketch-button--hand .hand { height: 1.6em; }
 .sketch-button:hover,
 .sketch-button:focus-visible {
   background-color: var(--ink);
@@ -479,6 +488,7 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
   .langs {
     position: static;
     align-self: center;
+    justify-content: center;
     margin-top: clamp(18px, 3.5vh, 36px);
   }
   .card {
@@ -513,10 +523,14 @@ html:has(.rsvp-dialog[open]) { overflow: hidden; }
 /* phones: a little less tracking, so the longest label (French) stays on one line */
 @media (max-width: 420px) {
   .sketch-button { letter-spacing: .18em; padding: 15px 22px 14px 25px; }
+  .sketch-button--hand { padding-left: 22px; padding-right: 22px; }
 }
 /* the smallest phones (320 px wide) */
 @media (max-width: 360px) {
   .sketch-button { letter-spacing: .1em; font-size: 14px; padding: 15px 16px 14px 18px; }
+  .sketch-button--hand { padding-left: 16px; padding-right: 16px; }
+  .langs { font-size: 13px; }
+  .langs__dot { margin: 0 .35em; }
   .rsvp-dialog__title { letter-spacing: .1em; margin-right: -.1em; }
 }
 
